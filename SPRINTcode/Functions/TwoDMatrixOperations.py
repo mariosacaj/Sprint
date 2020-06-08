@@ -1,7 +1,36 @@
 import re
+from owlready2 import *
+from lxml import etree
 import numpy as np
+import rdflib
+import xml.dom.minidom as xp
+
 from SPRINTcode.Functions.Preprocessing import getFileExtension
 from SPRINTcode.Functions.ReadWriteFiles import readXsdFile,readOntology,readTurtle,readXmlFile,readOntologyClass,readOntologyProperty,readXsdFilecomplextype,readXsdFileElementAttribute
+from xml.sax.handler import ContentHandler
+from xml.sax import make_parser
+
+
+def file_type(path, filename):
+    ext = None
+    try:
+        etree.parse(path + filename)
+        try:
+            xp.parse(path + filename)
+            ext = 'xsd'
+        except:
+            ext = 'xml'
+    except:
+        try:
+            rdflib.Graph().load(path + filename, format="ttl")
+            ext = 'ttl'
+        except:
+            get_ontology(path + filename).load()
+            ext = 'owl'
+
+    if ext is None:
+        raise IOError('Unsupported file type')
+    return ext
 
 def makeCompoundList(inputList):
  splittedList=[re.split('[ ]',w) for w in inputList]
@@ -44,29 +73,26 @@ def splitToList(inputList):
 
 
 def readFile(path,filename):
-    owl = 'owl'
-    xsd = 'xsd'
-    ttl = 'ttl'
-    xml = 'xml'
-    ext = getFileExtension(filename)
-    if (ext == xsd):
+    ext = file_type(path, filename)
+    if (ext == 'xsd'):
         fileread = readXsdFile(path, filename)
         return fileread
-    elif (ext == xml):
+    elif (ext == 'xml'):
         fileread = readXmlFile(path, filename)
         return fileread
-    elif (ext == owl):
+    elif (ext == 'owl'):
         fileread = readOntology(path, filename)
         return fileread
-    elif (ext== ttl):
+    elif (ext== 'ttl'):
         fileread= readTurtle(path,filename)
         return fileread
+
 def readClass(path,filename):
     owl = 'owl'
     xsd = 'xsd'
     ttl = 'ttl'
     xml = 'xml'
-    ext = getFileExtension(filename)
+    ext = file_type(path, filename)
     if (ext == xsd):
         fileread = readXsdFilecomplextype(path, filename)
         return fileread
@@ -81,20 +107,20 @@ def readClass(path,filename):
         return fileread
 
 def readProperties(path, filename):
-        owl = 'owl'
-        xsd = 'xsd'
-        ttl = 'ttl'
-        xml = 'xml'
-        ext = getFileExtension(filename)
-        if (ext == xsd):
-            fileread = readXsdFileElementAttribute(path, filename)
-            return fileread
-        elif (ext == xml):
-            fileread = readXmlFile(path, filename)
-            return fileread
-        elif (ext == owl):
-            fileread = readOntologyProperty(path, filename)
-            return fileread
-        elif (ext == ttl):
-            fileread = readTurtle(path, filename)
-            return fileread
+    owl = 'owl'
+    xsd = 'xsd'
+    ttl = 'ttl'
+    xml = 'xml'
+    ext = file_type(path, filename)
+    if (ext == xsd):
+        fileread = readXsdFileElementAttribute(path, filename)
+        return fileread
+    elif (ext == xml):
+        fileread = readXmlFile(path, filename)
+        return fileread
+    elif (ext == owl):
+        fileread = readOntologyProperty(path, filename)
+        return fileread
+    elif (ext == ttl):
+        fileread = readTurtle(path, filename)
+        return fileread
