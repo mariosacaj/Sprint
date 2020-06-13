@@ -7,9 +7,12 @@ from SPRINTcode.Processing.modelload import model, vocab_list
 
 
 class WordMatchComp:
+ # INPUT MUST BE XSD
+ fileS=readFile_standard(standardsInput, sourcefile)
 
- fileS=readFile(standardsInput, sourcefile)
- fileT=readFile(standardsInput, targetfile)
+ # INPUT MUST BE OWL or TTL
+ fileT=readFile_ontology(standardsInput, targetfile)
+
  print("Step 1: ------------------------>  Reading files has been done.")
 
  listS=splitToList(fileS)
