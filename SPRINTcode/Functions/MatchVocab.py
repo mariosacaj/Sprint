@@ -4,7 +4,7 @@ import os
 
 def get_vocab_list(model_path):
     # Load Google's pre-trained Word2Vec model.
-    if 'Mario' in os.getcwd():
+    if 'Mario6868' in os.getcwd():
         model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
     else:
         model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True, limit=100000)

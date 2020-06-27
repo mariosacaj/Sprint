@@ -2,8 +2,24 @@ import subprocess
 from SPRINTcode.path import *
 
 
-class ConversionException(Exception):
+class StandardError(Exception):
     pass
+
+
+class AnnotationError(ValueError):
+    pass
+
+
+class ReferenceValue:
+    def __init__(self, p_c, concept):
+        self.P_C = p_c
+        self.concept = concept
+
+    def get_concept(self):
+        return self.concept
+
+    def get_type(self):
+        return self.P_C
 
 
 def conversion(output_path, schema_path):
@@ -18,23 +34,42 @@ def conversion(output_path, schema_path):
     ### END DEBUG
 
     if process.returncode is not 0:
-       raise ConversionException('Could Not Convert')
+        raise StandardError('Could Not Convert')
 
-# DICT[entity_name_source] = confirmed_entity_name_target
+
+# DICT[entity_name_source] = value
 def annotation(java_path, dict_s_t, elem_list_target, selected_pairs):
     with open(java_path, 'r+') as fd:
         contents = fd.readlines()
         for key, value in dict_s_t.items():
-            for line in contents:
-                if line.strip().startswith('public'):
-                    if 'class' in line:
-                        pass
 
-        idx = 0
-        str_ = 'new_string' + '\n'
-        contents.insert(idx, str_)  # new_string should end in a newline
+            for idx, line in enumerate(contents):
 
+                # FIND CONCEPT IN STANDARD
+                val = '@XmlType(name = "' + key + '"' in line or '@XmlElement(name = "' + key + '"' in line or '@XmlAttribute(name = "' + key + '"' in line
+                if val and not line.strip().startswith('*'):
+                    white_space = line.rstrip()[:-len(line.strip())]
 
+                    # FIND CLASS OR ATTRIBUTE
+                    index = 0
+                    for idy, ll in enumerate(contents[idx:]):
+                        if ll.strip().startswith('public') or ll.strip().startswith('private') or ll.strip().startswith(
+                                'protected'):
+                            if 'class' in ll and value.get_type() == 'P':
+                                raise AnnotationError('Class/property mismatch: ' + key)
+                            if 'class' not in ll and value.get_type() == 'C':
+                                raise AnnotationError('Class/property mismatch: ' + key)
+                            index = idy
+                            break
+
+                    # ANNOTATE
+                    if value.get_type() == 'C':
+                        incipit = '@RdfsClass("'
+                    else:
+                        incipit = '@RdfProperty(propertyName="'
+                    contents.insert(idx + index, white_space + incipit + value.get_concept() + '")\n')
+
+                    break
 
         fd.seek(0)  # readlines consumes the iterator, so we need to start over
         fd.writelines(contents)
@@ -43,5 +78,5 @@ def annotation(java_path, dict_s_t, elem_list_target, selected_pairs):
 if __name__ == '__main__':
     try:
         conversion(standardsInput, standardsInput + targetfile)
-    except ConversionException as e:
+    except StandardError as e:
         print(e)

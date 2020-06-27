@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:common="http://domainmodel.pts_fsm.org/2015/10/29/common"
+
+        xmlns:actors="http://domainmodel.pts_fsm.org/2015/10/29/actors"
+        targetNamespace="http://domainmodel.pts_fsm.org/2015/10/29/actors" elementFormDefault="qualified">
+
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/common" schemaLocation="../Common/Common.xsd"/>
+
+    <xsd:complexType name="Supplier">
+        <xsd:attribute name="AddresseeId" type="common:MasterData.GUID">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">MasterData type used to define the addressee. Addressee is mainly a
+                    container of profiles and addresses for players involved in a sales/aftersales operation.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="BusinessRoleIdType" type="common:MasterData.GUID">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">MasterData type used to define the type of role indicates a commercial
+                    or legal type role which is executed by the company.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+</xsd:schema>
