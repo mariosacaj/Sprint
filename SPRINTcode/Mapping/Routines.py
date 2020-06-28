@@ -89,7 +89,6 @@ def produce_candidates(model, output_path, source_rw, target_rw, write_pathVecTh
 
 
 def count_and_spit_output(output_path, readpathCompound, writepathCompound):
-    output_path
     comFile = readTextFile(output_path, readpathCompound)
     del comFile[-1]
     comp2dArray = makeCompound2dArray(comFile)
