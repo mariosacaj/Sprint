@@ -5,10 +5,8 @@ import numpy as np
 import rdflib
 import xml.dom.minidom as xp
 
-from SPRINTcode.Functions.Preprocessing import getFileExtension
-from SPRINTcode.Functions.ReadWriteFiles import readXsdFile,readOntology,readTurtle,readXmlFile,readOntologyClass,readOntologyProperty,readXsdFilecomplextype,readXsdFileElementAttribute
-from xml.sax.handler import ContentHandler
-from xml.sax import make_parser
+from .ReadWriteFiles import readXsdFile, readOntology, readTurtle, readXmlFile, readOntologyClass, readOntologyProperty, \
+    readXsdFilecomplextype, readXsdFileElementAttribute
 
 
 def file_type(path, filename):

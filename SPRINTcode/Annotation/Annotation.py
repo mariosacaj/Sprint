@@ -1,47 +1,11 @@
-import subprocess
-from SPRINTcode.path import *
-
-
-class StandardError(Exception):
-    pass
-
-
-class AnnotationError(ValueError):
-    pass
-
-
-class ReferenceValue:
-    def __init__(self, p_c, concept):
-        self.P_C = p_c
-        self.concept = concept
-
-    def get_concept(self):
-        return self.concept
-
-    def get_type(self):
-        return self.P_C
-
-
-def conversion(output_path, schema_path):
-    process = subprocess.run(['../jaxb-ri/bin/xjc.sh', '-nv', '-d', output_path, schema_path],
-                             stdout=subprocess.PIPE,
-                             universal_newlines=True)
-
-    ### DEBUG, please remove
-    stdout = process.stdout.split('\n')
-    for line in stdout:
-        print(line.strip())
-    ### END DEBUG
-
-    if process.returncode is not 0:
-        raise StandardError('Could Not Convert')
+from SPRINTcode.Exceptions.Exceptions import AnnotationError
 
 
 # DICT[entity_name_source] = value
-def annotation(java_path, dict_s_t, elem_list_target, selected_pairs):
+def annotation(java_path, dict_confirmed):
     with open(java_path, 'r+') as fd:
         contents = fd.readlines()
-        for key, value in dict_s_t.items():
+        for key, value in dict_confirmed.items():
 
             for idx, line in enumerate(contents):
 
@@ -73,10 +37,3 @@ def annotation(java_path, dict_s_t, elem_list_target, selected_pairs):
 
         fd.seek(0)  # readlines consumes the iterator, so we need to start over
         fd.writelines(contents)
-
-
-if __name__ == '__main__':
-    try:
-        conversion(standardsInput, standardsInput + targetfile)
-    except StandardError as e:
-        print(e)

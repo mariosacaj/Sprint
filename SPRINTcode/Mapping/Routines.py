@@ -1,12 +1,32 @@
-from SPRINTcode.Functions.MatchVocab import *
-from SPRINTcode.Functions.SimilarWordbyModel import *
-from SPRINTcode.Functions.TwoDMatrixOperations import *
-from SPRINTcode.Functions.MatchVocab import matchWordsModel
-from SPRINTcode.Functions.MatchPair import getValueThreshold
+from .Functions.MatchVocab import *
+from .Functions.SimilarWordbyModel import *
+from .Functions.TwoDMatrixOperations import *
+from .Functions.MatchVocab import matchWordsModel
+from .Functions.MatchPair import getValueThreshold
 from typing import List, Any, Union
-from SPRINTcode.Functions.MatchPair import isMatchExistscomp
-from SPRINTcode.Functions.ReadWriteFiles import readTextFile, writeCsv
-from SPRINTcode.Functions.TwoDMatrixOperations import makeCompound2dArray
+from .Functions.MatchPair import isMatchExistscomp
+from .Functions.ReadWriteFiles import readTextFile, writeCsv
+from .Functions.TwoDMatrixOperations import makeCompound2dArray
+from collections import defaultdict
+
+
+class Concept:
+    def __init__(self, concept: str, score: int):
+        self.type = None
+        self.concept = concept
+        self.score = score
+
+    def get_concept(self):
+        return self.concept
+
+    def set_type(self, type_: str):
+        self.type = type_
+
+    def get_type(self):
+        return self.type
+
+    def get_score(self):
+        return self.score
 
 
 def extract_and_fetch_from_model(standardInput, standard_file, referenceInput, reference_file, output_path, vocab_list,
@@ -15,6 +35,7 @@ def extract_and_fetch_from_model(standardInput, standard_file, referenceInput, r
     fileS = readFile_standard(standardInput, standard_file)
     # INPUT MUST BE OWL or TTL
     fileT = readFile_ontology(referenceInput, reference_file)
+    # lista di stringhe
     print("Step 1: ------------------------>  Reading files has been done.")
     listS = splitToList(fileS)
     listT = splitToList(fileT)
@@ -33,6 +54,15 @@ def extract_and_fetch_from_model(standardInput, standard_file, referenceInput, r
     writeCsv(modelMatch_S, output_path, source_rw)
     writeCsv(modelMatch_T, output_path, target_rw)
     print("Step 5: ----------------------->  Output files has been written")
+
+    dict_source = {}
+    dict_target = {}
+    for idx, S in enumerate(listS):
+        dict_source[S] = fileS[idx]
+    for idx, T in enumerate(listT):
+        dict_target[T] = fileT[idx]
+
+    return dict_source, dict_target
 
 
 def produce_candidates(model, output_path, source_rw, target_rw, write_pathVecThr, write_pathVecOrgRaw,
@@ -59,8 +89,8 @@ def produce_candidates(model, output_path, source_rw, target_rw, write_pathVecTh
 
 
 def count_and_spit_output(output_path, readpathCompound, writepathCompound):
-    read_writepath = output_path
-    comFile = readTextFile(read_writepath, readpathCompound)
+    output_path
+    comFile = readTextFile(output_path, readpathCompound)
     del comFile[-1]
     comp2dArray = makeCompound2dArray(comFile)
     print("Step 11: ----------------------->  Read files with threshold")
@@ -76,20 +106,33 @@ def count_and_spit_output(output_path, readpathCompound, writepathCompound):
             scores.append(tmplist)
             tmplist = []
     print("Step 12: ----------------------->  Counting similar instances has been done.")
-    writeCsv(scores, read_writepath, writepathCompound)
+    writeCsv(scores, output_path, writepathCompound)
     print(" ----------------------> Writing Final Output,Ouput file is ", writepathCompound, )
     print("------------------------- Program has been finished. ----------------------------")
-    getfile = readTextFile(read_writepath, 'Sumst_MatchCount.csv')
+
+    # count = []
+    # if len(count) == 0:
+    #     count = testf[0]
+    # tmplist = []
+    # for i in testf:
+    #     match0 = list(set(i[0]).symmetric_difference(count[0]))
+    #     if len(match0) == 0:
+    #         if count[2] > i[2]:
+    #             tmplist.append(count[0])
+    #         else:
+    #             tmplist.append(i)
+    # pass
+
+
+def generate_candidates_dict(dict_source, dict_target, output_path, writepathCompound):
+    getfile = readTextFile(output_path, writepathCompound)
     del getfile[-1]
-    testf = makeCompound2dArray(getfile)
-    count = []
-    if len(count) == 0:
-        count = testf[0]
-    tmplist = []
-    for i in testf:
-        match0 = list(set(i[0]).symmetric_difference(count[0]))
-        if len(match0) == 0:
-            if count[2] > i[2]:
-                tmplist.append(count[0])
-            else:
-                tmplist.append(i)
+    list_of_tuples = makeCompound2dArray(getfile)
+
+    # RESULT[NameIdStandard] = [RefConcept1, RefConcept2, RefConcept3]
+    result = defaultdict(list)
+    for key, value in dict_source.items():
+        for candidate in list_of_tuples:
+            if candidate[0] == key:
+                result[value].append(Concept(dict_target[candidate[1]], candidate[2]))
+    return result
