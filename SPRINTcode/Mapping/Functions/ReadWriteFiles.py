@@ -47,13 +47,13 @@ def clean_split_elem_list(elem_list):
     return cleaned_elem_list
 
 
-def getElementandAttribute(doc,attr):
-   readElement=doc.getElementsByTagName(attr)
-   listElement=[]
-   for m in readElement:
-       f=m.getAttribute('name')
-       listElement.append(f)
-   return listElement
+def forgetElementandAttribute(doc, attr):
+    readElement = doc.getElementsByTagName(attr)
+    listElement = []
+    for m in readElement:
+        f = m.getAttribute('name')
+        listElement.append(f)
+    return listElement
 
 def readXsdFile(filepath,filename):
     docread= xp.parse(filepath+filename)

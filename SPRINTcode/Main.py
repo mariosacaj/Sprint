@@ -28,6 +28,10 @@ reference_file = 'it.owl'
 ## CONVERT STANDARD AND PRODUCE CANDIDATES -- NOT INTERACTIVE
 conversion(java_path, standardInput + standard_file, jaxb_path)
 
+docread = xp.parse(standardInput + standard_file)
+elem = docread.getElementsByTagName('xsd:schema')
+package_url = elem[0].getAttribute('targetNamespace')
+
 # Getting n number of matching words for source and target from model
 dict_source, dict_target = extract_and_fetch_from_model(standardInput, standard_file, referenceInput, reference_file,
                                                         output_path, vocab_list,

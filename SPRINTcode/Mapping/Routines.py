@@ -77,7 +77,7 @@ def produce_candidates(model, output_path, source_rw, target_rw, write_pathVecTh
     print("Step 7: ----------------------->  Made 2D Array.")
     # matching words/Compound words from source to target using model
     matchPair, matchPairOrigin = matchWordsModel(s_array, t_array, model)
-    print("Step 8: ----------------------->  Matched words from source to taget using model Match.")
+    print("Step 8: ----------------------->  Matched words from source to target using model Match.")
     finalMatchPair, finalMatchPairThresh = getValueThreshold(matchPair)
     finalPairOrigin, finalpairOriginThresh = getValueThreshold(matchPairOrigin)
     print("Step 9: ----------------------->  Filtered threshold on vector value")
