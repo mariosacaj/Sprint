@@ -58,9 +58,9 @@ def extract_and_fetch_from_model(standardInput, standard_file, referenceInput, r
     dict_source = {}
     dict_target = {}
     for idx, S in enumerate(listS):
-        dict_source[S] = fileS[idx]
+        dict_source[repr(S)] = fileS[idx]
     for idx, T in enumerate(listT):
-        dict_target[T] = fileT[idx]
+        dict_target[repr(T)] = fileT[idx]
 
     return dict_source, dict_target
 
@@ -132,6 +132,6 @@ def generate_candidates_dict(dict_source, dict_target, output_path, writepathCom
     result = defaultdict(list)
     for key, value in dict_source.items():
         for candidate in list_of_tuples:
-            if candidate[0] == key:
-                result[value].append(Concept(dict_target[candidate[1]], candidate[2]))
+            if repr(candidate[0]) == key:
+                result[value].append(Concept(dict_target[repr(candidate[1])], candidate[2]))
     return result
