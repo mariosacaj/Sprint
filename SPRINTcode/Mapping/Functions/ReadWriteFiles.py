@@ -47,7 +47,7 @@ def clean_split_elem_list(elem_list):
     return cleaned_elem_list
 
 
-def forgetElementandAttribute(doc, attr):
+def getElementandAttribute(doc, attr):
     readElement = doc.getElementsByTagName(attr)
     listElement = []
     for m in readElement:
