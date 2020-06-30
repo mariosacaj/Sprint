@@ -41,6 +41,7 @@ while True:
 
 ## CONVERT STANDARD AND PRODUCE CANDIDATES -- NOT INTERACTIVE
 # Produce java classes and retrieve their paths in the package tree of the standard
+## TODO: create dicts for both standard and reference like this: dict[name] = C/P (as for 'Class' and 'Property')
 package_path: str = conversion(java_path, standardInput + standard_file, jaxb_path, URIConverterPath=URIToolFilePath)
 package_path = java_path + package_path.replace('.', '/')
 
