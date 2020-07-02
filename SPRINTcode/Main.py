@@ -1,8 +1,10 @@
 from SPRINTcode.Mapping.Routines import *
 from SPRINTcode.Mapping.Functions.MatchVocab import get_vocab_list
-from SPRINTcode.Conversion.Conversion import conversion
-from SPRINTcode.Exceptions.Exceptions import *
 import os
+from SPRINTcode.JavaLoad import *
+from SPRINTcode.FileManager.CheckFile import *
+from SPRINTcode.FileManager.ConceptType import *
+from SPRINTcode.Exceptions import *
 
 ## INIT + START SERVER (ONCE FOR ALL) -- NOT INTERACTIVE
 standardInput = os.getcwd() + '/data/standard/'
@@ -25,47 +27,59 @@ model, vocab_list = get_vocab_list(modelpath)
 
 ###### USER SPECIFIC ###### -- NEW THREAD
 ## UPLOAD STANDARD AND REFERENCE AND SELECT FILES -- INTERACTIVE
+
+# load Java Library for Java code manipulation
+java_man = instantiate_java_code_manipulator(java_path, URIToolFilePath)
+
 # Standard and reference are uploaded
 
+# User choice
 while True:
     # Assignment is user choice
     standard_file = 'StructuralModel-XSD/GeoInfra/Transportation.xsd'
-    if (check_standard(standardInput + standard_file)):
+    if check_standard(standardInput + standard_file):
         break
 
 while True:
     # Assignment is user choice
     reference_file = 'it.owl'
-    if (check_reference(referenceInput + reference_file)):
+    ext = check_reference(referenceInput + reference_file)
+    if ext:
         break
 
 ## CONVERT STANDARD AND PRODUCE CANDIDATES -- NOT INTERACTIVE
-# Produce java classes and retrieve their paths in the package tree of the standard
-## TODO: create dicts for both standard and reference like this: dict[name] = C/P (as for 'Class' and 'Property')
-package_path: str = conversion(java_path, standardInput + standard_file, jaxb_path, URIConverterPath=URIToolFilePath)
-package_path = java_path + package_path.replace('.', '/')
+# Generate Java Code Model
 
-# Getting n number of matching words for source and target from model
-dict_source, dict_target = extract_and_fetch_from_model(standardInput, standard_file, referenceInput, reference_file,
-                                                        output_path, vocab_list,
-                                                        model, source_rw, target_rw)
+try:
+    java_man.generateFromSchema(standardInput + standard_file)
+except:
+    raise StandardError('Cannot create Java Code')
 
-# Matching words from source to target with one another
-produce_candidates(model, output_path, source_rw, target_rw, write_pathVecThr, write_pathVecOrgRaw, write_pathVecOrgThr,
-                   write_pathVecRaw)
+## create dicts for both standard and reference like this: dict[name] = 'C'/'P'/'' (as for 'Class', 'Property' and unknown)
+standard_dict = standard_concept_type(standardInput + standard_file)
+reference_dict = reference_concept_type(referenceInput + reference_file, ext)
 
-# counting pair match instances
-count_and_spit_output(output_path, readpathCompound, writepathCompound)
-candidates_dict = generate_candidates_dict(dict_source, dict_target, output_path, writepathCompound)
+## candidates creation with mapping tool
+candidates_dict = produce_final_candidates(standardInput, standard_file, referenceInput,
+                                           reference_file,
+                                           output_path, vocab_list,
+                                           model, source_rw, target_rw, write_pathVecThr, write_pathVecOrgRaw,
+                                           write_pathVecOrgThr,
+                                           write_pathVecRaw, readpathCompound, writepathCompound, ext)
 
-# tree similarity?
+candidates_dict = prune_mismatch_type(candidates_dict, standard_dict, reference_dict)
+
+# tree similarity? a class is similar to another one if they have many semantically similar properties...
 
 ## CONFIRM CANDIDATES AND MANUALLY SELECT  OTHER POSSIBLE PAIRS -- INTERACTIVE
 pass
-# dict_confirmed = ...
+dict_confirmed = {}
+dict_confirmed['OnboardServiceCategoryId'] = 'st4rt:Service'
+dict_confirmed['ExternalId'] = 'st4rt:External'
+dict_confirmed['Vehicle'] = 'st4rt:Vehicle'
 
 ## ANNOTATION -- NOT INTERACTIVE
-(_, _, filenames) = next(os.walk(package_path))
-filenames = [f for f in filenames if f[-5:] == '.java' and f != 'package-info.java' and f != 'ObjectFactory.java']
-# for java_file in filenames:
-#     annotation(package_path + java_file, dict_confirmed)
+for key, value in dict_confirmed.items():
+    java_man.annotate(key, value)
+
+java_man.build()

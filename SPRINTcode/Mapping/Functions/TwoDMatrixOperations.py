@@ -69,33 +69,7 @@ def splitToList(inputList):
     print("Compound list has been created")
     return final_list
 
-def readFile_ontology(path,filename):
-    ext = None
 
-    try:
-        rdflib.Graph().load(path + filename, format="ttl")
-        ext = 'ttl'
-    except:
-        try:
-            get_ontology(path + filename).load()
-            ext = 'owl'
-        except:
-            raise ValueError('Unsupported file type')
-
-    if (ext == 'owl'):
-        fileread = readOntology(path, filename)
-        return fileread
-    elif (ext== 'ttl'):
-        fileread= readTurtle(path,filename)
-        return fileread
-
-def readFile_standard(path,filename):
-    try:
-        xp.parse(path + filename)
-    except:
-        raise ValueError('Unsupported file type')
-
-    return readXsdFile(path, filename)
 
 def readFile(path,filename):
     ext = file_type(path, filename)

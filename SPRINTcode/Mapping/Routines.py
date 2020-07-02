@@ -8,11 +8,33 @@ from .Functions.MatchPair import isMatchExistscomp
 from .Functions.ReadWriteFiles import readTextFile, writeCsv
 from .Functions.TwoDMatrixOperations import makeCompound2dArray
 from collections import defaultdict
+from SPRINTcode.FileManager.ReadFiles import readFile_standard
+from SPRINTcode.FileManager.QualifiedReadFiles import readFile_ontology
+
+
+def produce_final_candidates(standardInput, standard_file, referenceInput,
+                             reference_file,
+                             output_path, vocab_list,
+                             model, source_rw, target_rw, write_pathVecThr, write_pathVecOrgRaw,
+                             write_pathVecOrgThr,
+                             write_pathVecRaw, readpathCompound, writepathCompound, ext):
+    # Getting n number of matching words for source and target from model
+    dict_source, dict_target = extract_and_fetch_from_model(standardInput + standard_file,
+                                                            referenceInput + reference_file,
+                                                            output_path, vocab_list,
+                                                            model, source_rw, target_rw, ext)
+    # Matching words from source to target with one another
+    produce_candidates(model, output_path, source_rw, target_rw, write_pathVecThr, write_pathVecOrgRaw,
+                       write_pathVecOrgThr,
+                       write_pathVecRaw)
+    # counting pair match instances
+    count_and_spit_output(output_path, readpathCompound, writepathCompound)
+    candidates_dict = generate_candidates_dict(dict_source, dict_target, output_path, writepathCompound)
+    return candidates_dict
 
 
 class Concept:
     def __init__(self, concept: str, score: int):
-        self.type = None
         self.concept = concept
         self.score = score
 
@@ -29,16 +51,23 @@ class Concept:
         return self.score
 
 
-def extract_and_fetch_from_model(standardInput, standard_file, referenceInput, reference_file, output_path, vocab_list,
-                                 model, source_rw, target_rw):
+def extract_and_fetch_from_model(standard_path, reference_path, output_path, vocab_list,
+                                 model, source_rw, target_rw, ext):
     # INPUT MUST BE XSD
-    fileS = readFile_standard(standardInput, standard_file)
+    fileS = readFile_standard(standard_path)
     # INPUT MUST BE OWL or TTL
-    fileT = readFile_ontology(referenceInput, reference_file)
+    fileT = readFile_ontology(reference_path, ext)
     # lista di stringhe
     print("Step 1: ------------------------>  Reading files has been done.")
     listS = splitToList(fileS)
-    listT = splitToList(fileT)
+
+    ## MUST DEQUALIFY fileT first
+    deq_fileT = []
+    for t in fileT:
+        deq_fileT.append(t.split(':')[-1])
+
+    listT = splitToList(deq_fileT)
+
     print("Step 2: ------------------------>  compound Lists has been created.")
     writeCsv(listS, output_path, 'SourceTerms.csv')
     writeCsv(listT, output_path, 'TargetTerms.csv')
@@ -55,6 +84,8 @@ def extract_and_fetch_from_model(standardInput, standard_file, referenceInput, r
     writeCsv(modelMatch_T, output_path, target_rw)
     print("Step 5: ----------------------->  Output files has been written")
 
+    # CREATE DICT FOR SOURCE & TARGET
+    # dict[['fare', 'url', 'travel']] = 'st4rt:fareUrlTravel'
     dict_source = {}
     dict_target = {}
     for idx, S in enumerate(listS):
@@ -135,3 +166,17 @@ def generate_candidates_dict(dict_source, dict_target, output_path, writepathCom
             if repr(candidate[0]) == key:
                 result[value].append(Concept(dict_target[repr(candidate[1])], candidate[2]))
     return result
+
+
+def prune_mismatch_type(candidates_dict, standard_dict, reference_dict):
+    for key, value in candidates_dict.items():
+        for idx, ref_concept in enumerate(value):
+            std_type = standard_dict[key]
+            ref_type = reference_dict[ref_concept.get_concept()]
+            if std_type != '' and ref_type != '' and std_type != ref_type:
+                del value[idx]
+    return {k: v for k, v in candidates_dict.items() if v}
+
+
+def compute_graph_similarity(std_concept, ref_concept, std_tree, owl_ref_graph):
+    pass

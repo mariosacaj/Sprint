@@ -1,4 +1,4 @@
-from SPRINTcode.Exceptions.Exceptions import AnnotationError
+from SPRINTcode.Exceptions import AnnotationError
 
 
 # DICT[entity_name_source] = value

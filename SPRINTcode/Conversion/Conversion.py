@@ -1,5 +1,5 @@
 import subprocess
-from SPRINTcode.Exceptions.Exceptions import StandardError
+from SPRINTcode.Exceptions import StandardError
 import xml.dom.minidom as xp
 
 
