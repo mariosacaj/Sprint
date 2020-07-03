@@ -17,9 +17,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
-  <component name="PackageRequirementsSettings">
-    <option name="removeUnused" value="true" />
-  </component>
   <component name="PyDocumentationSettings">
     <option name="renderExternalDocumentation" value="true" />
   </component>
@@ -27,7 +24,7 @@
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
     <option name="TEMPLATE_FOLDERS">
       <list>
-        <option value="$MODULE_DIR$/templates" />
+        <option value="$MODULE_DIR$/annotator/templates" />
       </list>
     </option>
   </component>

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'annotator.apps.AnnotatorHelperConfig'
 ]
 
 MIDDLEWARE = [
@@ -53,7 +54,7 @@ ROOT_URLCONF = 'Sprint.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2'
+        'BACKEND': 'django.template.backends.django.DjangoTemplates'
         ,
         'DIRS': [os.path.join(BASE_DIR, 'templates')]
         ,
