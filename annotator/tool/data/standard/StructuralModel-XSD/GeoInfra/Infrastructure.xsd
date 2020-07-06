@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:common="http://domainmodel.pts_fsm.org/2015/10/29/common"
+
+        xmlns:infrastructure="http://domainmodel.pts_fsm.org/2015/10/29/infrastructure"
+        targetNamespace="http://domainmodel.pts_fsm.org/2015/10/29/infrastructure" elementFormDefault="qualified">
+
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/common" schemaLocation="../Common/Common.xsd"/>
+
+    <xsd:complexType name="GeoPoint">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:attribute name="Latitude" type="xsd:decimal" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Y Coordinate</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="Longitude" type="xsd:decimal" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">X Coordinate</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="SRSName" type="xsd:string" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Spatial reference system name</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="StopArea">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+                    <xsd:element name="VehicleAccess" type="infrastructure:VehicleAccess" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Vehicle access information. Occurrence Indicators : one to
+                                many VehicleAccess can optionally be defined for a StopArea (e.g. many train access can
+                                be define along the platform with different PRM access configuration).
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="StopAreaId" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData a Stop Area may consist of several stop points and
+                            associated vehicle access areas, e.g. multiple platforms.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="VehicleAccess">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+                    <xsd:element name="GeoPoint" type="infrastructure:GeoPoint" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Geographical position of the vehicle access. Occurrence
+                                Indicators : one and only one GeoPoint can optionally be defined for each vehicle
+                                access.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="BoardingPosition" type="infrastructure:BoardingPosition" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Information related to the boarding position and
+                                configuration. Occurrence Indicators : one and only one BoardingPosition can optionally
+                                be defined for each vehicle access.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="Name" type="xsd:string" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Name of the vehicle access area</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="VehicleAccessAreaTypeId" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to indicates the type of Vehicle Access
+                            Area (e.g. a platform may be a single-track platform or a two-track platform).
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="BoardingPosition">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence/>
+                <xsd:attribute name="BoardingPositionId" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to indicates the "BoardingPosition" is an
+                            area or a point in a "StopPoint" or a "VehicleAccess" which is associated with coaches or
+                            with concrete entrances (necessary for driverless vehicles).
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="Height" type="xsd:decimal" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Boarding position height.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="Displacement" type="xsd:string" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Boarding position displacement.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="PRMSuitable" type="xsd:boolean" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Indicates if the boarding position is suitable for PRM.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="VehicleRampSuitable" type="xsd:boolean" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Indicates if the boarding position is suitable for vehicle
+                            ramps.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ScheduledStopPoint">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+                    <xsd:element name="ArrivalTime" type="xsd:dateTime" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicates the time of arrival. Occurrence Indicators : one
+                                and only one "CheckInTime" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="CheckInTime" type="xsd:dateTime" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicates the date and time when the passenger needs to
+                                check-in. Occurrence Indicators : one and only one "CheckInTime" can optionally be
+                                defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="CloseOfBoarding" type="xsd:dateTime" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicates the date and time of when the boarding closes.
+                                Occurrence Indicators : one and only one "CheckInTime" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="EffectiveDeparture" type="xsd:dateTime" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicates the date and time of effective vehicle departure.
+                                Occurrence Indicators : one and only one "EffectiveDeparture" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="GeoPoint" type="infrastructure:GeoPoint" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicates the "ScheduledStopPoint" geographical position.
+                                Occurrence Indicators : one and only one "GeoPoint" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="ScheduledStopPointId" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData defining the position where the vehicle stops.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="StopPlace">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+                    <xsd:element name="ScheduledStopPoint" type="infrastructure:ScheduledStopPoint" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Spatial-temporal information related to the stop point.
+                                Occurrence Indicators : one and only one "ScheduledStopPoints" can optionally be defined
+                                for a "StopPlace".
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="StopArea" type="infrastructure:StopArea" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Information about the train access area. Occurrence
+                                Indicators : one and only one "StopArea" can optionally be defined for a StopPlace (e.g.
+                                train boarding platform).
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Description" type="common:GenericTextMessage" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Plain-text description of the StopPlace. Occurrence
+                                Indicators : one and only one Description can optionally be defined for a StopPlace.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="StopPlaceId" type="common:MasterData.GUID" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to identify the stopPlace.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="StopPlaceTypeId" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to define the stop place type. A stop
+                            place may be a simple bus-station with just a single platform or a central station with a
+                            lot of platforms and buildings.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="Name" type="xsd:string" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Name of the StopPlace</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="Acronym" type="xsd:string" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Acronym of the StopPlace</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="IsBorderPoint" type="xsd:boolean" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Define if the StopPlace is a border point</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="BorderPointCode" type="xsd:string" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Border point code</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="StopPlaceAccessTypeId" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to define the stop place access type. It
+                            can give first indications of accessibility to PRM.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Region">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+                    <xsd:element name="Center" type="infrastructure:GeoPoint" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Region centroid location. Occurrence Indicators : one
+                                region centroid can optionally be defined
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="GeoPoint" type="infrastructure:GeoPoint" minOccurs="3" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Region polygon limits coordinates. Occurrence Indicators :
+                                many region polygon limits coordinates can optionally be defined the minimum number of
+                                coordinates is 3 (which is a triangle)
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>
