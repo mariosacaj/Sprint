@@ -52,13 +52,13 @@ def upload_reference(request):
         form = UploadFileForm()
     return render(request, 'annotator/upload.html', {'form': form})
 
-def loading(request):
+def standard_select(request):
     pass
 
-def confirm_candidates(request):
+def reference_select(request):
     pass
 
-def confirm_graphs(request):
+def compare(request):
     pass
 
 def download(request):
