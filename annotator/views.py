@@ -10,7 +10,7 @@ from annotator.exceptions import *
 
 # Create your views here.
 # Session State
-# RESET -> UP_STD -> UP_REF -> ... ->  DONE
+# 1 -> 2 -> 3 -> ... ->  DONE
 # flags
 # std_sel, ref_sel
 # data
