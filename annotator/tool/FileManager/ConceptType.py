@@ -1,4 +1,5 @@
-from annotator.tool.FileManager.ReadFiles import *
+from .ReadFiles import *
+from .QualifiedReadFiles import *
 
 
 def standard_concept_type(standard_path):

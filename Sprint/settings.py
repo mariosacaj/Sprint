@@ -121,10 +121,16 @@ USE_TZ = True
 
 STATIC_URL = os.path.join(BASE_DIR, '/static/')
 
-PATH_FILES = os.path.join(BASE_DIR, '/sprint_files/')
+PATH_FILES = os.path.join(os.getcwd(), 'sprint_files/')
 
-MODEL_DIR = os.path.join(BASE_DIR, '/model/')
+MODEL_DIR = os.path.join(os.getcwd(), 'model/')
+
+TOOLS_DIR = os.path.join(os.getcwd(), 'tools/')
 
 MODEL_NAME = 'model.bin'
 
-model_org = '/var/model/GoogleNews-vectors-negative300.bin'
+model_org_name = 'GoogleNews-vectors-negative300.bin'
+
+URI_TOOL_PATH = os.path.join(TOOLS_DIR, 'URIConverterTool.jar')
+
+OWL_TOOL_PATH = os.path.join(TOOLS_DIR, 'owl2vowl.jar')
