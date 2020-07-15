@@ -8,14 +8,15 @@ class AnnotatorHelperConfig(AppConfig):
         from threading import Thread
         from apscheduler.schedulers.background import BackgroundScheduler
         import os
-        from Sprint.settings import PATH_FILES
+        from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, model_org
 
         if not os.path.isdir(PATH_FILES):
             os.mkdir(PATH_FILES)
 
+        if not os.path.isdir(MODEL_DIR):
+            os.mkdir(MODEL_DIR)
 
-        model_org = '/data/model/GoogleNews-vectors-negative300.bin'
-        model_path = '/data/model/model.bin'
+        model_path = MODEL_DIR + MODEL_NAME
 
         t = Thread(target=load_model, args=(model_org, model_path))
         t.daemon = True  # This thread dies when main thread (only non-daemon thread) exits.
@@ -53,7 +54,7 @@ def delete_tmp_folders(Session, path):
         if dir not in tmp_dirs:
             shutil.rmtree(dir)
 
-    pass
+    return
 
 
 

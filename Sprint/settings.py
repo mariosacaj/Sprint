@@ -116,10 +116,15 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = os.path.join(BASE_DIR, '/static/')
 
-PATH_FILES = '/var/sprint_files/'
+PATH_FILES = os.path.join(BASE_DIR, '/sprint_files/')
+
+MODEL_DIR = os.path.join(BASE_DIR, '/model/')
+
+MODEL_NAME = 'model.bin'
+
+model_org = '/var/model/GoogleNews-vectors-negative300.bin'

@@ -9,46 +9,27 @@ from .Functions.ReadWriteFiles import readTextFile, writeCsv
 from .Functions.TwoDMatrixOperations import makeCompound2dArray
 from collections import defaultdict
 from annotator.tool.FileManager.ReadFiles import readFile_standard
-from annotator.tool.FileManager import readFile_ontology
+from annotator.tool.FileManager.QualifiedReadFiles import readFile_ontology
+from annotator.tool.concept import Concept
 
 
-def produce_final_candidates(standardInput, standard_file, referenceInput,
-                             reference_file,
+def produce_final_candidates(xsd_file, ont_file,
                              output_path, vocab_list,
-                             model, source_rw, target_rw, write_pathVecThr, write_pathVecOrgRaw,
-                             write_pathVecOrgThr,
-                             write_pathVecRaw, readpathCompound, writepathCompound, ext):
+                             model, source_rw, target_rw, write_pathVecOrgThr, writepathCompound, ext):
     # Getting n number of matching words for source and target from model
-    dict_source, dict_target = extract_and_fetch_from_model(standardInput + standard_file,
-                                                            referenceInput + reference_file,
+    dict_source, dict_target = extract_and_fetch_from_model(xsd_file,
+                                                            ont_file,
                                                             output_path, vocab_list,
                                                             model, source_rw, target_rw, ext)
     # Matching words from source to target with one another
-    produce_candidates(model, output_path, source_rw, target_rw, write_pathVecThr, write_pathVecOrgRaw,
-                       write_pathVecOrgThr,
-                       write_pathVecRaw)
+    produce_candidates(model, output_path, source_rw, target_rw, write_pathVecOrgThr)
     # counting pair match instances
-    count_and_spit_output(output_path, readpathCompound, writepathCompound)
+    count_and_spit_output(output_path, write_pathVecOrgThr, writepathCompound)
     candidates_dict = generate_candidates_dict(dict_source, dict_target, output_path, writepathCompound)
     return candidates_dict
 
 
-class Concept:
-    def __init__(self, concept: str, score: int):
-        self.concept = concept
-        self.score = score
 
-    def get_concept(self):
-        return self.concept
-
-    def set_type(self, type_: str):
-        self.type = type_
-
-    def get_type(self):
-        return self.type
-
-    def get_score(self):
-        return self.score
 
 
 def extract_and_fetch_from_model(standard_path, reference_path, output_path, vocab_list,
@@ -68,21 +49,21 @@ def extract_and_fetch_from_model(standard_path, reference_path, output_path, voc
 
     listT = splitToList(deq_fileT)
 
-    print("Step 2: ------------------------>  compound Lists has been created.")
-    writeCsv(listS, output_path, 'SourceTerms.csv')
-    writeCsv(listT, output_path, 'TargetTerms.csv')
+    # print("Step 2: ------------------------>  compound Lists has been created.")
+    # writeCsv(listS, output_path, 'SourceTerms.csv')
+    # writeCsv(listT, output_path, 'TargetTerms.csv')
     # mach to word2vec model vocab
     matchVocab_S = matchCompoundToVocab(listS, vocab_list)
     matchVocab_T = matchCompoundToVocab(listT, vocab_list)
-    print("Step 3: ----------------------->  Matching and filter with model vocab list has been done.")
-    writeCsv(matchVocab_S, output_path, 'SourceVocab.csv')
-    writeCsv(matchVocab_T, output_path, 'TargetVocab.csv')
+    # print("Step 3: ----------------------->  Matching and filter with model vocab list has been done.")
+    # writeCsv(matchVocab_S, output_path, 'SourceVocab.csv')
+    # writeCsv(matchVocab_T, output_path, 'TargetVocab.csv')
     modelMatch_S = getSimilarWordAvg(matchVocab_S, model, 3)
     modelMatch_T = getSimilarWordAvg(matchVocab_T, model, 3)
-    print("Step 4: ----------------------->  Got Similar Words from model")
+    # print("Step 4: ----------------------->  Got Similar Words from model")
     writeCsv(modelMatch_S, output_path, source_rw)
     writeCsv(modelMatch_T, output_path, target_rw)
-    print("Step 5: ----------------------->  Output files has been written")
+    # print("Step 5: ----------------------->  Output files has been written")
 
     # CREATE DICT FOR SOURCE & TARGET
     # dict[['fare', 'url', 'travel']] = 'st4rt:fareUrlTravel'
@@ -96,8 +77,8 @@ def extract_and_fetch_from_model(standard_path, reference_path, output_path, voc
     return dict_source, dict_target
 
 
-def produce_candidates(model, output_path, source_rw, target_rw, write_pathVecThr, write_pathVecOrgRaw,
-                       write_pathVecOrgThr, write_pathVecRaw):
+def produce_candidates(model, output_path, source_rw, target_rw,
+                       write_pathVecOrgThr):
     s_data = readTextFile(output_path, source_rw)
     t_data = readTextFile(output_path, target_rw)
     print("Step 6: ----------------------->  Model written files has been read")
@@ -109,12 +90,12 @@ def produce_candidates(model, output_path, source_rw, target_rw, write_pathVecTh
     # matching words/Compound words from source to target using model
     matchPair, matchPairOrigin = matchWordsModel(s_array, t_array, model)
     print("Step 8: ----------------------->  Matched words from source to target using model Match.")
-    finalMatchPair, finalMatchPairThresh = getValueThreshold(matchPair)
+    # finalMatchPair, finalMatchPairThresh = getValueThreshold(matchPair)
     finalPairOrigin, finalpairOriginThresh = getValueThreshold(matchPairOrigin)
     print("Step 9: ----------------------->  Filtered threshold on vector value")
-    writeCsv(finalMatchPair, output_path, write_pathVecRaw)
-    writeCsv(finalMatchPairThresh, output_path, write_pathVecThr)
-    writeCsv(finalPairOrigin, output_path, write_pathVecOrgRaw)
+    # writeCsv(finalMatchPair, output_path, write_pathVecRaw)
+    # writeCsv(finalMatchPairThresh, output_path, write_pathVecThr)
+    # writeCsv(finalPairOrigin, output_path, write_pathVecOrgRaw)
     writeCsv(finalpairOriginThresh, output_path, write_pathVecOrgThr)
     print("Step 10: ----------------------> Output files has been written.")
 

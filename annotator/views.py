@@ -1,29 +1,35 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest, Http404
 from .forms import UploadFileForm
-from annotator.api import owl2json, xsd2str
-from annotator.tool.FileManager.CheckFile import *
+from annotator.api import *
 import tempfile
 import zipfile
 import os
 from annotator.exceptions import *
-from Sprint.settings import PATH_FILES
-from django.conf import settings
-from django.http import HttpResponse, Http404
+from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME
 import shutil
 
 
-# flags
-# std_sel, ref_sel
-# data
-# ref, std, tmp
+
 
 def index(request):
+    # Status
     request.session['std_up'] = False
     request.session['std_sel'] = False
     request.session['ref_up'] = False
     request.session['ref_sel'] = False
     request.session['done'] = False
+
+    # file paths
+    request.session['std'] = None
+    request.session['ref'] = None
+    request.session['tmp'] = create_user_folder(request)
+
+    # Session objects
+    request.session['annotator'] = None
+    request.session['standard_dict'] = None
+    request.session['candidates_dict'] = None
+    request.session['reference_dict'] = None
 
     context = {'year': 2018, 'article_list': ['m', 'l']}
     return render(request, 'annotator/index.html', context)
@@ -64,9 +70,15 @@ def standard_select(request):
         return HttpResponseRedirect('/standard_upload/')
     std_dir = os.path.join(request.session['tmp'], '/standard/')
     if request.method == 'POST':
-        pass
-        ## STD ROUTINE
-        check_standard(std_dir + 'filename.xsd')
+        ## ASSIGNMENT IS USR CHOICE
+        std_file = 'std.xsd'
+        try:
+            annotator, standard_dict = standard_init(request.session['tmp'], std_dir + std_file)
+        except BaseException as e:
+            return HttpResponse(e)
+        request.session['std'] = std_dir + std_file
+        request.session['annotator'] = annotator
+        request.session['standard_dict'] = standard_dict
         request.session['std_sel'] = True
     else:
         return render(request, 'annotator/select.html')
@@ -75,10 +87,22 @@ def standard_select(request):
 def reference_select(request):
     if not request.session['ref_up']:
         return HttpResponseRedirect('/reference_upload/')
+    ref_dir = os.path.join(request.session['tmp'], '/reference/')
     if request.method == 'POST':
-        pass
-        ## REF ROUTINE
+        ## ASSIGNMENT IS USR CHOICE
+        ref_file = 'it.owl'
+
+        try:
+            reference_dict, candidates_dict = reference_init(request.session['tmp'], request.session['std'],
+                                                             ref_dir + ref_file, request.session['standard_dict'],
+                                                             MODEL_DIR + MODEL_NAME)
+        except BaseException as e:
+            return HttpResponse(e)
+
         request.session['ref_sel'] = True
+        request.session['ref'] = ref_dir + ref_file
+        request.session['candidates_dict'] = candidates_dict
+        request.session['reference_dict'] = reference_dict
     else:
         return render(request, 'annotator/select.html')
 
@@ -91,7 +115,7 @@ def compare(request):
 def download(request):
     if not request.session['done']:
         return HttpResponseRedirect('/compare/')
-    file_dir = os.path.join(request.session['tmp'], '/javaclass/')
+    file_dir = os.path.join(request.session['tmp'], java_dir)
     if os.path.isdir(file_dir):
         return download_zip(file_dir, request)
     raise Http404
@@ -136,9 +160,7 @@ def load_xsd(request):
 #     return render(request, 'upload.html', {'form': form})
 
 def handle_uploaded_file_std(request):
-    ## create tmp folder for this session
-    temp_dir = tempfile.mkdtemp(dir=PATH_FILES)
-    request.session['tmp'] = temp_dir
+    temp_dir = request.session['tmp']
     f = request.FILES['file']
 
     std_dir = os.path.join(temp_dir, '/standard/')
@@ -176,6 +198,13 @@ def handle_uploaded_file_std(request):
         return True
     else:
         return False
+
+
+def create_user_folder(request):
+    ## create tmp folder for this session
+    temp_dir = tempfile.mkdtemp(dir=PATH_FILES)
+    request.session['tmp'] = temp_dir
+    return temp_dir
 
 
 def handle_uploaded_file_ref(request):
