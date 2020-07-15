@@ -6,7 +6,7 @@ from annotator.tool.FileManager.ConceptType import standard_concept_type, refere
 from annotator.exceptions import *
 import json
 from annotator.tool.FileManager.ReadFiles import xsd2str as x2s
-from annotator.tool.Mapping.Routines import Concept, rdflib, get_ontology, os, subprocess, produce_final_candidates, \
+from annotator.tool.Mapping.Routines import rdflib, get_ontology, os, subprocess, produce_final_candidates, \
     prune_mismatch_type, xp
 
 standardInput = 'standard/'

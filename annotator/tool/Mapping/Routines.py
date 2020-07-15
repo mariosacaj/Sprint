@@ -10,7 +10,7 @@ from .Functions.TwoDMatrixOperations import makeCompound2dArray
 from collections import defaultdict
 from annotator.tool.FileManager.ReadFiles import readFile_standard
 from annotator.tool.FileManager.QualifiedReadFiles import readFile_ontology
-from annotator.tool.concept import Concept
+from annotator.concept import Concept
 
 
 def produce_final_candidates(xsd_file, ont_file,
