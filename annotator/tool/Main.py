@@ -1,5 +1,5 @@
 from annotator.tool.Mapping.Routines import *
-from annotator.tool.Mapping.Functions import get_vocab_list
+from annotator.tool.Mapping.Functions import *
 import os
 from annotator.tool.JavaLoad import *
 from annotator.tool.FileManager.CheckFile import *

@@ -1,23 +1,30 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
 from .forms import UploadFileForm
-from annotator.tool.converter import owl2json, xsd2str
+from annotator.api import owl2json, xsd2str
 from annotator.tool.FileManager.CheckFile import *
 import tempfile
 import zipfile
 import os
 from annotator.exceptions import *
+from Sprint.settings import PATH_FILES
+from django.conf import settings
+from django.http import HttpResponse, Http404
+import shutil
 
-# Create your views here.
-# Session State
-# 1 -> 2 -> 3 -> ... ->  DONE
+
 # flags
 # std_sel, ref_sel
 # data
 # ref, std, tmp
 
 def index(request):
-    request.session['state'] = 'RESET'
+    request.session['std_up'] = False
+    request.session['std_sel'] = False
+    request.session['ref_up'] = False
+    request.session['ref_sel'] = False
+    request.session['done'] = False
+
     context = {'year': 2018, 'article_list': ['m', 'l']}
     return render(request, 'annotator/index.html', context)
 
@@ -28,7 +35,7 @@ def upload_standard(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid() and handle_uploaded_file_std(request):
-            request.session['state'] = 'UP_STD'
+            request.session['std_up'] = True
             if request.session['std_sel']:
                 return HttpResponseRedirect('/reference_upload/')
             else:
@@ -39,11 +46,11 @@ def upload_standard(request):
 
 def upload_reference(request):
     if not request.session['std_sel']:
-        return HttpResponseRedirect('')
+        return HttpResponseRedirect('/standard_upload/')
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid() and handle_uploaded_file_ref(request):
-            request.session['state'] = 'UP_REF'
+            request.session['ref_up'] = True
             if request.session['ref_sel']:
                 return HttpResponseRedirect('/compare/')
             else:
@@ -53,16 +60,51 @@ def upload_reference(request):
     return render(request, 'annotator/upload.html', {'form': form})
 
 def standard_select(request):
-    pass
+    if not request.session['std_up']:
+        return HttpResponseRedirect('/standard_upload/')
+    std_dir = os.path.join(request.session['tmp'], '/standard/')
+    if request.method == 'POST':
+        pass
+        ## STD ROUTINE
+        check_standard(std_dir + 'filename.xsd')
+        request.session['std_sel'] = True
+    else:
+        return render(request, 'annotator/select.html')
+
 
 def reference_select(request):
-    pass
+    if not request.session['ref_up']:
+        return HttpResponseRedirect('/reference_upload/')
+    if request.method == 'POST':
+        pass
+        ## REF ROUTINE
+        request.session['ref_sel'] = True
+    else:
+        return render(request, 'annotator/select.html')
 
 def compare(request):
-    pass
+    if not request.session['ref_sel'] or not request.session['std_sel']:
+        return HttpResponseBadRequest()
+    request.session['done'] = True
+    return render(request, 'annotator/compare.html')
 
 def download(request):
-    pass
+    if not request.session['done']:
+        return HttpResponseRedirect('/compare/')
+    file_dir = os.path.join(request.session['tmp'], '/javaclass/')
+    if os.path.isdir(file_dir):
+        return download_zip(file_dir, request)
+    raise Http404
+
+def download_zip(file_dir, request):
+    zip_loc = file_dir
+    zip_dest = request.session['tmp'] + 'zipped'
+    shutil.make_archive(base_dir=zip_loc, root_dir=zip_loc, format='zip', base_name=zip_dest)
+    with open(zip_dest, 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/zip")
+        response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(zip_dest)
+        return response
+
 
 def load_json(request):
     if not request.session['ref_sel']:
@@ -95,7 +137,7 @@ def load_xsd(request):
 
 def handle_uploaded_file_std(request):
     ## create tmp folder for this session
-    temp_dir = tempfile.mkdtemp()
+    temp_dir = tempfile.mkdtemp(dir=PATH_FILES)
     request.session['tmp'] = temp_dir
     f = request.FILES['file']
 
