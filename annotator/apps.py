@@ -63,16 +63,19 @@ def load_model(model_org, model_path, debug):
     import gensim
     from gensim.models import KeyedVectors
     from threading import Semaphore
+    try:
+        model = KeyedVectors.load(model_path, mmap='r')
+    except:
+        if debug:
+            model = gensim.models.KeyedVectors.load_word2vec_format(model_org, binary=True, limit=50000)
+        else:
+            model = gensim.models.KeyedVectors.load_word2vec_format(model_org, binary=True)
 
-    if debug:
-        model = gensim.models.KeyedVectors.load_word2vec_format(model_org, binary=True, limit=50000)
-    else:
-        model = gensim.models.KeyedVectors.load_word2vec_format(model_org, binary=True)
+        model.init_sims(replace=True)
+        model.save(model_path)
 
-    model.init_sims(replace=True)
-    model.save(model_path)
+        model = KeyedVectors.load(model_path, mmap='r')
 
-    model = KeyedVectors.load(model_path, mmap='r')
     model.syn0norm = model.syn0  # prevent recalc of normed vectors
     model.most_similar('stuff')  # any word will do: just to page all in
 
