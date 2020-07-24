@@ -21,7 +21,7 @@ def create_user_folder(request):
 
 
 def index(request):
-    print(SHARED_DICT)
+    prune_shared_dict()
     try:
         var = request.session['tmp']
         t = SHARED_DICT[request.session.session_key]
@@ -47,8 +47,22 @@ def index(request):
         SHARED_DICT[request.session.session_key] = session_dict
 
     context = {'year': 2018, 'article_list': ['m', 'l']}
-    print(SHARED_DICT)
     return render(request, 'annotator/index.html', context)
+
+
+def prune_shared_dict():
+    from django.contrib.sessions.models import Session
+    sessions = Session.objects.all()
+    tmp_keys = []
+    for session in sessions:
+        session_data = session.get_decoded()
+        try:
+            tmp_keys.append(session_data.session_key)
+        except:
+            pass
+    for key in SHARED_DICT.keys():
+        if key not in tmp_keys:
+            del SHARED_DICT[key]
 
 
 def index_try(request):
@@ -73,7 +87,6 @@ def dir_list(root):
 
 
 def upload_standard(request):
-    print(SHARED_DICT)
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if handle_file(request, 'standard'):
@@ -86,7 +99,6 @@ def upload_standard(request):
 
 
 def standard_select(request):
-    print(SHARED_DICT)
 
     if not request.session['std_up']:
         return HttpResponseRedirect('/standard_upload')
@@ -125,7 +137,6 @@ def standard_already_selected(request):
 
 
 def upload_reference(request):
-    print(SHARED_DICT)
     if not request.session['std_sel']:
         return HttpResponseRedirect('/standard_select')
     if request.method == 'POST':
@@ -139,7 +150,6 @@ def upload_reference(request):
 
 
 def reference_select(request):
-    print(SHARED_DICT)
     if not request.session['ref_up']:
         return HttpResponseRedirect('/reference_upload')
     if request.session['ref_sel']:
