@@ -1,0 +1,1 @@
+Fill this folder with "GoogleNews-vectors-negative300.bin" model and then leave it untouched.

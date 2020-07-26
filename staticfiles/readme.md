@@ -1,0 +1,1 @@
+Leave this folder empty. It will be populated by Django automatically.

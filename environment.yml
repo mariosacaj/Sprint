@@ -94,5 +94,4 @@ dependencies:
     - zope-event==4.4
     - zope-interface==5.1.0
     - zope-schema==6.0.0
-prefix: /usr/local/Caskroom/miniconda/base/envs/Sprint
 

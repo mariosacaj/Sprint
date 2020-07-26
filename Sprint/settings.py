@@ -116,7 +116,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_files/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 
 PATH_FILES = os.path.join(BASE_DIR, 'sprint_files/')
 
