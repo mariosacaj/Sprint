@@ -82,18 +82,45 @@ def standard_init(tmp_folder, xsd_file, uri_tool):
     return java_man, standard_dict
 
 
-def reference_init(tmp_folder, xsd_file, ont_file, standard_dict, model_path):
+# def reference_init(tmp_folder, xsd_file, ont_file, standard_dict, model_path, ext):
+#     from gensim.models import KeyedVectors
+#     # user specific
+#     model = KeyedVectors.load(model_path, mmap='r')
+#     model.syn0norm = model.syn0  # prevent recalc of normed vectors
+#     # … plus whatever else you wanted to do with the model
+#
+#     vocab_list = list(model.vocab.keys())
+#
+#     ext = check_reference(ont_file)
+#
+#     reference_dict = reference_concept_type(ont_file, ext)
+#
+#     output_path = os.path.join(tmp_folder, output_dir)
+#
+#     if not os.path.exists(output_path):
+#         os.makedirs(output_path)
+#
+#     ## candidates creation with mapping tool
+#     candidates_dict = produce_final_candidates(xsd_file, ont_file,
+#                                                output_path, vocab_list,
+#                                                model, source_rw, target_rw, write_pathVecOrgThr, writepathCompound, ext)
+#
+#     candidates_dict = prune_mismatch_type(candidates_dict, standard_dict, reference_dict)
+#     return reference_dict, candidates_dict
+
+def reference_init(ont_file):
+    ext = check_reference(ont_file)
+    reference_dict = reference_concept_type(ont_file, ext)
+    return reference_dict, ext
+
+
+def get_candidates(tmp_folder, xsd_file, ont_file, standard_dict, model_path, reference_dict, ext):
     from gensim.models import KeyedVectors
     # user specific
     model = KeyedVectors.load(model_path, mmap='r')
     model.syn0norm = model.syn0  # prevent recalc of normed vectors
     # … plus whatever else you wanted to do with the model
-
     vocab_list = list(model.vocab.keys())
-
-    ext = check_reference(ont_file)
-
-    reference_dict = reference_concept_type(ont_file, ext)
 
     output_path = os.path.join(tmp_folder, output_dir)
 
@@ -106,7 +133,8 @@ def reference_init(tmp_folder, xsd_file, ont_file, standard_dict, model_path):
                                                model, source_rw, target_rw, write_pathVecOrgThr, writepathCompound, ext)
 
     candidates_dict = prune_mismatch_type(candidates_dict, standard_dict, reference_dict)
-    return reference_dict, candidates_dict
+
+    return candidates_dict
 
 
 def annotate_dict(java_man, dict_confirmed):

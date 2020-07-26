@@ -114,13 +114,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = os.path.join(BASE_DIR, '/static/')
+STATIC_URL = '/static/'
 
-PATH_FILES = os.path.join(os.getcwd(), 'sprint_files/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_files/')
 
-MODEL_DIR = os.path.join(os.getcwd(), 'model/')
+PATH_FILES = os.path.join(BASE_DIR, 'sprint_files/')
 
-TOOLS_DIR = os.path.join(os.getcwd(), 'tools/')
+MODEL_DIR = os.path.join(BASE_DIR, 'model/')
+
+TOOLS_DIR = os.path.join(BASE_DIR, 'tools/')
 
 MODEL_NAME = 'model.bin' if not DEBUG else 'model_debug.bin'
 

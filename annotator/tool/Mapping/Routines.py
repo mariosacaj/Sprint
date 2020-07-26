@@ -10,7 +10,6 @@ from .Functions.TwoDMatrixOperations import makeCompound2dArray
 from collections import defaultdict
 from annotator.tool.FileManager.ReadFiles import readFile_standard
 from annotator.tool.FileManager.QualifiedReadFiles import readFile_ontology
-from annotator.concept import Concept
 
 
 def produce_final_candidates(xsd_file, ont_file,
@@ -140,20 +139,21 @@ def generate_candidates_dict(dict_source, dict_target, output_path, writepathCom
     del getfile[-1]
     list_of_tuples = makeCompound2dArray(getfile)
 
-    # RESULT[NameIdStandard] = [RefConcept1, RefConcept2, RefConcept3]
+    # RESULT[NameIdStandard] = [[RefCandidate1, score1], [RefCandidate2, score2], [RefCandidate3, score3]]
     result = defaultdict(list)
     for key, value in dict_source.items():
         for candidate in list_of_tuples:
             if repr(candidate[0]) == key:
-                result[value].append(Concept(dict_target[repr(candidate[1])], candidate[2]))
+                result[value].append([dict_target[repr(candidate[1])], candidate[2]])
     return result
 
 
 def prune_mismatch_type(candidates_dict, standard_dict, reference_dict):
+    # get rid of Class to Property and Property to Class matching
     for key, value in candidates_dict.items():
         for idx, ref_concept in enumerate(value):
             std_type = standard_dict[key]
-            ref_type = reference_dict[ref_concept.get_concept()]
+            ref_type = reference_dict[ref_concept[0]]
             if std_type != '' and ref_type != '' and std_type != ref_type:
                 del value[idx]
     return {k: v for k, v in candidates_dict.items() if v}

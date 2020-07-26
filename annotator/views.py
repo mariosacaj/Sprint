@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest, Http404
 from annotator.forms import UploadFileForm
@@ -37,6 +35,7 @@ def index(request):
         request.session['std'] = None
         request.session['ref'] = None
         request.session['tmp'] = create_user_folder(request)
+        request.session['ext'] = None
 
         # Session objects
         session_dict = {}
@@ -45,12 +44,20 @@ def index(request):
         session_dict['candidates_dict'] = None
         session_dict['reference_dict'] = None
         SHARED_DICT[request.session.session_key] = session_dict
-
-    context = {'year': 2018, 'article_list': ['m', 'l']}
-    return render(request, 'annotator/index.html', context)
+    return render(request, 'annotator/index.html')
 
 
 def prune_shared_dict():
+    deleande = []
+    keys = get_keys()
+    for key in SHARED_DICT.keys():
+        if key not in keys:
+            deleande.append(key)
+    for key in deleande:
+        SHARED_DICT.pop(key, 0)
+
+
+def get_keys():
     from django.contrib.sessions.models import Session
     sessions = Session.objects.all()
     tmp_keys = []
@@ -60,9 +67,7 @@ def prune_shared_dict():
             tmp_keys.append(session_data.session_key)
         except:
             pass
-    for key in SHARED_DICT.keys():
-        if key not in tmp_keys:
-            del SHARED_DICT[key]
+    return tmp_keys
 
 
 def index_try(request):
@@ -91,7 +96,7 @@ def upload_standard(request):
         form = UploadFileForm(request.POST, request.FILES)
         if handle_file(request, 'standard'):
             request.session['std_up'] = True
-            return HttpResponseRedirect('/standard_select')
+            return HttpResponseRedirect('/standard_select/')
     else:
         form = UploadFileForm()
     return render(request, 'annotator/upload.html', {'form': form,
@@ -101,7 +106,7 @@ def upload_standard(request):
 def standard_select(request):
 
     if not request.session['std_up']:
-        return HttpResponseRedirect('/standard_upload')
+        return HttpResponseRedirect('/standard_upload/')
     if request.session['std_sel']:
         return standard_already_selected(request)
 
@@ -123,7 +128,7 @@ def standard_select(request):
         return render(request, 'annotator/select.html')
 
 
-# Support, no view
+
 def standard_already_selected(request):
     try:
         annotator, standard_dict = standard_init(request.session['tmp'], request.session['std'], URI_TOOL_PATH)
@@ -133,17 +138,17 @@ def standard_already_selected(request):
     session_dict['annotator'] = annotator
     session_dict['standard_dict'] = standard_dict
     SHARED_DICT[request.session.session_key] = session_dict
-    return HttpResponseRedirect('/reference_upload')
+    return HttpResponseRedirect('/reference_upload/')
 
 
 def upload_reference(request):
     if not request.session['std_sel']:
-        return HttpResponseRedirect('/standard_select')
+        return HttpResponseRedirect('/standard_select/')
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if handle_file(request, 'reference'):
             request.session['ref_up'] = True
-            return HttpResponseRedirect('/reference_select')
+            return HttpResponseRedirect('/reference_select/')
     else:
         form = UploadFileForm()
     return render(request, 'annotator/upload.html', {'form': form, 'var': 'reference'})
@@ -151,7 +156,7 @@ def upload_reference(request):
 
 def reference_select(request):
     if not request.session['ref_up']:
-        return HttpResponseRedirect('/reference_upload')
+        return HttpResponseRedirect('/reference_upload/')
     if request.session['ref_sel']:
         return reference_already_selected(request)
 
@@ -161,36 +166,31 @@ def reference_select(request):
         ref_file = 'it.owl'
         session_dict = SHARED_DICT[request.session.session_key]
         try:
-            reference_dict, candidates_dict = reference_init(request.session['tmp'], request.session['std'],
-                                                             ref_dir + ref_file, session_dict['standard_dict'],
-                                                             MODEL_DIR + MODEL_NAME)
+            reference_dict, ext = reference_init(ref_dir + ref_file)
         except BaseException as e:
-            return HttpResponse(e)
-
+            return HttpResponseBadRequest(e)
+        request.session['ext'] = ext
         request.session['ref_sel'] = True
         request.session['ref'] = ref_dir + ref_file
-        session_dict['candidates_dict'] = candidates_dict
         session_dict['reference_dict'] = reference_dict
         SHARED_DICT[request.session.session_key] = session_dict
-        return HttpResponseRedirect('/compare')
+        return HttpResponseRedirect('/compare/')
     else:
         return render(request, 'annotator/select.html')
 
 
-# Support, no view
+
 def reference_already_selected(request):
     session_dict = SHARED_DICT[request.session.session_key]
     try:
-        reference_dict, candidates_dict = reference_init(request.session['tmp'], request.session['std'],
-                                                         request.session['ref'], session_dict['standard_dict'],
-                                                         MODEL_DIR + MODEL_NAME)
+        reference_dict, ext = reference_init(request.session['ref'])
     except BaseException as e:
-        return HttpResponse(e)
-    session_dict['candidates_dict'] = candidates_dict
+        return HttpResponseBadRequest(e)
+    request.session['ext'] = ext
     session_dict['reference_dict'] = reference_dict
     SHARED_DICT[request.session.session_key] = session_dict
 
-    return HttpResponseRedirect('/compare')
+    return HttpResponseRedirect('/download/')
 
 
 def compare(request):
@@ -201,42 +201,72 @@ def compare(request):
 
 
 def download(request):
-    if not request.session['done']:
-        return HttpResponseRedirect('/compare')
+    if not request.session['std_sel']:
+        return HttpResponseRedirect('/compare/')
     file_dir = os.path.join(request.session['tmp'], java_dir)
-    if os.path.isdir(file_dir):
-        return send_zip(file_dir, request)
-    raise Http404
+
+    session_dict = SHARED_DICT[request.session.session_key]
+    annotator = session_dict['annotator']
+    build(annotator)
+
+    return send_zip(file_dir, request)
 
 
 def send_zip(file_dir, request):
-    zip_loc = file_dir
-    zip_dest = request.session['tmp'] + 'zipped'
-    shutil.make_archive(base_dir=zip_loc, root_dir=zip_loc, format='zip', base_name=zip_dest)
-    with open(zip_dest, 'rb') as fh:
+    fpath = shutil.make_archive(file_dir, 'zip', file_dir)
+    with open(fpath, 'rb') as fh:
         response = HttpResponse(fh.read(), content_type="application/zip")
-        response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(zip_dest)
+        response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(fpath)
         return response
 
 
-def load_json(request):
+def annotate(request):
+    if request.method == 'POST':
+        pass
+
+
+def get_associations(request):
+    # JSON FORMAT {
+    #              "standardName1": [
+    #                                   ["ref1", 2],
+    #                                   ["ref2", 3]
+    #                               ],
+    #
+    #              "standardName2": [
+    #                                   ["ref0", 2],
+    #                                   ["ref3", 4]
+    #                               ]
+    #             }
+    try:
+        session_dict = SHARED_DICT[request.session.session_key]
+        candidates_dict = get_candidates(request.session['tmp'], request.session['std'],
+                                         request.session['ref'], session_dict['standard_dict'],
+                                         MODEL_DIR + MODEL_NAME, session_dict['reference_dict'], request.session['ext'])
+        session_dict['candidates_dict'] = candidates_dict
+        SHARED_DICT[request.session.session_key] = session_dict
+    except:
+        return HttpResponseBadRequest()
+    return JsonResponse(candidates_dict, safe=False)
+
+
+def get_ontology(request):
     if not request.session['ref_sel']:
         return HttpResponseBadRequest()
     try:
         y = owl2json(request.session['ref'], OWL_TOOL_PATH)
     except ReferenceError:
         return HttpResponseBadRequest()
-    return JsonResponse(y)
+    return HttpResponse(y, content_type="application/json")
 
 
-def load_xsd(request):
+def get_xsd(request):
     if not request.session['std_sel']:
         return HttpResponseBadRequest()
     try:
         y = xsd2str(request.session['std'])
     except StandardError:
         return HttpResponseBadRequest()
-    return HttpResponse(y)
+    return HttpResponse(y, content_type="application/xml")
 
 
 # def upload_file(request):

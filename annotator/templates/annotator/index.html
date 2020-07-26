@@ -40,16 +40,7 @@
     </style>
 </head>
 <body>
-{% block title %}Articles for {{ year }}{% endblock %}
-
-{% block content %}
-    <h1>Articles for {{ year }}</h1>
-
-    {% for article in article_list %}
-        <p>{{ article.headline }}</p>
-        <p>By {{ article.reporter.full_name }}</p>
-    {% endfor %}
-{% endblock %}
+{% block title %}Mapping tool{% endblock %}
 
 <a href="{% url 'standard' %}" class="button button1">Upload Standard</a>
 <a href="{% url 'index' %}" class="button button2">Refresh</a>
