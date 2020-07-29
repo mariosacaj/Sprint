@@ -24,8 +24,10 @@ def instantiate_java_code_manipulator(java_path, URIToolFilePath):
     # Needs Java13
     # If you have it there's no need to specify jvmpath
     if not jpype.isJVMStarted():
-        jpype.startJVM(jvmpath='/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/lib/libjli.dylib',
-                       ignoreUnrecognized=False, classpath=[URIToolFilePath], convertStrings=False)
+        jpype.startJVM(ignoreUnrecognized=False, classpath=[URIToolFilePath], convertStrings=False)
 
     JavaCodeMan = dynamic_import('com.sprint.annotation.model', 'JavaCodeMan')
     return JavaCodeMan(java_path)
+
+
+# jvmpath='/usr/lib/jvm/java-13-oracle/bin',

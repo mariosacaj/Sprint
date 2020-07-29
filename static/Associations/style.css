@@ -1,0 +1,29 @@
+ul {
+	list-style-type: none;
+	font-size: 11px;
+}
+
+li span {
+	display: block;
+	text-align: center;
+	vertical-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+li:hover {
+	background-color: rgb(240, 240, 240);	
+	cursor: pointer;
+}
+
+li~li {
+	margin-top: 20px;
+	margin-left: 5px;
+}
+
+li {
+	border: 1px solid grey;
+	padding: 5px;
+	border-radius: 5px;
+	display: inline-block;
+}

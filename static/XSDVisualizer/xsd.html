@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="src/css/style.css" type="text/css">
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<script src="src/xml2tree.js"></script>
+		<script src="src/svg-pan-zoom.js"></script> <!-- https://github.com/ariutta/svg-pan-zoom -->
+		<script src="src/script.js"></script>
+
+	</head>
+	<body onload="addEL()">
+		<div id="chart1"></div>
+		<input id="searchTerm" type="text" placeholder="Search"></input>
+		<ul>
+	
+		<li id="ToggleDetails" onclick="toggleDetails()"><img src="img/details.svg" alt="Show/hide details" placeholder="Show/hide details"></li>
+		<li id="increase1px" onclick="increaseFontSizeBy1px()"><img src="img/increase.svg"></li>
+<li id="decrease1px" onclick="decreaseFontSizeBy1px()"><img src="img/reduce.svg"></li>
+		<li id="colorize" onclick="colorize()"><img src="img/colors.svg"></li>
+		<li id="decolorize" onclick="decolorize()" style="display: none;"><img src="img/decolor.svg"></li>
+		<li id="shorten" onclick="shorten()"><img src="img/shorten.svg"></li>
+		<li id="enlarge" style="display:none;" onclick="enlarge()"><img src="img/enlarge.svg"></li>
+
+<li id="compress" onclick="compress()">Compress</li>
+	</ul>
+
+
+
+		<script>
+
+			var elementId = 'chart1';
+			var filePath = '/getXSD';
+			var secondLevelNodes = [];
+			var isAttributes = true;
+			var isJSON = false;
+			
+			xml2tree(elementId, filePath, secondLevelNodes, isAttributes, isJSON);
+
+var svgElement = document.querySelector('#chart1 svg')
+var panZoom = svgPanZoom(svgElement, {minZoom: 0.01, maxZoom: 4});
+
+
+		</script>
+	</body>
+</html>

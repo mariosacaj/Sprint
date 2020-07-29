@@ -1,0 +1,261 @@
+['text'],['text'],['has', 'Message', 'Full', 'Text'],['Text'],0.6570527
+['text'],['text'],['has', 'Message', 'Short', 'Text'],['Text'],0.6570527
+['text'],['text'],['has', 'Response', 'Text'],['Text'],0.6570527
+['text'],['text'],['has', 'Message', 'Full', 'Text'],['Text'],0.6570527
+['text'],['text'],['has', 'Message', 'Short', 'Text'],['Text'],0.6570527
+['text'],['text'],['has', 'Response', 'Text'],['Text'],0.6570527
+['text'],['Text'],['has', 'Message', 'Full', 'Text'],['has', 'Message', 'Full', 'Text'],0.72127044
+['text'],['Text'],['has', 'Message', 'Full', 'Text'],['Text'],1.0
+['text'],['Text'],['has', 'Message', 'Short', 'Text'],['has', 'Message', 'Short', 'Text'],0.696051
+['text'],['Text'],['has', 'Message', 'Short', 'Text'],['Text'],1.0
+['text'],['Text'],['has', 'Response', 'Text'],['has', 'Response', 'Text'],0.69045156
+['text'],['Text'],['has', 'Response', 'Text'],['Text'],1.0
+['Status'],['Status'],['Return', 'Status'],['Return', 'Status'],0.816453
+['Status'],['Status'],['Return', 'Status'],['Status'],1.0
+['Status'],['Status'],['Booking', 'Status'],['Booking', 'Status'],0.75240093
+['Status'],['Status'],['Booking', 'Status'],['Status'],1.0
+['Status'],['Status'],['Payment', 'Status'],['Payment', 'Status'],0.8034364
+['Status'],['Status'],['Payment', 'Status'],['Status'],1.0
+['Status'],['Status'],['has', 'Status'],['has', 'Status'],0.7298335
+['Status'],['Status'],['has', 'Status'],['Status'],1.0
+['Status'],['Status'],['has', 'Approval', 'Status'],['has', 'Approval', 'Status'],0.70985734
+['Status'],['Status'],['has', 'Approval', 'Status'],['Status'],1.0
+['Status'],['Status'],['has', 'Booking', 'Status'],['has', 'Booking', 'Status'],0.6364109
+['Status'],['Status'],['has', 'Booking', 'Status'],['Status'],1.0
+['Status'],['Status'],['has', 'Payment', 'Status'],['has', 'Payment', 'Status'],0.70268345
+['Status'],['Status'],['has', 'Payment', 'Status'],['Status'],1.0
+['Status'],['Status'],['Return', 'Status'],['Return', 'Status'],0.816453
+['Status'],['Status'],['Return', 'Status'],['Status'],1.0
+['Status'],['Status'],['Booking', 'Status'],['Booking', 'Status'],0.75240093
+['Status'],['Status'],['Booking', 'Status'],['Status'],1.0
+['Status'],['Status'],['Payment', 'Status'],['Payment', 'Status'],0.8034364
+['Status'],['Status'],['Payment', 'Status'],['Status'],1.0
+['Status'],['Status'],['has', 'Status'],['has', 'Status'],0.7298335
+['Status'],['Status'],['has', 'Status'],['Status'],1.0
+['Status'],['Status'],['has', 'Approval', 'Status'],['has', 'Approval', 'Status'],0.70985734
+['Status'],['Status'],['has', 'Approval', 'Status'],['Status'],1.0
+['Status'],['Status'],['has', 'Booking', 'Status'],['has', 'Booking', 'Status'],0.6364109
+['Status'],['Status'],['has', 'Booking', 'Status'],['Status'],1.0
+['Status'],['Status'],['has', 'Payment', 'Status'],['has', 'Payment', 'Status'],0.70268345
+['Status'],['Status'],['has', 'Payment', 'Status'],['Status'],1.0
+['Status'],['status'],['Return', 'Status'],['Status'],0.55780196
+['Status'],['status'],['Booking', 'Status'],['Status'],0.55780196
+['Status'],['status'],['Payment', 'Status'],['Status'],0.55780196
+['Status'],['status'],['has', 'Status'],['Status'],0.55780196
+['Status'],['status'],['has', 'Approval', 'Status'],['Status'],0.55780196
+['Status'],['status'],['has', 'Booking', 'Status'],['Status'],0.55780196
+['Status'],['status'],['has', 'Payment', 'Status'],['Status'],0.55780196
+['Status'],['Condition'],['has', 'After', 'Sales', 'Condition'],['has', 'After', 'Sales', 'Condition'],0.51572984
+['Status'],['Condition'],['has', 'Terms', 'And', 'Condition'],['has', 'Terms', 'And', 'Condition'],0.54638076
+['Status'],['Condition'],['has', 'Terms', 'And', 'Condition'],['Condition'],1.0
+['Status'],['Condition'],['has', 'Sales', 'Condition'],['has', 'Sales', 'Condition'],0.605121
+['Status'],['Condition'],['has', 'Sales', 'Condition'],['Condition'],1.0
+['Start'],['Start'],['Stop', 'Place'],['Start'],1.0000001
+['Start'],['Start'],['has', 'Start', 'Date', 'Time'],['has', 'Start', 'Date', 'Time'],0.6470655
+['Start'],['Start'],['has', 'Start', 'Date', 'Time'],['Start'],1.0000001
+['Start'],['Start'],['has', 'Statistics', 'Start', 'Time'],['has', 'Statistics', 'Start', 'Time'],0.6074419
+['Start'],['Start'],['has', 'Statistics', 'Start', 'Time'],['Start'],1.0000001
+['Start'],['Start'],['has', 'Start', 'Stop', 'Place'],['has', 'Start', 'Stop', 'Place'],0.70035535
+['Start'],['Start'],['has', 'Start', 'Stop', 'Place'],['Start'],1.0000001
+['Start'],['Start'],['Stop', 'Place'],['Start'],1.0000001
+['Start'],['Start'],['has', 'Start', 'Date', 'Time'],['has', 'Start', 'Date', 'Time'],0.6470655
+['Start'],['Start'],['has', 'Start', 'Date', 'Time'],['Start'],1.0000001
+['Start'],['Start'],['has', 'Statistics', 'Start', 'Time'],['has', 'Statistics', 'Start', 'Time'],0.6074419
+['Start'],['Start'],['has', 'Statistics', 'Start', 'Time'],['Start'],1.0000001
+['Start'],['Start'],['has', 'Start', 'Stop', 'Place'],['has', 'Start', 'Stop', 'Place'],0.70035535
+['Start'],['Start'],['has', 'Start', 'Stop', 'Place'],['Start'],1.0000001
+['Start'],['Try'],['Stop', 'Place'],['Start'],0.5811781
+['Start'],['Try'],['has', 'Start', 'Date', 'Time'],['Start'],0.5811781
+['Start'],['Try'],['has', 'Statistics', 'Start', 'Time'],['Start'],0.5811781
+['Start'],['Try'],['has', 'Start', 'Stop', 'Place'],['Start'],0.5811781
+['Start'],['Finish'],['Stop', 'Place'],['Start'],0.5726098
+['Start'],['Finish'],['has', 'Start', 'Date', 'Time'],['Start'],0.5726098
+['Start'],['Finish'],['has', 'Statistics', 'Start', 'Time'],['Start'],0.5726098
+['Start'],['Finish'],['has', 'Start', 'Stop', 'Place'],['Start'],0.5726098
+['Date', 'Time'],['Date', 'Time'],['Date'],['Date'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['Date'],['Date'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['Date'],['Dates'],0.51098806
+['Date', 'Time'],['Date', 'Time'],['Event', 'Date', 'Time'],['Event', 'Date', 'Time'],0.8961891
+['Date', 'Time'],['Date', 'Time'],['Event', 'Date', 'Time'],['Date'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['Event', 'Date', 'Time'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Date', 'Time'],['has', 'Date', 'Time'],0.8618699
+['Date', 'Time'],['Date', 'Time'],['has', 'Date', 'Time'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Date', 'Time'],['Date'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['file', 'Time', 'Stamp'],['file', 'Time', 'Stamp'],0.58816916
+['Date', 'Time'],['Date', 'Time'],['file', 'Time', 'Stamp'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Approval', 'Time', 'Stamp'],['has', 'Approval', 'Time', 'Stamp'],0.5519808
+['Date', 'Time'],['Date', 'Time'],['has', 'Approval', 'Time', 'Stamp'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'End', 'Date', 'Time'],['has', 'End', 'Date', 'Time'],0.82869095
+['Date', 'Time'],['Date', 'Time'],['has', 'End', 'Date', 'Time'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'End', 'Date', 'Time'],['Date'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Start', 'Date', 'Time'],['has', 'Start', 'Date', 'Time'],0.8465057
+['Date', 'Time'],['Date', 'Time'],['has', 'Start', 'Date', 'Time'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Start', 'Date', 'Time'],['Date'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Date', 'Of', 'Birth'],['has', 'Date', 'Of', 'Birth'],0.59477407
+['Date', 'Time'],['Date', 'Time'],['has', 'Date', 'Of', 'Birth'],['Date'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Minimum', 'Connection', 'Time'],['has', 'Minimum', 'Connection', 'Time'],0.5872083
+['Date', 'Time'],['Date', 'Time'],['has', 'Minimum', 'Connection', 'Time'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Planned', 'Date'],['has', 'Planned', 'Date'],0.6013783
+['Date', 'Time'],['Date', 'Time'],['has', 'Planned', 'Date'],['Date'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Statistics', 'End', 'Time'],['has', 'Statistics', 'End', 'Time'],0.5876555
+['Date', 'Time'],['Date', 'Time'],['has', 'Statistics', 'End', 'Time'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Statistics', 'Start', 'Time'],['has', 'Statistics', 'Start', 'Time'],0.61069465
+['Date', 'Time'],['Date', 'Time'],['has', 'Statistics', 'Start', 'Time'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Time', 'Unit'],['has', 'Time', 'Unit'],0.5336366
+['Date', 'Time'],['Date', 'Time'],['has', 'Time', 'Unit'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Event', 'Date', 'Time'],['has', 'Event', 'Date', 'Time'],0.82502604
+['Date', 'Time'],['Date', 'Time'],['has', 'Event', 'Date', 'Time'],['Date'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['has', 'Event', 'Date', 'Time'],['Time'],0.82593083
+['Date', 'Time'],['Date', 'Time'],['date'],['Dates'],0.51098806
+['Date', 'Time'],['Time'],['Event', 'Date', 'Time'],['Event', 'Date', 'Time'],0.70914936
+['Date', 'Time'],['Time'],['Event', 'Date', 'Time'],['Time'],1.0
+['Date', 'Time'],['Time'],['has', 'Date', 'Time'],['has', 'Date', 'Time'],0.7178911
+['Date', 'Time'],['Time'],['has', 'Date', 'Time'],['Time'],1.0
+['Date', 'Time'],['Time'],['file', 'Time', 'Stamp'],['file', 'Time', 'Stamp'],0.60110795
+['Date', 'Time'],['Time'],['file', 'Time', 'Stamp'],['Time'],1.0
+['Date', 'Time'],['Time'],['has', 'Approval', 'Time', 'Stamp'],['has', 'Approval', 'Time', 'Stamp'],0.56330866
+['Date', 'Time'],['Time'],['has', 'Approval', 'Time', 'Stamp'],['Time'],1.0
+['Date', 'Time'],['Time'],['has', 'End', 'Date', 'Time'],['has', 'End', 'Date', 'Time'],0.70597565
+['Date', 'Time'],['Time'],['has', 'End', 'Date', 'Time'],['Time'],1.0
+['Date', 'Time'],['Time'],['has', 'Start', 'Date', 'Time'],['has', 'Start', 'Date', 'Time'],0.7198482
+['Date', 'Time'],['Time'],['has', 'Start', 'Date', 'Time'],['Time'],1.0
+['Date', 'Time'],['Time'],['has', 'Minimum', 'Connection', 'Time'],['has', 'Minimum', 'Connection', 'Time'],0.6237836
+['Date', 'Time'],['Time'],['has', 'Minimum', 'Connection', 'Time'],['Time'],1.0
+['Date', 'Time'],['Time'],['has', 'Statistics', 'End', 'Time'],['has', 'Statistics', 'End', 'Time'],0.6439989
+['Date', 'Time'],['Time'],['has', 'Statistics', 'End', 'Time'],['Time'],1.0
+['Date', 'Time'],['Time'],['has', 'Statistics', 'Start', 'Time'],['has', 'Statistics', 'Start', 'Time'],0.662304
+['Date', 'Time'],['Time'],['has', 'Statistics', 'Start', 'Time'],['Time'],1.0
+['Date', 'Time'],['Time'],['has', 'Time', 'Unit'],['has', 'Time', 'Unit'],0.6096964
+['Date', 'Time'],['Time'],['has', 'Time', 'Unit'],['Time'],1.0
+['Date', 'Time'],['Time'],['has', 'Event', 'Date', 'Time'],['has', 'Event', 'Date', 'Time'],0.6584563
+['Date', 'Time'],['Time'],['has', 'Event', 'Date', 'Time'],['Time'],1.0
+['Date', 'Time'],['Date'],['Date'],['Date'],1.0
+['Date', 'Time'],['Date'],['Date'],['Date'],1.0
+['Date', 'Time'],['Date'],['Date'],['Dates'],0.5178022
+['Date', 'Time'],['Date'],['Event', 'Date', 'Time'],['Event', 'Date', 'Time'],0.7712311
+['Date', 'Time'],['Date'],['Event', 'Date', 'Time'],['Date'],1.0
+['Date', 'Time'],['Date'],['has', 'Date', 'Time'],['has', 'Date', 'Time'],0.7057986
+['Date', 'Time'],['Date'],['has', 'Date', 'Time'],['Date'],1.0
+['Date', 'Time'],['Date'],['has', 'End', 'Date', 'Time'],['has', 'End', 'Date', 'Time'],0.6629072
+['Date', 'Time'],['Date'],['has', 'End', 'Date', 'Time'],['Date'],1.0
+['Date', 'Time'],['Date'],['has', 'Start', 'Date', 'Time'],['has', 'Start', 'Date', 'Time'],0.6784621
+['Date', 'Time'],['Date'],['has', 'Start', 'Date', 'Time'],['Date'],1.0
+['Date', 'Time'],['Date'],['has', 'Date', 'Of', 'Birth'],['has', 'Date', 'Of', 'Birth'],0.5966172
+['Date', 'Time'],['Date'],['has', 'Date', 'Of', 'Birth'],['Date'],1.0
+['Date', 'Time'],['Date'],['has', 'Planned', 'Date'],['has', 'Planned', 'Date'],0.6918287
+['Date', 'Time'],['Date'],['has', 'Planned', 'Date'],['Date'],1.0
+['Date', 'Time'],['Date'],['has', 'Event', 'Date', 'Time'],['has', 'Event', 'Date', 'Time'],0.7043725
+['Date', 'Time'],['Date'],['has', 'Event', 'Date', 'Time'],['Date'],1.0
+['Date', 'Time'],['Date'],['date'],['Dates'],0.5178022
+['Date', 'Time'],['Dates'],['Date'],['Date'],0.5178022
+['Date', 'Time'],['Dates'],['Date'],['Date'],0.5178022
+['Date', 'Time'],['Dates'],['Date'],['Dates'],0.99999994
+['Date', 'Time'],['Dates'],['Event', 'Date', 'Time'],['Event', 'Date', 'Time'],0.5418418
+['Date', 'Time'],['Dates'],['Event', 'Date', 'Time'],['Date'],0.5178022
+['Date', 'Time'],['Dates'],['has', 'Date', 'Time'],['Date'],0.5178022
+['Date', 'Time'],['Dates'],['has', 'End', 'Date', 'Time'],['Date'],0.5178022
+['Date', 'Time'],['Dates'],['has', 'Start', 'Date', 'Time'],['Date'],0.5178022
+['Date', 'Time'],['Dates'],['has', 'Date', 'Of', 'Birth'],['Date'],0.5178022
+['Date', 'Time'],['Dates'],['has', 'Planned', 'Date'],['Date'],0.5178022
+['Date', 'Time'],['Dates'],['has', 'Event', 'Date', 'Time'],['has', 'Event', 'Date', 'Time'],0.50885606
+['Date', 'Time'],['Dates'],['has', 'Event', 'Date', 'Time'],['Date'],0.5178022
+['Date', 'Time'],['Dates'],['date'],['dates'],0.67233837
+['Date', 'Time'],['Dates'],['date'],['Dates'],0.99999994
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['Generic', 'Option'],['Generic', 'Option'],0.57761794
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['Generic', 'Option'],['Generic'],0.63326585
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['Message', 'Ref'],['Message', 'Ref'],0.6620661
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['Message', 'Ref'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['Send', 'Message'],['Send', 'Message'],0.6831347
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['Send', 'Message'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['TT', 'Message', 'Type'],['TT', 'Message', 'Type'],0.56052136
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['TT', 'Message', 'Type'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Error', 'Message'],['has', 'Error', 'Message'],0.6299072
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Error', 'Message'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Message', 'Full', 'Text'],['has', 'Message', 'Full', 'Text'],0.7416197
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Message', 'Full', 'Text'],['Text'],0.7716689
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Message', 'Full', 'Text'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Message', 'Short', 'Text'],['has', 'Message', 'Short', 'Text'],0.7442046
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Message', 'Short', 'Text'],['Text'],0.7716689
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Message', 'Short', 'Text'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Message', 'Title'],['has', 'Message', 'Title'],0.5257865
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Message', 'Title'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Response', 'Text'],['has', 'Response', 'Text'],0.6044998
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Response', 'Text'],['Text'],0.7716689
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Confirmation', 'Message'],['has', 'Confirmation', 'Message'],0.52755356
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Confirmation', 'Message'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Fault', 'Message', 'Mapping'],['has', 'Fault', 'Message', 'Mapping'],0.5490394
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Fault', 'Message', 'Mapping'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Input', 'Message', 'Mapping'],['has', 'Input', 'Message', 'Mapping'],0.59058833
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Input', 'Message', 'Mapping'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Output', 'Message', 'Mapping'],['has', 'Output', 'Message', 'Mapping'],0.6058688
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Output', 'Message', 'Mapping'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Message', 'Type'],['has', 'Message', 'Type'],0.5611559
+['Generic', 'Text', 'Message'],['Generic', 'Text', 'Message'],['has', 'Message', 'Type'],['Message'],0.73171127
+['Generic', 'Text', 'Message'],['Text'],['has', 'Message', 'Full', 'Text'],['has', 'Message', 'Full', 'Text'],0.72127044
+['Generic', 'Text', 'Message'],['Text'],['has', 'Message', 'Full', 'Text'],['Text'],1.0
+['Generic', 'Text', 'Message'],['Text'],['has', 'Message', 'Short', 'Text'],['has', 'Message', 'Short', 'Text'],0.696051
+['Generic', 'Text', 'Message'],['Text'],['has', 'Message', 'Short', 'Text'],['Text'],1.0
+['Generic', 'Text', 'Message'],['Text'],['has', 'Response', 'Text'],['has', 'Response', 'Text'],0.69045156
+['Generic', 'Text', 'Message'],['Text'],['has', 'Response', 'Text'],['Text'],1.0
+['Generic', 'Text', 'Message'],['Message'],['Message', 'Ref'],['Message', 'Ref'],0.7704454
+['Generic', 'Text', 'Message'],['Message'],['Message', 'Ref'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['Send', 'Message'],['Send', 'Message'],0.7914523
+['Generic', 'Text', 'Message'],['Message'],['Send', 'Message'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['TT', 'Message', 'Type'],['TT', 'Message', 'Type'],0.6030877
+['Generic', 'Text', 'Message'],['Message'],['TT', 'Message', 'Type'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['has', 'Error', 'Message'],['has', 'Error', 'Message'],0.69507986
+['Generic', 'Text', 'Message'],['Message'],['has', 'Error', 'Message'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['has', 'Message', 'Full', 'Text'],['has', 'Message', 'Full', 'Text'],0.6322456
+['Generic', 'Text', 'Message'],['Message'],['has', 'Message', 'Full', 'Text'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['has', 'Message', 'Short', 'Text'],['has', 'Message', 'Short', 'Text'],0.64539075
+['Generic', 'Text', 'Message'],['Message'],['has', 'Message', 'Short', 'Text'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['has', 'Message', 'Title'],['has', 'Message', 'Title'],0.65036243
+['Generic', 'Text', 'Message'],['Message'],['has', 'Message', 'Title'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['has', 'Confirmation', 'Message'],['has', 'Confirmation', 'Message'],0.6546433
+['Generic', 'Text', 'Message'],['Message'],['has', 'Confirmation', 'Message'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['has', 'Fault', 'Message', 'Mapping'],['has', 'Fault', 'Message', 'Mapping'],0.62365854
+['Generic', 'Text', 'Message'],['Message'],['has', 'Fault', 'Message', 'Mapping'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['has', 'Input', 'Message', 'Mapping'],['has', 'Input', 'Message', 'Mapping'],0.6179905
+['Generic', 'Text', 'Message'],['Message'],['has', 'Input', 'Message', 'Mapping'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['has', 'Output', 'Message', 'Mapping'],['has', 'Output', 'Message', 'Mapping'],0.62182724
+['Generic', 'Text', 'Message'],['Message'],['has', 'Output', 'Message', 'Mapping'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Message'],['has', 'Message', 'Type'],['has', 'Message', 'Type'],0.6170225
+['Generic', 'Text', 'Message'],['Message'],['has', 'Message', 'Type'],['Message'],0.99999994
+['Generic', 'Text', 'Message'],['Generic'],['Generic', 'Option'],['Generic', 'Option'],0.7618714
+['Generic', 'Text', 'Message'],['Generic'],['Generic', 'Option'],['Generic'],1.0000001
+['Generic', 'Text', 'Message'],['Generic'],['Generic', 'Option'],['generic'],0.7363797
+['Generic', 'Status'],['Generic', 'Status'],['Generic', 'Option'],['Generic', 'Option'],0.692945
+['Generic', 'Status'],['Generic', 'Status'],['Generic', 'Option'],['Generic'],0.7527573
+['Generic', 'Status'],['Generic', 'Status'],['Generic', 'Option'],['generic'],0.50603443
+['Generic', 'Status'],['Generic', 'Status'],['Return', 'Status'],['Return', 'Status'],0.6619703
+['Generic', 'Status'],['Generic', 'Status'],['Return', 'Status'],['Status'],0.7527573
+['Generic', 'Status'],['Generic', 'Status'],['Booking', 'Status'],['Booking', 'Status'],0.59956783
+['Generic', 'Status'],['Generic', 'Status'],['Booking', 'Status'],['Status'],0.7527573
+['Generic', 'Status'],['Generic', 'Status'],['Payment', 'Status'],['Payment', 'Status'],0.62425154
+['Generic', 'Status'],['Generic', 'Status'],['Payment', 'Status'],['Status'],0.7527573
+['Generic', 'Status'],['Generic', 'Status'],['has', 'Status'],['has', 'Status'],0.53976774
+['Generic', 'Status'],['Generic', 'Status'],['has', 'Status'],['Status'],0.7527573
+['Generic', 'Status'],['Generic', 'Status'],['has', 'Approval', 'Status'],['has', 'Approval', 'Status'],0.6161363
+['Generic', 'Status'],['Generic', 'Status'],['has', 'Approval', 'Status'],['Status'],0.7527573
+['Generic', 'Status'],['Generic', 'Status'],['has', 'Booking', 'Status'],['Status'],0.7527573
+['Generic', 'Status'],['Generic', 'Status'],['has', 'Payment', 'Status'],['has', 'Payment', 'Status'],0.53787476
+['Generic', 'Status'],['Generic', 'Status'],['has', 'Payment', 'Status'],['Status'],0.7527573
+['Generic', 'Status'],['Generic'],['Generic', 'Option'],['Generic', 'Option'],0.7618714
+['Generic', 'Status'],['Generic'],['Generic', 'Option'],['Generic'],1.0000001
+['Generic', 'Status'],['Generic'],['Generic', 'Option'],['generic'],0.7363797
+['Generic', 'Status'],['Status'],['Return', 'Status'],['Return', 'Status'],0.816453
+['Generic', 'Status'],['Status'],['Return', 'Status'],['Status'],1.0
+['Generic', 'Status'],['Status'],['Booking', 'Status'],['Booking', 'Status'],0.75240093
+['Generic', 'Status'],['Status'],['Booking', 'Status'],['Status'],1.0
+['Generic', 'Status'],['Status'],['Payment', 'Status'],['Payment', 'Status'],0.8034364
+['Generic', 'Status'],['Status'],['Payment', 'Status'],['Status'],1.0
+['Generic', 'Status'],['Status'],['has', 'Status'],['has', 'Status'],0.7298335
+['Generic', 'Status'],['Status'],['has', 'Status'],['Status'],1.0
+['Generic', 'Status'],['Status'],['has', 'Approval', 'Status'],['has', 'Approval', 'Status'],0.70985734
+['Generic', 'Status'],['Status'],['has', 'Approval', 'Status'],['Status'],1.0
+['Generic', 'Status'],['Status'],['has', 'Booking', 'Status'],['has', 'Booking', 'Status'],0.6364109
+['Generic', 'Status'],['Status'],['has', 'Booking', 'Status'],['Status'],1.0
+['Generic', 'Status'],['Status'],['has', 'Payment', 'Status'],['has', 'Payment', 'Status'],0.70268345
+['Generic', 'Status'],['Status'],['has', 'Payment', 'Status'],['Status'],1.0
+['Generic', 'Status'],['generic'],['Generic', 'Option'],['Generic'],0.7363797
+['Generic', 'Status'],['generic'],['Generic', 'Option'],['generic'],1.0

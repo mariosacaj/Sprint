@@ -190,7 +190,7 @@ def reference_already_selected(request):
     session_dict['reference_dict'] = reference_dict
     SHARED_DICT[request.session.session_key] = session_dict
 
-    return HttpResponseRedirect('/download/')
+    return HttpResponseRedirect('/compare/')
 
 
 def compare(request):

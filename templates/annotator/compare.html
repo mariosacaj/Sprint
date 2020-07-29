@@ -1,0 +1,65 @@
+{% load static %}
+<html>
+<head>
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{% static "style.css" %}">
+  <link rel="stylesheet" type="text/css" href="{% static "modalWindow.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "draggable-resizable-dialog.css" %}">
+
+
+    <link rel="stylesheet" type="text/css" href="{% static "css/webvowl.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/webvowl.app.css" %}" />
+
+
+  <script src="{% static "addWorkspace.js" %}" defer></script>
+<script src="{% static "centralScript.js" %}" defer></script>
+
+
+
+</head>
+
+
+
+<body style="background-image: url('{% static "images/train.svg" %}'); background-position: right;">
+  <!-- Menu -->
+  <div class="menu">
+    <span class="tabsGroup menuItems">
+      <ul>
+
+      </ul>
+    </span>
+
+    
+  </div>
+
+
+
+
+
+<div id="dialog-ontology" class="dialog" style="display: inherit; overflow: auto !important;"><div class="titlebar">Ontology</div><button class="close" name="close">×</button><button class="minimize" name="minimize">_</button><div class="container" id="ontology-container">
+<object id="ontology-embed" data="{% static "vowl.html" %}" typemustmatch>
+</object>
+   
+  </div></div>
+
+
+<div id="dialog-xsd" class="dialog" style="display: inherit; overflow: auto !important;"><div class="titlebar">XSD Standard</div><button class="close" name="close">×</button><button class="minimize" name="minimize">_</button><div class="container" id="xsd-container">
+<object id="xsd-embed" data="{% static "XSDVisualizer/xsd.html" %}" typemustmatch>
+</object>
+   
+  </div></div>
+
+
+<div id="dialog-associations" class="dialog" style="display: inherit; overflow: auto !important;"><div class="titlebar">Associations</div><button class="close" name="close">×</button><button class="minimize" name="minimize">_</button><div class="container" id="associations-container">
+<object id="associations-embed" data="{% static "Associations/associations.html" %}" typemustmatch>
+</object>
+   
+  </div></div>
+
+
+
+
+</body>
+</html>

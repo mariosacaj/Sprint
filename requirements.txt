@@ -29,7 +29,6 @@ jmespath==0.9.4
 JPype1==0.7.5
 lxml==4.5.1
 MarkupSafe==1.1.1
-mkl-fft==1.0.15
 mkl-random==1.1.1
 mkl-service==2.3.0
 numpy==1.18.1
@@ -37,7 +36,7 @@ openpyxl==3.0.3
 Owlready2==0.24
 pandas==1.0.3
 Pillow==7.1.2
-protobuf==3.11.4
+protobuf
 pyasn1==0.4.8
 pyasn1-modules==0.2.7
 pycparser==2.20
