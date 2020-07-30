@@ -1,6 +1,6 @@
-#Requirements:
-1. Create a conda environment using `environment.yml` to install all the requirements or use `requirements.txt` with pip (Note: mkl_fft may not be available, depending on the installed version of Python (Also see [here][https://github.com/IntelPython/mkl_fft/issues/26]). Conda is better.
-* As an alternative, it is possible to create a new conda environment, to activate it, to install pip using conda and to install the requirements using pip
+# Requirements:
+1. Create a conda environment using `environment.yml` to install all the requirements or use `requirements.txt` with pip (Note: mkl_fft may not be available, depending on the installed version of Python (also see [here](https://github.com/IntelPython/mkl_fft/issues/26)). Conda is better.
+   * As an alternative, it is possible to create a new conda environment, to activate it, to install pip using conda and to install the requirements using pip
 2. Place the google model in `/model`, accordingly to the `readme.me` file you can find there.
 3. Install Java 13.
 4. Go to `annotator/tool/JavaLoad.py`.
