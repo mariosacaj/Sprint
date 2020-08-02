@@ -256,7 +256,7 @@ def get_ontology(request):
         y = owl2json(request.session['ref'], OWL_TOOL_PATH)
     except ReferenceError:
         return HttpResponseBadRequest()
-    return HttpResponse(y, content_type="application/json")
+    return JsonResponse(y)
 
 
 def get_xsd(request):
