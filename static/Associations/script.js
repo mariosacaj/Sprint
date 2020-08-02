@@ -13,7 +13,35 @@ xhttp.open("GET", "http://127.0.0.1:8000/getAssociations", true);
 xhttp.send();
 }
 
+function getTerms(JSONtext) {
+	var obj = JSON.parse(JSONtext); // parsed JSON
+	let first = [];
+	let second = [];
+	for(let key in obj) {
+		first.push(key);
+		for(let i=0; i<obj[key].length; ++i) {
+			second.push(obj[key][i][0]);
+		}
+	}
+	return [first, second];
+}
+
+function getAfterColon(string) {
+	return string.split(":")[1];
+}
+
+
+
 function showData(text) {
+	let allTerms = getTerms(text);
+	first = allTerms[0];
+	second = allTerms[1];
+	secondRed = [];
+
+	for(let term in second) {
+		secondRed.push(getAfterColon(term));
+	}
+
 	let unlist = document.getElementsByTagName("ul")[0];
 	let assocArray = text.split("\n");
 	for(let i=0; i<assocArray.length; ++i) {
