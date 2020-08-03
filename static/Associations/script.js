@@ -69,6 +69,7 @@ function createMenu() {
 	newTDOnto.appendChild(selectMenuOntology);
 	let locateText = document.createElement("span");
 	locateText.innerHTML = "Locate";
+	locateText.addEventListener("click", colorLine, false);
 	tdLocate.appendChild(locateText);
 	newTR.appendChild(newTDStand);
 	newTR.appendChild(newTDOnto);
@@ -77,6 +78,16 @@ function createMenu() {
 
 	selectMenuOntology.addEventListener("change", filterStandard, false);
 		selectMenuStandard.addEventListener("change", filterOntology, false);
+}
+
+function colorLine() {
+	this.parentNode.parentNode.style.backgroundColor = "black";
+	this.parentNode.parentNode.style.color = "white";
+	this.parentNode.parentNode.className = "selectedRow";
+
+	var evt = document.createEvent("HTMLEvents"); 
+        evt.initEvent("click", false, true); // adding this created a magic and passes it as if keypressed
+        document.getElementById("locateAssociation").dispatchEvent(evt);
 }
 
 function suggestedStandards(ontologyValue) {
