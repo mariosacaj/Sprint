@@ -1,12 +1,16 @@
 document.addEventListener("DOMContentLoaded", getAssociations, false);
+var arraysElements  = [];
+var JSONtext = undefined;
 
 function getAssociations() {
 
 	var xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-       // Typical action to be performed when the document is ready:
-       showData(xhttp.responseText);
+	JSONtext = xhttp.responseText;
+	arraysElements = getTerms(JSONtext);
+	createMenu();
+document.getElementById("addAssociation").addEventListener("click", createMenu, false);
     }
 };
 xhttp.open("GET", "http://127.0.0.1:8000/getAssociations", true);
@@ -27,13 +31,109 @@ function getTerms(JSONtext) {
 }
 
 function getAfterColon(string) {
-	return string.split(":")[1];
+	if(string.includes(":")) {
+		splitted_string = string.split(":");
+		return splitted_string[splitted_string.length - 1];
+	}
+	return string;
 }
 
+function createMenu() {
+	let table = document.querySelector("table");
+	
+	let selectMenuStandard = document.createElement("select");
+	let emptyOption = document.createElement("option");
+	emptyOption.innerHTML = "-";
+	selectMenuStandard.appendChild(emptyOption);
+	for(let i=0; i<arraysElements[0].length; ++i) {
+		let option = document.createElement("option");
+		option.innerHTML = getAfterColon(arraysElements[0][i]);
+		selectMenuStandard.append(option);
+	}
 
+	let selectMenuOntology = document.createElement("select");
+	emptyOption = document.createElement("option");
+	emptyOption.innerHTML = "-";
+	selectMenuOntology.append(emptyOption);
+	for(let i=0; i<arraysElements[1].length; ++i) {
+		let option = document.createElement("option");
+		option.innerHTML = getAfterColon(arraysElements[1][i]);
+		selectMenuOntology.append(option);
+	}
+
+	let newTR = document.createElement("tr");
+	let newTDStand = document.createElement("td");
+	let newTDOnto = document.createElement("td");
+	let tdLocate = document.createElement("td");
+	newTDStand.appendChild(selectMenuStandard);
+	newTDOnto.appendChild(selectMenuOntology);
+	let locateText = document.createElement("span");
+	locateText.innerHTML = "Locate";
+	tdLocate.appendChild(locateText);
+	newTR.appendChild(newTDStand);
+	newTR.appendChild(newTDOnto);
+	newTR.appendChild(tdLocate);
+	table.appendChild(newTR);
+
+	selectMenuOntology.addEventListener("change", filterStandard, false);
+		selectMenuStandard.addEventListener("change", filterOntology, false);
+}
+
+function suggestedStandards(ontologyValue) {
+	var obj = JSON.parse(JSONtext); // parsed JSON
+	let suggestions = [];
+	for(let key in obj) {
+		for(let i=0; i<obj[key].length; ++i) {
+			if(obj[key][i][0].includes(ontologyValue)) {
+				suggestions.push(key);
+				break;
+			}
+		}
+	}
+	return suggestions;
+}
+
+function suggestedOntologies(standardValue) {
+	var obj = JSON.parse(JSONtext); // parsed JSON
+	let suggestions = [];
+	for(let key in obj) {
+		if(key.includes(standardValue)) {
+			for(let i=0; i<obj[key].length; ++i) {
+				suggestions.push(getAfterColon(obj[key][i][0]));
+			}
+	}
+		
+	}
+	return suggestions;
+}
+
+function filterStandard() {
+	let selectedOntology = this.innerHTML;
+	let otherMenu = this.parentNode.parentNode.querySelector("td select");
+	let suggStd = suggestedStandards(this.value);
+	fillMenu(otherMenu, suggStd);
+}
+
+function filterOntology() {
+	let selectedStandard = this.innerHTML;
+	let otherMenu = this.parentNode.parentNode.querySelectorAll("td select")[1];
+	let suggOnt = suggestedOntologies(this.value);
+	fillMenu(otherMenu, suggOnt);
+}
+
+function fillMenu(menu, array) {
+	menu.innerHTML = "";
+	for(let i=0; i<array.length; ++i) {
+		let suggestion = document.createElement("option");
+		suggestion.innerHTML = array[i];
+		menu.appendChild(suggestion);
+	}
+}
 
 function showData(text) {
 	let allTerms = getTerms(text);
+	createMenu(allTerms);
+
 	first = allTerms[0];
 	second = allTerms[1];
 	secondRed = [];
@@ -41,6 +141,7 @@ function showData(text) {
 	for(let term in second) {
 		secondRed.push(getAfterColon(term));
 	}
+	
 
 	let unlist = document.getElementsByTagName("ul")[0];
 	let assocArray = text.split("\n");

@@ -27,3 +27,12 @@ li {
 	border-radius: 5px;
 	display: inline-block;
 }
+
+table {
+	border-collapse: collapse;
+}
+
+td {
+	border: 1px solid grey;
+	padding: 5px;
+}
