@@ -81,6 +81,15 @@ function createMenu() {
 }
 
 function colorLine() {
+
+	let table = document.getElementsByTagName("table")[0];
+	let numRows = table.rows.length;
+	for(let i=0; i<numRows; ++i) {
+		document.querySelectorAll("table tr")[i].className = "";
+		if(document.querySelectorAll("table tr")[i].style.backgroundColor == "black") {
+		document.querySelectorAll("table tr")[i].style.backgroundColor = "rgb(200, 200, 200)";
+	}
+	}
 	this.parentNode.parentNode.style.backgroundColor = "black";
 	this.parentNode.parentNode.style.color = "white";
 	this.parentNode.parentNode.className = "selectedRow";

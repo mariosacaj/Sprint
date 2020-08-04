@@ -6,8 +6,8 @@ function retrieveData() {
 		var obj = document.getElementById("associations-embed");
 		var doc = obj.contentDocument; // get the inner DOM
 	setTimeout(function() {
-		var el = doc.getElementById("sendData"); // assuming the embedded document has such an element
-		if(el!=null && el!=undefined) {
+		if(doc!=null && doc!=undefined) {
+			var el = doc.getElementById("sendData"); // assuming the embedded document has such an element
 			el.addEventListener("click", sendData, false);
 			console.log("Added event listener");
 		}
@@ -24,11 +24,9 @@ function attachAssociationListener() {
 		var doc = obj.contentDocument; // get the inner DOM
 
 	setTimeout(function() {
-		var allAssociations = doc.querySelectorAll("li");
-		if(allAssociations.length!=0) {
-			for(let i=0; i<allAssociations.length; ++i) {
-				allAssociations[i].addEventListener("click", showAssociationOnGraph, false);
-			}
+		if(doc!=null && doc!=undefined) {
+			var el = doc.getElementById("locateAssociation"); // assuming the embedded document has such an element
+			el.addEventListener("click", showAssociationOnGraph, false);
 			console.log("Attached association listeners");
 		} else {
 			attachAssociationListener();
@@ -38,12 +36,43 @@ function attachAssociationListener() {
 }
 
 function sendData() {
-	alert("OK");
+
+		var obj = document.getElementById("associations-embed");
+		var doc = obj.contentDocument; // get the inner DOM
+
+	//let allRows = document.querySelectorAll("table tr");
+	let stdCells = doc.querySelectorAll("table tr");
+	let ontCells = doc.querySelectorAll("table tr");
+	
+
+	let stdValues = [];
+	let ontValues = [];
+
+	for(let i=1; i<stdCells.length; ++i) {
+		let stdCell = stdCells[i].childNodes[0].firstChild;
+		let stdCellValue = stdCell.options[stdCell.selectedIndex].text;
+		if(stdValues.includes(stdCellValue)) {
+			stdCell.parentNode.style.backgroundColor = "red";
+		}
+		stdValues.push(stdCellValue);
+	}
+
+	for(let i=1; i<ontCells.length; ++i) {
+		let ontCell = ontCells[i].childNodes[1].firstChild;
+		let ontCellValue = ontCell.options[ontCell.selectedIndex].text;
+		if(ontValues.includes(ontCellValue)) {
+			ontCell.parentNode.style.backgroundColor = "red";
+		}
+		ontValues.push(ontCellValue);
+	}
 }
 
 function showAssociationOnGraph() {
-	let source = this.getElementsByClassName("source")[0].innerHTML;
-	let destination = this.getElementsByClassName("destination")[0].innerHTML;
+	let source = this.parentNode.parentNode.parentNode.querySelectorAll(".selectedRow td select")[0];
+	let destination = this.parentNode.parentNode.parentNode.querySelectorAll(".selectedRow td select")[1];
+
+	source = source.options[source.selectedIndex].text;
+	destination = destination.options[destination.selectedIndex].text;
 	
 	var obj = document.getElementById("xsd-embed");
 	var doc = obj.contentDocument;
