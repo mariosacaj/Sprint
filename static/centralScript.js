@@ -90,9 +90,37 @@ function attachRightClicksOnto() {
 
 
 
+function createRMenu(ev, currentString) {
+	alert(currentString);
+	let newDiv = document.createElement("div");
+	newDiv.className = "right-menu";
+	newDiv.style.top = ev.clientY;
+	newDiv.style.left = ev.clientX;
+	newDiv.style.position = "absolute";
+	let listElems = document.createElement("ul");	
+	let liInfo = document.createElement("li");
+	liInfo.innerHTML = currentString;
+	let liExit = document.createElement("li");
+	liExit.innerHTML = "Exit";
+	listElems.appendChild(liInfo);
+	listElems.appendChild(liExit);
+	newDiv.appendChild(listElems);
+	
+	document.body.appendChild(newDiv);
+
+
+	
+}
 
 function xsdRC(ev) {
-	alert("Right click on XSD");
+	let currentString = this.innerHTML;
+	if(currentString.startsWith("name")) {
+		currentString = currentString.replace(/name="/gi, "").replace(/"/gi, "");
+		createRMenu(ev, currentString);
+	}
+	else {
+		createRMenu(ev, currentString);
+	}
 	ev.preventDefault();
 }
 
