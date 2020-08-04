@@ -128,25 +128,41 @@ function suggestedOntologies(standardValue) {
 }
 
 function filterStandard() {
-	let selectedOntology = this.innerHTML;
+	//let selectedOntology = this.innerHTML;
 	let otherMenu = this.parentNode.parentNode.querySelector("td select");
+	let currentStd = otherMenu.options[otherMenu.selectedIndex].text;	
 	let suggStd = suggestedStandards(this.value);
-	fillMenu(otherMenu, suggStd);
+	fillMenu(otherMenu, suggStd, currentStd);
 }
 
 function filterOntology() {
-	let selectedStandard = this.innerHTML;
+	//let selectedStandard = this.innerHTML;
 	let otherMenu = this.parentNode.parentNode.querySelectorAll("td select")[1];
+	let currentOntology = otherMenu.options[otherMenu.selectedIndex].text;
 	let suggOnt = suggestedOntologies(this.value);
-	fillMenu(otherMenu, suggOnt);
+	fillMenu(otherMenu, suggOnt, currentOntology);
 }
 
-function fillMenu(menu, array) {
+function fillMenu(menu, array, currentValue) {
+// devo prendere current value altro emnu
 	menu.innerHTML = "";
+	let oldOption = document.createElement("option");
+	console.log(array);
+	console.log(currentValue);
+	if(array.includes(currentValue)) {
+		oldOption.innerHTML = currentValue;
+	}
+	else {
+		oldOption.innerHTML = "-";
+	}
+	menu.append(oldOption);
+
 	for(let i=0; i<array.length; ++i) {
-		let suggestion = document.createElement("option");
-		suggestion.innerHTML = array[i];
-		menu.appendChild(suggestion);
+		if(array[i] != currentValue) {
+			let suggestion = document.createElement("option");
+			suggestion.innerHTML = array[i];
+			menu.appendChild(suggestion);
+		}
 	}
 }
 

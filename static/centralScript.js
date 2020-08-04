@@ -54,6 +54,9 @@ function sendData() {
 		if(stdValues.includes(stdCellValue)) {
 			stdCell.parentNode.style.backgroundColor = "red";
 		}
+		else {
+			stdCell.parentNode.style.backgroundColor = "green";
+		}
 		stdValues.push(stdCellValue);
 	}
 
@@ -62,6 +65,9 @@ function sendData() {
 		let ontCellValue = ontCell.options[ontCell.selectedIndex].text;
 		if(ontValues.includes(ontCellValue)) {
 			ontCell.parentNode.style.backgroundColor = "red";
+		}
+		else {
+			ontCell.parentNode.style.backgroundColor = "green";
 		}
 		ontValues.push(ontCellValue);
 	}
