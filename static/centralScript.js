@@ -1,5 +1,11 @@
 document.addEventListener("DOMContentLoaded", retrieveData, false);
 document.addEventListener("DOMContentLoaded", attachAssociationListener, false);
+document.addEventListener("DOMContentLoaded", attachRightClicks, false);
+
+function rightClick(ev) {
+	ev.preventDefault();
+	alert("Right click");
+}
 
 function retrieveData() {
 		console.log("Retrieving data...");
@@ -15,6 +21,84 @@ function retrieveData() {
 			retrieveData();
 		}
 	}, 500);
+}
+
+function attachRightClicks() {
+	attachRightClicksXSD();
+	attachRightClicksOnto();
+}
+
+function attachRightClicksXSD() {
+	var xsdE = document.getElementById("xsd-embed");
+	var doc = xsdE.contentDocument; // get the inner DOM
+	
+	setTimeout(function() {
+		if(doc!=undefined && doc!=null) {
+			let allTS = doc.querySelectorAll("tspan");
+			setTimeout(function() {
+				if(allTS.length > 0) {
+					for(let i=0; i<allTS.length; ++i) {
+				allTS[i].addEventListener("contextmenu", xsdRC, false);	
+			}
+				}
+				else {
+					attachRightClicksXSD();
+				}
+			}, 500);
+	
+			
+			console.log("Attached right clicks to standard nodes");
+		}
+		else {
+			attachRightClicksXSD();			
+		};
+	}, 500);	
+}
+
+
+function attachRightClicksOnto() {
+	var ontoE = document.getElementById("ontology-embed");
+	var doc = ontoE.contentDocument; // get the inner DOM
+	let numberShapes = 0;
+
+	setTimeout(function() {
+		if(doc!=undefined && doc!=null) {
+			let allShapes = doc.querySelectorAll("circle, rect");
+			setTimeout(function() {
+				console.log("There are " + allShapes.length + " shapes");
+				if(numberShapes < allShapes.length) { // there are new nodes
+					for(let i=0; i<allShapes.length; ++i) {
+							allShapes[i].addEventListener("contextmenu", ontoRC, false);	
+					}
+					numberShapes = allShapes.length;
+					attachRightClicksOnto(); // keep checking
+				}
+				else {
+					attachRightClicksOnto();
+				}
+			}, 1000);
+			
+			console.log("Attached right clicks to ontology nodes");
+		}
+		else {
+			attachRightClicksOnto();			
+		};
+	}, 500);
+	
+	
+}
+
+
+
+
+function xsdRC(ev) {
+	alert("Right click on XSD");
+	ev.preventDefault();
+}
+
+function ontoRC(ev) {
+	alert("Right click on Ontology");
+	ev.preventDefault();
 }
 
 function attachAssociationListener() {
