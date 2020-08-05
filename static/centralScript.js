@@ -170,8 +170,32 @@ function addToAssociation(startingString, startingType) {
 	}
 	
 	if(alreadyInserted == false) {
-		alert("Not associated yet");
+		dispatchAddAssociation(doc);
+		if(startingType == "XSD") {
+			chooseStd(startingString, doc.querySelectorAll("table tr"));
+		}	
+		else if(startingType == "Ontology") {
+			chooseOntology(startingString, doc.querySelectorAll("table tr"));
+		}	
 	}
+}
+
+function chooseStd(value, trs) {
+	let lastRow = trs[trs.length - 1];
+	let stdSel = lastRow.childNodes[0].firstChild;
+	stdSel.parentNode.innerHTML = "<span>" + value + "</span>";
+}
+
+function chooseOntology(value, trs) {
+	let lastRow = trs[trs.length - 1];
+	let ontSel = lastRow.childNodes[1].firstChild;
+	ontSel.parentNode.innerHTML = "<span>" + value + "</span>";
+}
+
+function dispatchAddAssociation(doc) {
+	var evt = document.createEvent("HTMLEvents"); 
+	evt.initEvent("click", false, true);
+	doc.getElementById("addAssociation").dispatchEvent(evt);
 }
 
 function removeAssociation(startingString, startingType) {
@@ -204,6 +228,22 @@ function findAssociationGivenXSD(currentString) {
 	return "-";
 }
 
+function findAssociationGivenOntology(currentString) {
+	var obj = document.getElementById("associations-embed");
+	var doc = obj.contentDocument; // get the inner DOM
+	let rows = doc.querySelectorAll("table tr");	
+	for(let i=1; i<rows.length; ++i) {
+		let ontoSelector = rows[i].childNodes[1].firstChild;
+		let ontoValue = ontoSelector.options[ontoSelector.selectedIndex].text;
+		if(ontoValue == currentString) {
+			let xsdSelector = rows[i].childNodes[0].firstChild;
+			let xsdValue = xsdSelector.options[xsdSelector.selectedIndex].text;
+			return xsdValue;
+		}
+	}
+	return "-";	
+}
+
 function xsdRC(ev) {
 	let currentString = this.innerHTML;
 	if(currentString.startsWith("name")) {
@@ -217,7 +257,8 @@ function xsdRC(ev) {
 }
 
 function ontoRC(ev) {
-	alert("Right click on Ontology");
+	let currentString = this.querySelector("title").innerHTML;
+	createRMenu(ev, currentString, "Ontology");
 	ev.preventDefault();
 }
 
