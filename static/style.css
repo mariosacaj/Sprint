@@ -681,7 +681,7 @@ li {
 }
 
 .right-menu {
-	background-color: rgba(0, 0, 0, 0.7);
+	background-color: rgba(0, 0, 0, 0.9);
 	font-size: 14px;
 	top: 50%;
 	right: 0px;
@@ -714,7 +714,7 @@ li {
 	color: white;
 }
 
-.associatedTo {
+.associatedTo, .origin {
 	font-size: 12px;
 }
 
@@ -723,11 +723,15 @@ li {
 }
 
 .right-menu .menu-title:hover {
-	background-color: rgba(0,0,0,0.7) !important;
+	background-color: rgba(0,0,0,0.9) !important;
 }
 
 .right-menu .menu-close:hover {
-	background-color: rgba(255,0,0,0.7) !important;
+	background-color: rgba(255,0,0,0.9) !important;
+}
+
+.associatedTo~span, .origin~span {
+	word-wrap: break-word;
 }
 
 
