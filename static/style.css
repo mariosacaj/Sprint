@@ -666,5 +666,40 @@ input[type='range']::-webkit-slider-thumb:before {
   opacity: 1;
 }
 
+.right-menu li:not(:last-child) {
+	border-bottom: 1px dotted rgb(120, 120, 120);
+}
+
+li {
+	padding: 4px;
+}
+
+.right-menu ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.right-menu {
+	line-height: 40px;
+	background-color: rgba(0, 0, 0, 0.7);
+	font-size: 14px;
+	top: 50%;
+	right: 0px;
+	color: white;
+	width: 15%;
+	min-width: 200px;
+	position: absolute;
+	z-index: 999999999;
+	
+}
+
+.right-menu li:hover {
+	background-color: black;
+	color: white;
+}
+
+
+
 
 

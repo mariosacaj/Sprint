@@ -88,38 +88,64 @@ function attachRightClicksOnto() {
 	
 }
 
+function addItemToMenu(menuList, stringInMenu, menuDiv) {
+	let liInfo = document.createElement("li");
+	liInfo.innerHTML = stringInMenu;
+	menuList.appendChild(liInfo);
+	return menuList;
+}
 
-
-function createRMenu(ev, currentString) {
-	alert(currentString);
+function createRMenu(ev, currentString, startingType) {
+	let allRM = document.querySelectorAll(".right-menu");
+	for(let i=0; i<allRM.length; ++i) {
+		allRM[i].remove();
+	}
 	let newDiv = document.createElement("div");
 	newDiv.className = "right-menu";
-	newDiv.style.top = ev.clientY;
-	newDiv.style.left = ev.clientX;
-	newDiv.style.position = "absolute";
 	let listElems = document.createElement("ul");	
-	let liInfo = document.createElement("li");
-	liInfo.innerHTML = currentString;
-	let liExit = document.createElement("li");
-	liExit.innerHTML = "Exit";
-	listElems.appendChild(liInfo);
-	listElems.appendChild(liExit);
+	
+	listElems = addItemToMenu(listElems, "Associated to " + findAssociation(currentString, startingType), newDiv);
+	listElems = addItemToMenu(listElems, "Add to association", newDiv);
+	listElems = addItemToMenu(listElems, "Remove association", newDiv);
+
 	newDiv.appendChild(listElems);
-	
 	document.body.appendChild(newDiv);
+}
 
 
-	
+function findAssociation(currentString, startingType) {
+	if(startingType == "XSD") {
+		return findAssociationGivenXSD(currentString);
+	}
+	else if(startingType == "Ontology") {
+		return findAssociationGivenOntology(currentString);
+	}
+}
+
+function findAssociationGivenXSD(currentString) {
+	var obj = document.getElementById("associations-embed");
+	var doc = obj.contentDocument; // get the inner DOM
+	let rows = doc.querySelectorAll("table tr");	
+	for(let i=1; i<rows.length; ++i) {
+		let xsdSelector = rows[i].childNodes[0].firstChild;
+		let xsdValue = xsdSelector.options[xsdSelector.selectedIndex].text;
+		if(xsdValue == currentString) {
+			let ontologySelector = rows[i].childNodes[1].firstChild;
+			let ontologyValue = ontologySelector.options[ontologySelector.selectedIndex].text;
+			return ontologyValue;
+		}
+	}
+	return "-";
 }
 
 function xsdRC(ev) {
 	let currentString = this.innerHTML;
 	if(currentString.startsWith("name")) {
 		currentString = currentString.replace(/name="/gi, "").replace(/"/gi, "");
-		createRMenu(ev, currentString);
+		createRMenu(ev, currentString, "XSD");
 	}
 	else {
-		createRMenu(ev, currentString);
+		createRMenu(ev, currentString, "XSD");
 	}
 	ev.preventDefault();
 }
