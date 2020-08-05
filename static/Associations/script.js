@@ -38,8 +38,8 @@ function getAfterColon(string) {
 	return string;
 }
 
-function createMenu() {
-	let table = document.querySelector("table");
+function createMenuStandard(table) {
+
 	
 	let selectMenuStandard = document.createElement("select");
 	let emptyOption = document.createElement("option");
@@ -50,7 +50,10 @@ function createMenu() {
 		option.innerHTML = getAfterColon(arraysElements[0][i]);
 		selectMenuStandard.append(option);
 	}
+	return selectMenuStandard;
+}
 
+function createMenuOntology(table) {
 	let selectMenuOntology = document.createElement("select");
 	emptyOption = document.createElement("option");
 	emptyOption.innerHTML = "-";
@@ -60,6 +63,42 @@ function createMenu() {
 		option.innerHTML = getAfterColon(arraysElements[1][i]);
 		selectMenuOntology.append(option);
 	}
+	return selectMenuOntology;
+}
+
+function cleanEmpty() {
+	let allRows = document.querySelectorAll("table tr");
+	for(let i=1; i<allRows.length; ++i) {
+		let firstColumnValue = allRows[i].childNodes[0].firstChild.value;
+		if(firstColumnValue != undefined) {
+			firstColumnValue = firstColumnValue.innerHTML;
+		}
+		else {
+			firstColumnValue = "-";
+		}
+		
+		let secondColumnValue = allRows[i].childNodes[1].firstChild.value;
+		if(secondColumnValue != undefined) {
+			secondColumnValue = secondColumnValue.innerHTML;
+		}
+		else {
+			secondColumnValue = "-";
+		}
+
+		if(firstColumnValue == "-" && secondColumnValue == "-") {
+			allRows[i].remove();
+		}	
+	}
+}
+
+function createMenu() {
+	
+	//cleanEmpty();
+	let table = document.querySelector("table");
+
+	let selectMenuStandard = createMenuStandard(table);
+	let selectMenuOntology = createMenuOntology(table);
+	
 
 	let newTR = document.createElement("tr");
 	let newTDStand = document.createElement("td");
@@ -77,7 +116,7 @@ function createMenu() {
 	table.appendChild(newTR);
 
 	selectMenuOntology.addEventListener("change", filterStandard, false);
-		selectMenuStandard.addEventListener("change", filterOntology, false);
+	selectMenuStandard.addEventListener("change", filterOntology, false);
 }
 
 function colorLine() {
@@ -130,17 +169,25 @@ function suggestedOntologies(standardValue) {
 function filterStandard() {
 	//let selectedOntology = this.innerHTML;
 	let otherMenu = this.parentNode.parentNode.querySelector("td select");
-	let currentStd = otherMenu.options[otherMenu.selectedIndex].text;	
-	let suggStd = suggestedStandards(this.value);
-	fillMenu(otherMenu, suggStd, currentStd);
+
+	if(otherMenu.className == undefined) {
+		let currentStd = otherMenu.options[otherMenu.selectedIndex].text;	
+		let suggStd = suggestedStandards(this.value);
+
+		fillMenu(otherMenu, suggStd, currentStd);
+	}
+	
 }
 
 function filterOntology() {
 	//let selectedStandard = this.innerHTML;
 	let otherMenu = this.parentNode.parentNode.querySelectorAll("td select")[1];
-	let currentOntology = otherMenu.options[otherMenu.selectedIndex].text;
-	let suggOnt = suggestedOntologies(this.value);
-	fillMenu(otherMenu, suggOnt, currentOntology);
+
+	if(otherMenu.className == undefined) {
+		let currentOntology = otherMenu.options[otherMenu.selectedIndex].text;
+		let suggOnt = suggestedOntologies(this.value);
+		fillMenu(otherMenu, suggOnt, currentOntology);
+	}
 }
 
 function fillMenu(menu, array, currentValue) {
