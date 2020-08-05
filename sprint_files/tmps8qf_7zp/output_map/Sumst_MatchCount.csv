@@ -1,0 +1,54 @@
+['text'],['has', 'Message', 'Full', 'Text'],4
+['text'],['has', 'Message', 'Short', 'Text'],4
+['text'],['has', 'Response', 'Text'],4
+['Status'],['Return', 'Status'],5
+['Status'],['Booking', 'Status'],5
+['Status'],['Payment', 'Status'],5
+['Status'],['has', 'Status'],5
+['Status'],['has', 'Approval', 'Status'],5
+['Status'],['has', 'Booking', 'Status'],5
+['Status'],['has', 'Payment', 'Status'],5
+['Status'],['has', 'After', 'Sales', 'Condition'],1
+['Status'],['has', 'Terms', 'And', 'Condition'],2
+['Status'],['has', 'Sales', 'Condition'],2
+['Start'],['Stop', 'Place'],4
+['Start'],['has', 'Start', 'Date', 'Time'],6
+['Start'],['has', 'Statistics', 'Start', 'Time'],6
+['Start'],['has', 'Start', 'Stop', 'Place'],6
+['Date', 'Time'],['Date'],9
+['Date', 'Time'],['Event', 'Date', 'Time'],9
+['Date', 'Time'],['has', 'Date', 'Time'],8
+['Date', 'Time'],['file', 'Time', 'Stamp'],4
+['Date', 'Time'],['has', 'Approval', 'Time', 'Stamp'],4
+['Date', 'Time'],['has', 'End', 'Date', 'Time'],8
+['Date', 'Time'],['has', 'Start', 'Date', 'Time'],8
+['Date', 'Time'],['has', 'Date', 'Of', 'Birth'],5
+['Date', 'Time'],['has', 'Minimum', 'Connection', 'Time'],4
+['Date', 'Time'],['has', 'Planned', 'Date'],5
+['Date', 'Time'],['has', 'Statistics', 'End', 'Time'],4
+['Date', 'Time'],['has', 'Statistics', 'Start', 'Time'],4
+['Date', 'Time'],['has', 'Time', 'Unit'],4
+['Date', 'Time'],['has', 'Event', 'Date', 'Time'],9
+['Date', 'Time'],['date'],4
+['Generic', 'Text', 'Message'],['Generic', 'Option'],5
+['Generic', 'Text', 'Message'],['Message', 'Ref'],4
+['Generic', 'Text', 'Message'],['Send', 'Message'],4
+['Generic', 'Text', 'Message'],['TT', 'Message', 'Type'],4
+['Generic', 'Text', 'Message'],['has', 'Error', 'Message'],4
+['Generic', 'Text', 'Message'],['has', 'Message', 'Full', 'Text'],7
+['Generic', 'Text', 'Message'],['has', 'Message', 'Short', 'Text'],7
+['Generic', 'Text', 'Message'],['has', 'Message', 'Title'],4
+['Generic', 'Text', 'Message'],['has', 'Response', 'Text'],4
+['Generic', 'Text', 'Message'],['has', 'Confirmation', 'Message'],4
+['Generic', 'Text', 'Message'],['has', 'Fault', 'Message', 'Mapping'],4
+['Generic', 'Text', 'Message'],['has', 'Input', 'Message', 'Mapping'],4
+['Generic', 'Text', 'Message'],['has', 'Output', 'Message', 'Mapping'],4
+['Generic', 'Text', 'Message'],['has', 'Message', 'Type'],4
+['Generic', 'Status'],['Generic', 'Option'],8
+['Generic', 'Status'],['Return', 'Status'],4
+['Generic', 'Status'],['Booking', 'Status'],4
+['Generic', 'Status'],['Payment', 'Status'],4
+['Generic', 'Status'],['has', 'Status'],4
+['Generic', 'Status'],['has', 'Approval', 'Status'],4
+['Generic', 'Status'],['has', 'Booking', 'Status'],3
+['Generic', 'Status'],['has', 'Payment', 'Status'],4

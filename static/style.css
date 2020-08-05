@@ -671,7 +671,7 @@ input[type='range']::-webkit-slider-thumb:before {
 }
 
 li {
-	padding: 4px;
+	padding: 10px;
 }
 
 .right-menu ul {
@@ -681,7 +681,6 @@ li {
 }
 
 .right-menu {
-	line-height: 40px;
 	background-color: rgba(0, 0, 0, 0.7);
 	font-size: 14px;
 	top: 50%;
@@ -691,7 +690,23 @@ li {
 	min-width: 200px;
 	position: absolute;
 	z-index: 999999999;
+
+	/* Animations */
+	animation: slide-in 0.5s forwards;
+    	-webkit-animation: slide-in 0.5s forwards;
 	
+}
+
+/* Source: https://stackoverflow.com/questions/47447411/css3-animation-slide-div-form-right-to-left-onclick-of-button */
+
+@keyframes slide-in {
+   0% { -webkit-transform: translate(100%, -50%); }
+   100% { -webkit-transform: translate(0%, -50%); }
+}
+
+@-webkit-keyframes slide-in {
+     0% {transform: translate(100%, -50%); }
+    100% { transform: translate(0%, -50%); }
 }
 
 .right-menu li:hover {
@@ -699,6 +714,21 @@ li {
 	color: white;
 }
 
+.associatedTo {
+	font-size: 12px;
+}
+
+.right-menu .menu-title {
+	font-size: 20px;
+}
+
+.right-menu .menu-title:hover {
+	background-color: rgba(0,0,0,0.7) !important;
+}
+
+.right-menu .menu-close:hover {
+	background-color: rgba(255,0,0,0.7) !important;
+}
 
 
 

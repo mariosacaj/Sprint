@@ -95,6 +95,30 @@ function addItemToMenu(menuList, stringInMenu, menuDiv) {
 	return menuList;
 }
 
+function addTitleToMenu(menuList, titleMenu, menuDiv) {
+	let liTitle = document.createElement("li");
+	liTitle.className = "menu-title";
+	liTitle.innerHTML = titleMenu;
+	menuList.appendChild(liTitle);
+	return menuList;
+}
+
+function addCloseToMenu(menuList, labelClose, menuDiv) {
+	let liClose = document.createElement("li");
+	liClose.className = "menu-close";
+	liClose.innerHTML = labelClose;
+	liClose.addEventListener("click", closeMenu, false);
+	menuList.appendChild(liClose);
+	return menuList;
+}
+
+function closeMenu() {
+	let allMenus = document.querySelectorAll(".right-menu");
+	for(let i=0; i<allMenus.length; ++i) {
+		allMenus[i].remove();
+	}
+}
+
 function createRMenu(ev, currentString, startingType) {
 	let allRM = document.querySelectorAll(".right-menu");
 	for(let i=0; i<allRM.length; ++i) {
@@ -104,9 +128,14 @@ function createRMenu(ev, currentString, startingType) {
 	newDiv.className = "right-menu";
 	let listElems = document.createElement("ul");	
 	
-	listElems = addItemToMenu(listElems, "Associated to " + findAssociation(currentString, startingType), newDiv);
+	listElems = addTitleToMenu(listElems, "Options", newDiv);
+	listElems = addItemToMenu(listElems, '<span class="associatedTo">Associated to</span><br/><span>' + findAssociation(currentString, startingType) + '</span>', newDiv);
+
 	listElems = addItemToMenu(listElems, "Add to association", newDiv);
 	listElems = addItemToMenu(listElems, "Remove association", newDiv);
+	listElems = addCloseToMenu(listElems, "Close menu", newDiv);
+
+	// TODO Associate actions
 
 	newDiv.appendChild(listElems);
 	document.body.appendChild(newDiv);
