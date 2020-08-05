@@ -144,7 +144,34 @@ function createRMenu(ev, currentString, startingType) {
 }
 
 function addToAssociation(startingString, startingType) {
-	alert("ADD " + startingString + ", " + startingType);
+	var obj = document.getElementById("associations-embed");
+	var doc = obj.contentDocument; // get the inner DOM
+	let rows = doc.querySelectorAll("table tr");	
+	
+	var startingColumn = undefined;
+
+	if(startingType == "XSD") {
+		startingColumn = 0;
+	}
+	else if(startingType == "Ontology") {
+		startingColumn = 1;
+	}
+
+	let otherColumn = Math.abs(startingColumn - 1);
+	let alreadyInserted = false;
+
+	for(let i=1; i<rows.length; ++i) {
+		let startingSelector = rows[i].childNodes[startingColumn].firstChild;
+		let startingValue = startingSelector.options[startingSelector.selectedIndex].text;
+		if(startingValue == startingString) {
+			alert("The value has already been inserted");
+			alreadyInserted = true;
+		}
+	}
+	
+	if(alreadyInserted == false) {
+		alert("Not associated yet");
+	}
 }
 
 function removeAssociation(startingString, startingType) {
