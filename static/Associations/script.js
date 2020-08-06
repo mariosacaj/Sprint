@@ -168,9 +168,10 @@ function suggestedOntologies(standardValue) {
 
 function filterStandard() {
 	//let selectedOntology = this.innerHTML;
-	let otherMenu = this.parentNode.parentNode.querySelector("td select");
+	let td = this.parentNode.parentNode.querySelector("td");
+	let otherMenu = td.firstChild;
 
-	if(otherMenu.className == undefined) {
+	if(td.innerHTML.startsWith("<select>")) {
 		let currentStd = otherMenu.options[otherMenu.selectedIndex].text;	
 		let suggStd = suggestedStandards(this.value);
 
@@ -181,9 +182,10 @@ function filterStandard() {
 
 function filterOntology() {
 	//let selectedStandard = this.innerHTML;
-	let otherMenu = this.parentNode.parentNode.querySelectorAll("td select")[1];
+	let td = this.parentNode.parentNode.querySelectorAll("td")[1];
+	let otherMenu = td.firstChild;
 
-	if(otherMenu.className == undefined) {
+	if(td.innerHTML.startsWith("<select>")) {
 		let currentOntology = otherMenu.options[otherMenu.selectedIndex].text;
 		let suggOnt = suggestedOntologies(this.value);
 		fillMenu(otherMenu, suggOnt, currentOntology);
