@@ -30,6 +30,8 @@ li {
 
 table {
 	border-collapse: collapse;
+	font-size: 12px;
+	text-align: center;
 }
 
 td {

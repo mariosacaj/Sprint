@@ -162,7 +162,13 @@ function addToAssociation(startingString, startingType) {
 
 	for(let i=1; i<rows.length; ++i) {
 		let startingSelector = rows[i].childNodes[startingColumn].firstChild;
-		let startingValue = startingSelector.options[startingSelector.selectedIndex].text;
+		let startingValue = undefined;
+		if(startingSelector.innerHTML.startsWith("<select>")) {
+		startingValue = startingSelector.options[startingSelector.selectedIndex].text;
+		}
+		else {
+			startingValue = startingSelector.firstChild.innerHTML;
+		}
 		if(startingValue == startingString) {
 			alert("The value has already been inserted");
 			alreadyInserted = true;
@@ -218,7 +224,14 @@ function findAssociationGivenXSD(currentString) {
 	let rows = doc.querySelectorAll("table tr");	
 	for(let i=1; i<rows.length; ++i) {
 		let xsdSelector = rows[i].childNodes[0].firstChild;
-		let xsdValue = xsdSelector.options[xsdSelector.selectedIndex].text;
+		let xsdValue = undefined;
+		if(xsdSelector.innerHTML.startsWith("<select>")) {
+			xsdValue = xsdSelector.options[xsdSelector.selectedIndex].text;
+		}
+		else {
+			xsdValue = xsdSelector.firstChild.innerHTML;
+		}
+		
 		if(xsdValue == currentString) {
 			let ontologySelector = rows[i].childNodes[1].firstChild;
 			let ontologyValue = ontologySelector.options[ontologySelector.selectedIndex].text;
@@ -234,7 +247,16 @@ function findAssociationGivenOntology(currentString) {
 	let rows = doc.querySelectorAll("table tr");	
 	for(let i=1; i<rows.length; ++i) {
 		let ontoSelector = rows[i].childNodes[1].firstChild;
-		let ontoValue = ontoSelector.options[ontoSelector.selectedIndex].text;
+
+		let ontoValue = undefined;
+		if(ontoSelector.innerHTML.startsWith("<select>")) {
+			ontoValue = ontoSelector.options[ontoSelector.selectedIndex].text;
+		}
+		else {
+			ontoValue = ontoSelector.firstChild.innerHTML;
+		}
+
+		// let ontoValue = ontoSelector.options[ontoSelector.selectedIndex].text;
 		if(ontoValue == currentString) {
 			let xsdSelector = rows[i].childNodes[0].firstChild;
 			let xsdValue = xsdSelector.options[xsdSelector.selectedIndex].text;
@@ -319,11 +341,23 @@ function sendData() {
 }
 
 function showAssociationOnGraph() {
-	let source = this.parentNode.parentNode.parentNode.querySelectorAll(".selectedRow td select")[0];
-	let destination = this.parentNode.parentNode.parentNode.querySelectorAll(".selectedRow td select")[1];
+	let source = this.parentNode.parentNode.parentNode.querySelectorAll(".selectedRow td")[0];
+	let destination = this.parentNode.parentNode.parentNode.querySelectorAll(".selectedRow td")[1];
 
-	source = source.options[source.selectedIndex].text;
-	destination = destination.options[destination.selectedIndex].text;
+	if(source.innerHTML.startsWith("<select>")) {
+		source = source.firstChild;
+		source = source.options[source.selectedIndex].text;
+	} else {
+		source = source.firstChild.innerHTML;
+	}
+
+	if(destination.innerHTML.startsWith("<select>")) {
+		destination = destination.firstChild;
+		destination = destination.options[destination.selectedIndex].text;
+	}
+	else {
+		destination = destination.firstChild.innerHTML;
+	}
 	
 	var obj = document.getElementById("xsd-embed");
 	var doc = obj.contentDocument;
@@ -373,9 +407,5 @@ function showAssociationOnGraph() {
 	var clickLocate = document.createEvent("HTMLEvents");
 	clickLocate.initEvent("click", false, true);
 	locationSR.dispatchEvent(clickLocate);
-/*
-	var evtOnt = document.createEvent("HTMLEvents"); 
-        evtOnt.initEvent("change", false, true); // adding this created a magic and passes it as if keypressed
-        searchBoxOnt.dispatchEvent(evtOnt);*/
 
 }
