@@ -38,31 +38,37 @@ function getAfterColon(string) {
 	return string;
 }
 
-function createMenuStandard(table) {
+function fillGroup(arraysElements, menu, num, label) {
 
-	
-	let selectMenuStandard = document.createElement("select");
+	let group = document.createElement("optgroup");
+	group.label = label;
+
 	let emptyOption = document.createElement("option");
 	emptyOption.innerHTML = "-";
-	selectMenuStandard.appendChild(emptyOption);
-	for(let i=0; i<arraysElements[0].length; ++i) {
+	group.appendChild(emptyOption);
+
+	for(let i=0; i<arraysElements[num].length; ++i) {
 		let option = document.createElement("option");
-		option.innerHTML = getAfterColon(arraysElements[0][i]);
-		selectMenuStandard.append(option);
+		option.innerHTML = getAfterColon(arraysElements[num][i]);
+		group.append(option);
 	}
+
+	return group;
+}
+
+function createMenuStandard(table) {
+
+	let selectMenuStandard = document.createElement("select");
+	let groupSuggested = fillGroup(arraysElements, selectMenuStandard, 0, "Suggested");
+	selectMenuStandard.appendChild(groupSuggested);
 	return selectMenuStandard;
 }
 
 function createMenuOntology(table) {
+	
 	let selectMenuOntology = document.createElement("select");
-	emptyOption = document.createElement("option");
-	emptyOption.innerHTML = "-";
-	selectMenuOntology.append(emptyOption);
-	for(let i=0; i<arraysElements[1].length; ++i) {
-		let option = document.createElement("option");
-		option.innerHTML = getAfterColon(arraysElements[1][i]);
-		selectMenuOntology.append(option);
-	}
+	let groupSuggested = fillGroup(arraysElements, selectMenuOntology, 1, "Suggested");
+	selectMenuOntology.appendChild(groupSuggested);
 	return selectMenuOntology;
 }
 
@@ -107,7 +113,7 @@ function createMenu() {
 	newTDStand.appendChild(selectMenuStandard);
 	newTDOnto.appendChild(selectMenuOntology);
 	let locateText = document.createElement("span");
-	locateText.innerHTML = "Locate";
+	locateText.innerHTML = '<img src="binoculars.png"></img>';
 	locateText.addEventListener("click", colorLine, false);
 	tdLocate.appendChild(locateText);
 	newTR.appendChild(newTDStand);
@@ -193,11 +199,11 @@ function filterOntology() {
 }
 
 function fillMenu(menu, array, currentValue) {
-// devo prendere current value altro emnu
+// take current value from menu
+// if it was in suggested keep in suggested, otherwise keep in all
 	menu.innerHTML = "";
 	let oldOption = document.createElement("option");
-	console.log(array);
-	console.log(currentValue);
+	
 	if(array.includes(currentValue)) {
 		oldOption.innerHTML = currentValue;
 	}

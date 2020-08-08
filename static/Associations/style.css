@@ -46,3 +46,11 @@ td {
 td {
 	cursor: pointer;
 }
+
+table span img {
+	max-width: 20px;
+}
+
+.selectedRow img {
+	filter: invert();
+}
