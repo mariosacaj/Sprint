@@ -302,6 +302,15 @@ function attachAssociationListener() {
 	}, 500);
 }
 
+function getSelection(cell) {
+	if(cell.innerHTML.startsWith("<option>")) {
+		return cell.options[cell.selectedIndex].text;
+	}
+	else {
+		return cell.innerHTML;	
+	}
+}
+
 function sendData() {
 
 		var obj = document.getElementById("associations-embed");
@@ -317,24 +326,26 @@ function sendData() {
 
 	for(let i=1; i<stdCells.length; ++i) {
 		let stdCell = stdCells[i].childNodes[0].firstChild;
-		let stdCellValue = stdCell.options[stdCell.selectedIndex].text;
+		let stdCellValue = getSelection(stdCell);
+
 		if(stdValues.includes(stdCellValue)) {
-			stdCell.parentNode.style.backgroundColor = "red";
+			stdCell.parentNode.style.backgroundColor = "rgb(255, 153, 153)";
 		}
 		else {
-			stdCell.parentNode.style.backgroundColor = "green";
+			stdCell.parentNode.style.backgroundColor = "rgb(153, 255, 51)";
 		}
 		stdValues.push(stdCellValue);
 	}
 
 	for(let i=1; i<ontCells.length; ++i) {
 		let ontCell = ontCells[i].childNodes[1].firstChild;
-		let ontCellValue = ontCell.options[ontCell.selectedIndex].text;
+		let ontCellValue = getSelection(ontCell);
+
 		if(ontValues.includes(ontCellValue)) {
-			ontCell.parentNode.style.backgroundColor = "red";
+			ontCell.parentNode.style.backgroundColor = "rgb(255, 153, 153)";
 		}
 		else {
-			ontCell.parentNode.style.backgroundColor = "green";
+			ontCell.parentNode.style.backgroundColor = "rgb(153, 255, 51)";
 		}
 		ontValues.push(ontCellValue);
 	}
@@ -344,21 +355,9 @@ function showAssociationOnGraph() {
 	let source = this.parentNode.parentNode.parentNode.querySelectorAll(".selectedRow td")[0];
 	let destination = this.parentNode.parentNode.parentNode.querySelectorAll(".selectedRow td")[1];
 
-	if(source.innerHTML.startsWith("<select>")) {
-		source = source.firstChild;
-		source = source.options[source.selectedIndex].text;
-	} else {
-		source = source.firstChild.innerHTML;
-	}
+	source = getSelection(source.firstChild);
+	destination = getSelection(destination.firstChild);
 
-	if(destination.innerHTML.startsWith("<select>")) {
-		destination = destination.firstChild;
-		destination = destination.options[destination.selectedIndex].text;
-	}
-	else {
-		destination = destination.firstChild.innerHTML;
-	}
-	
 	var obj = document.getElementById("xsd-embed");
 	var doc = obj.contentDocument;
 	var searchBoxXSD = doc.getElementById("searchTerm");
