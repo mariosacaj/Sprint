@@ -219,8 +219,7 @@ function removeAssociation(startingString, startingType) {
 
 function removeXSD(string, rows) {
 	for(let i=1; i<rows.length; ++i) {
-		
-		if(getSelection(rows[i].childNodes[0]) == string) {
+		if(getSelection(rows[i].childNodes[0].firstChild) == string) {
 			// Copy other menu
 			let otherMenuHTML = rows[i].childNodes[1].innerHTML;
 			// Remove association
@@ -244,7 +243,7 @@ function removeXSD(string, rows) {
 
 function removeOntology(string, rows) {
 	for(let i=1; i<rows.length; ++i) {
-		if(getSelection(rows[i].childNodes[1]) == string) {
+		if(getSelection(rows[i].childNodes[1].firstChild) == string) {
 			// Copy other menu
 			let otherMenuHTML = rows[i].childNodes[0].innerHTML;
 			// Remove association
