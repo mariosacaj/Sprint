@@ -57,8 +57,6 @@
 	float: right;
 }
 .dialog button {
-	-webkit-transition: 0.25s;
-	transition: 0.25s;
 	color: white;
 }
 .dialog button::-moz-focus-inner {

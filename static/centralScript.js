@@ -176,25 +176,23 @@ function addToAssociation(startingString, startingType) {
 	}
 	
 	if(alreadyInserted == false) {
-		dispatchAddAssociation(doc);
+		//dispatchAddAssociation(doc);
 		if(startingType == "XSD") {
-			chooseStd(startingString, doc.querySelectorAll("table tr"));
+			chooseStd(startingString, doc.querySelector(".selectedForAssociation"));
 		}	
 		else if(startingType == "Ontology") {
-			chooseOntology(startingString, doc.querySelectorAll("table tr"));
+			chooseOntology(startingString, doc.querySelector(".selectedForAssociation"));
 		}	
 	}
 }
 
-function chooseStd(value, trs) {
-	let lastRow = trs[trs.length - 1];
-	let stdSel = lastRow.childNodes[0].firstChild;
+function chooseStd(value, tr) {
+	let stdSel = tr.childNodes[0].firstChild;
 	stdSel.parentNode.innerHTML = "<span>" + value + "</span>";
 }
 
-function chooseOntology(value, trs) {
-	let lastRow = trs[trs.length - 1];
-	let ontSel = lastRow.childNodes[1].firstChild;
+function chooseOntology(value, tr) {
+	let ontSel = tr.childNodes[1].firstChild;
 	ontSel.parentNode.innerHTML = "<span>" + value + "</span>";
 }
 
@@ -303,7 +301,7 @@ function attachAssociationListener() {
 }
 
 function getSelection(cell) {
-	if(cell.innerHTML.startsWith("<option>")) {
+	if(cell.innerHTML.startsWith("<option>") || cell.innerHTML.startsWith("<optgroup")) {
 		return cell.options[cell.selectedIndex].text;
 	}
 	else {

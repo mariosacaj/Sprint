@@ -35,7 +35,7 @@ table {
 }
 
 td {
-	border: 1px solid grey;
+	border: 0px solid grey;
 	padding: 5px;
 }
 
@@ -47,10 +47,42 @@ td {
 	cursor: pointer;
 }
 
-table span img {
+tr:not(:first-child) td:nth-child(even) {
+	background-color: rgba(0,0,0,0.1);
+}
+
+tr:first-child {
+	border-bottom: 2px solid black;
+	background-color: white;
+}
+
+tr:not(:first-child) {
+	animation: slide-in 0.5s forwards;
+	-webkit-animation: slide-in 0.5s forwards;
+}
+
+table img {
 	max-width: 20px;
 }
 
 .selectedRow img {
 	filter: invert();
 }
+
+.selectedForAssociation {
+	background-color: rgb(197, 239, 247);
+}
+
+/* Source: https://stackoverflow.com/questions/47447411/css3-animation-slide-div-form-right-to-left-onclick-of-button */
+
+@keyframes slide-in {
+   0% { -webkit-transform: translate(-100%, 0%); }
+   100% { -webkit-transform: translate(0%, 0%); }
+}
+
+@-webkit-keyframes slide-in {
+     0% {transform: translate(-100%, 0%); }
+    100% { transform: translate(0%, 0%); }
+}
+
+/**/

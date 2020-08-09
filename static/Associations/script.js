@@ -109,20 +109,41 @@ function createMenu() {
 	let newTR = document.createElement("tr");
 	let newTDStand = document.createElement("td");
 	let newTDOnto = document.createElement("td");
-	let tdLocate = document.createElement("td");
+
 	newTDStand.appendChild(selectMenuStandard);
 	newTDOnto.appendChild(selectMenuOntology);
-	let locateText = document.createElement("span");
-	locateText.innerHTML = '<img src="binoculars.png"></img>';
-	locateText.addEventListener("click", colorLine, false);
-	tdLocate.appendChild(locateText);
+
 	newTR.appendChild(newTDStand);
 	newTR.appendChild(newTDOnto);
-	newTR.appendChild(tdLocate);
+	addLineFunction(colorLine, "binoculars.png", newTR);
+	addLineFunction(deleteRow, "delete.png", newTR);
+	addLineFunction(selectForAssociation, "selectFA.png", newTR);
+
 	table.appendChild(newTR);
 
 	selectMenuOntology.addEventListener("change", filterStandard, false);
 	selectMenuStandard.addEventListener("change", filterOntology, false);
+}
+
+function addLineFunction(calledFunction, icon, row) {
+	let tdNew = document.createElement("td");
+	let newImg = document.createElement("img");
+	newImg.src = icon;
+	newImg.addEventListener("click", calledFunction, false);
+	tdNew.append(newImg);
+	row.appendChild(tdNew);
+}
+
+function selectForAssociation() {
+	let allSelectedForAssociation = document.querySelectorAll(".selectedForAssociation");
+	for(let i=0; i<allSelectedForAssociation.length; ++i) {
+		allSelectedForAssociation[i].className = allSelectedForAssociation[i].className.replace("selectedForAssociation", "");
+	}
+	this.parentNode.parentNode.className = "selectedForAssociation";
+}
+
+function deleteRow() {
+	this.parentNode.parentNode.remove();
 }
 
 function colorLine() {
