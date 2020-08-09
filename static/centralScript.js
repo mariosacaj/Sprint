@@ -203,7 +203,66 @@ function dispatchAddAssociation(doc) {
 }
 
 function removeAssociation(startingString, startingType) {
-	alert("REMOVE " + startingString + ", " + startingType);
+	var obj = document.getElementById("associations-embed");
+	var doc = obj.contentDocument; // get the inner DOM
+	let rows = doc.querySelectorAll("table tr");	
+
+	if(startingType == "XSD") {
+		removeXSD(startingString, rows);
+	}
+	else if(startingType == "Ontology") {
+		removeOntology(startingString, rows);
+	}
+
+	//alert("REMOVE " + startingString + ", " + startingType);
+}
+
+function removeXSD(string, rows) {
+	for(let i=1; i<rows.length; ++i) {
+		
+		if(getSelection(rows[i].childNodes[0]) == string) {
+			// Copy other menu
+			let otherMenuHTML = rows[i].childNodes[1].innerHTML;
+			// Remove association
+			rows[i].remove();
+			// Add new line
+			var obj = document.getElementById("associations-embed");
+			var doc = obj.contentDocument; // get the inner DOM
+			let addAssocButton = doc.getElementById("addAssociation");
+			var evt = document.createEvent("HTMLEvents"); 
+			evt.initEvent("click", false, true); // adding this created a magic and passes it as if keypressed
+			addAssocButton.dispatchEvent(evt);
+			// Get new line
+			let allRows = doc.querySelectorAll("table tr");
+			let lastRow = allRows[allRows.length - 1];
+			// Get the ontology cell
+			lastRow.childNodes[1].innerHTML = otherMenuHTML;		
+		}
+	}
+}
+
+
+function removeOntology(string, rows) {
+	for(let i=1; i<rows.length; ++i) {
+		if(getSelection(rows[i].childNodes[1]) == string) {
+			// Copy other menu
+			let otherMenuHTML = rows[i].childNodes[0].innerHTML;
+			// Remove association
+			rows[i].remove();
+			// Add new line
+			var obj = document.getElementById("associations-embed");
+			var doc = obj.contentDocument; // get the inner DOM
+			let addAssocButton = doc.getElementById("addAssociation");
+			var evt = document.createEvent("HTMLEvents"); 
+			evt.initEvent("click", false, true); // adding this created a magic and passes it as if keypressed
+			addAssocButton.dispatchEvent(evt);
+			// Get new line
+			let allRows = doc.querySelectorAll("table tr");
+			let lastRow = allRows[allRows.length - 1];
+			// Get the ontology cell
+			lastRow.childNodes[0].innerHTML = otherMenuHTML;		
+		}
+	}
 }
 
 
@@ -268,11 +327,9 @@ function xsdRC(ev) {
 	let currentString = this.innerHTML;
 	if(currentString.startsWith("name")) {
 		currentString = currentString.replace(/name="/gi, "").replace(/"/gi, "");
-		createRMenu(ev, currentString, "XSD");
 	}
-	else {
-		createRMenu(ev, currentString, "XSD");
-	}
+	
+	createRMenu(ev, currentString, "XSD");
 	ev.preventDefault();
 }
 
@@ -303,6 +360,9 @@ function attachAssociationListener() {
 function getSelection(cell) {
 	if(cell.innerHTML.startsWith("<option>") || cell.innerHTML.startsWith("<optgroup")) {
 		return cell.options[cell.selectedIndex].text;
+	}
+	else if(cell.innerHTML.startsWith("<span>")) {
+		return cell.firstChild.innerHTML;
 	}
 	else {
 		return cell.innerHTML;	
