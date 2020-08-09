@@ -87,3 +87,29 @@ table img {
 }
 
 /**/
+
+
+body > button {
+	background-color: white;
+	border: 3px solid black;
+	padding: 8px;
+	font-size: 15px;
+}
+
+body > button:hover {
+	cursor: pointer;
+	transition: 0.3s;
+	
+}
+
+body > #sendData:hover {
+	color: white;
+	background-color: rgb(87, 181, 72);
+	border: 3px solid rgb(87, 181, 72);
+}
+
+body > #addAssociation:hover {
+	color: white;
+	background-color: rgb(103, 129, 171);
+	border: 3px solid rgb(103, 129, 171);
+}
