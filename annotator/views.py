@@ -207,6 +207,9 @@ def download(request):
 
     session_dict = SHARED_DICT[request.session.session_key]
     annotator = session_dict['annotator']
+    
+    #dict_confirmed = {'a': '1', 'b': '2', 'c': '3'}
+    #annotate_dict(annotator, dict_confirmed)
     build(annotator)
 
     return send_zip(file_dir, request)
