@@ -743,4 +743,13 @@ function compress() { // Compression
 			nodes[i].dispatchEvent(clickOnNode);	
 		}
 	}
+	
+	let compressButton = document.querySelector("#compress");
+
+	if(compressButton.childNodes[0].className == 'compress') {
+		compressButton.childNodes[0].className = 'uncompress';
+	}	
+	else {
+		compressButton.childNodes[0].className = 'compress';
+	}
 }
