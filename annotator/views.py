@@ -8,7 +8,8 @@ from annotator.exceptions import *
 from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, URI_TOOL_PATH, OWL_TOOL_PATH
 import shutil
 
-SHARED_DICT = {}
+
+# SHARED_DICT = {}
 
 
 def create_user_folder(request):
@@ -19,10 +20,10 @@ def create_user_folder(request):
 
 
 def index(request):
-    prune_shared_dict()
+    # prune_shared_dict()
     try:
         var = request.session['tmp']
-        t = SHARED_DICT[request.session.session_key]
+        # t = SHARED_DICT[request.session.session_key]
     except:
         # Status
         request.session['std_up'] = False
@@ -30,6 +31,9 @@ def index(request):
         request.session['ref_up'] = False
         request.session['ref_sel'] = False
         request.session['done'] = False
+        request.session['reference_dict'] = None
+        request.session['standard_dict'] = None
+        request.session['candidates_dict'] = None
 
         # file paths
         request.session['std'] = None
@@ -38,57 +42,34 @@ def index(request):
         request.session['ext'] = None
 
         # Session objects
-        session_dict = {}
-        session_dict['annotator'] = None
-        session_dict['standard_dict'] = None
-        session_dict['candidates_dict'] = None
-        session_dict['reference_dict'] = None
-        SHARED_DICT[request.session.session_key] = session_dict
+        # session_dict = {}
+        # session_dict['annotator'] = None
+        #
+        # SHARED_DICT[request.session.session_key] = session_dict
     return render(request, 'annotator/index.html')
 
 
-def prune_shared_dict():
-    deleande = []
-    keys = get_keys()
-    for key in SHARED_DICT.keys():
-        if key not in keys:
-            deleande.append(key)
-    for key in deleande:
-        SHARED_DICT.pop(key, 0)
-
-
-def get_keys():
-    from django.contrib.sessions.models import Session
-    sessions = Session.objects.all()
-    tmp_keys = []
-    for session in sessions:
-        session_data = session.get_decoded()
-        try:
-            tmp_keys.append(session_data.session_key)
-        except:
-            pass
-    return tmp_keys
-
-
-def index_try(request):
-    c = dir_list(request.session['tmp'])
-    return render(request, 'annotator/index_try.html',
-                  {'subfiles': c})
-
-
-def dir_list(root):
-    from django.template import loader
-
-    files = os.listdir(root)
-    for mfile in files:
-        t = os.path.join(root, mfile)
-        if os.path.isdir(t):
-            yield loader.render_to_string('annotator/p_folder.html',
-                                          {'file': mfile,
-                                           'subfiles': dir_list(os.path.join(root, t))})
-            continue
-        yield loader.render_to_string('annotator/p_file.html',
-                                      {'file': mfile})
+# def prune_shared_dict():
+#     deleande = []
+#     keys = get_keys()
+#     for key in SHARED_DICT.keys():
+#         if key not in keys:
+#             deleande.append(key)
+#     for key in deleande:
+#         SHARED_DICT.pop(key, 0)
+#
+#
+# def get_keys():
+#     from django.contrib.sessions.models import Session
+#     sessions = Session.objects.all()
+#     tmp_keys = []
+#     for session in sessions:
+#         session_data = session.get_decoded()
+#         try:
+#             tmp_keys.append(session_data.session_key)
+#         except:
+#             pass
+#     return tmp_keys
 
 
 def upload_standard(request):
@@ -115,29 +96,21 @@ def standard_select(request):
         ## ASSIGNMENT IS USR CHOICE
         std_file = 'std.xsd'
         try:
-            annotator, standard_dict = standard_init(request.session['tmp'], std_dir + std_file, URI_TOOL_PATH)
+            standard_dict = standard_init(request.session['tmp'], std_dir + std_file, URI_TOOL_PATH)
         except BaseException as e:
             return HttpResponse(e)
         request.session['std'] = std_dir + std_file
-        session_dict = SHARED_DICT[request.session.session_key]
-        session_dict['annotator'] = annotator
-        session_dict['standard_dict'] = standard_dict
-        SHARED_DICT[request.session.session_key] = session_dict
+        request.session['standard_dict'] = standard_dict
         request.session['std_sel'] = True
     else:
         return render(request, 'annotator/select.html')
 
-
-
 def standard_already_selected(request):
     try:
-        annotator, standard_dict = standard_init(request.session['tmp'], request.session['std'], URI_TOOL_PATH)
+        standard_dict = standard_init(request.session['tmp'], request.session['std'], URI_TOOL_PATH)
     except BaseException as e:
         return HttpResponse(e)
-    session_dict = SHARED_DICT[request.session.session_key]
-    session_dict['annotator'] = annotator
-    session_dict['standard_dict'] = standard_dict
-    SHARED_DICT[request.session.session_key] = session_dict
+    request.session['standard_dict'] = standard_dict
     return HttpResponseRedirect('/reference_upload/')
 
 
@@ -164,7 +137,6 @@ def reference_select(request):
         ref_dir = os.path.join(request.session['tmp'], referenceInput)
         ## ASSIGNMENT IS USR CHOICE
         ref_file = 'it.owl'
-        session_dict = SHARED_DICT[request.session.session_key]
         try:
             reference_dict, ext = reference_init(ref_dir + ref_file)
         except BaseException as e:
@@ -172,8 +144,7 @@ def reference_select(request):
         request.session['ext'] = ext
         request.session['ref_sel'] = True
         request.session['ref'] = ref_dir + ref_file
-        session_dict['reference_dict'] = reference_dict
-        SHARED_DICT[request.session.session_key] = session_dict
+        request.session['reference_dict'] = reference_dict
         return HttpResponseRedirect('/compare/')
     else:
         return render(request, 'annotator/select.html')
@@ -181,15 +152,12 @@ def reference_select(request):
 
 
 def reference_already_selected(request):
-    session_dict = SHARED_DICT[request.session.session_key]
     try:
         reference_dict, ext = reference_init(request.session['ref'])
     except BaseException as e:
         return HttpResponseBadRequest(e)
     request.session['ext'] = ext
-    session_dict['reference_dict'] = reference_dict
-    SHARED_DICT[request.session.session_key] = session_dict
-
+    request.session['reference_dict'] = reference_dict
     return HttpResponseRedirect('/compare/')
 
 
@@ -205,12 +173,9 @@ def download(request):
         return HttpResponseRedirect('/compare/')
     file_dir = os.path.join(request.session['tmp'], java_dir)
 
-    session_dict = SHARED_DICT[request.session.session_key]
-    annotator = session_dict['annotator']
-    
-    #dict_confirmed = {'a': '1', 'b': '2', 'c': '3'}
-    #annotate_dict(annotator, dict_confirmed)
-    build(annotator)
+    dict_confirmed = {'a': '1', 'b': '2', 'c': '3'}
+
+    annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'], URI_TOOL_PATH)
 
     return send_zip(file_dir, request)
 
@@ -221,11 +186,6 @@ def send_zip(file_dir, request):
         response = HttpResponse(fh.read(), content_type="application/zip")
         response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(fpath)
         return response
-
-
-def annotate(request):
-    if request.method == 'POST':
-        pass
 
 
 def get_associations(request):
@@ -241,15 +201,37 @@ def get_associations(request):
     #                               ]
     #             }
     try:
-        session_dict = SHARED_DICT[request.session.session_key]
         candidates_dict = get_candidates(request.session['tmp'], request.session['std'],
-                                         request.session['ref'], session_dict['standard_dict'],
-                                         MODEL_DIR + MODEL_NAME, session_dict['reference_dict'], request.session['ext'])
-        session_dict['candidates_dict'] = candidates_dict
-        SHARED_DICT[request.session.session_key] = session_dict
+                                         request.session['ref'], request.session['standard_dict'],
+                                         MODEL_DIR + MODEL_NAME, request.session['reference_dict'],
+                                         request.session['ext'])
+        request.session['candidates_dict'] = candidates_dict
     except:
         return HttpResponseBadRequest()
     return JsonResponse(candidates_dict, safe=False)
+
+
+def path_to_dict(path):
+    d = {'name': os.path.basename(path)}
+    if os.path.isdir(path):
+        d['type'] = "directory"
+        d['children'] = [path_to_dict(os.path.join(path, x)) for x in os.listdir \
+            (path)]
+    else:
+        d['type'] = "file"
+    return d
+
+
+def get_standard_path(request):
+    if not request.session['std_up'] and request.session['std_sel']:
+        return HttpResponseBadRequest()
+    return JsonResponse(path_to_dict(request.session['std']))
+
+
+def get_reference_path(request):
+    if not request.session['ref_up'] and request.session['ref_sel']:
+        return HttpResponseBadRequest()
+    return JsonResponse(path_to_dict(request.session['ref']))
 
 
 def get_ontology(request):

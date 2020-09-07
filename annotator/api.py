@@ -60,26 +60,28 @@ def xsd2str(std_path):
 
 
 def standard_init(tmp_folder, xsd_file, uri_tool):
-    java_path = os.path.join(tmp_folder, java_dir)
+    # check if code model can be created
+    generate_code_model(tmp_folder, uri_tool, xsd_file)
 
+    # create dicts for standard like this: dict[name] = 'C'/'P'/'' (as for 'Class', 'Property' and unknown)
+    standard_dict = standard_concept_type(xsd_file)
+
+    return standard_dict
+
+
+def generate_code_model(tmp_folder, uri_tool, xsd_file):
+    java_path = os.path.join(tmp_folder, java_dir)
     if not os.path.exists(java_path):
         os.makedirs(java_path)
-
     # load Java Library for Java code manipulation
     URIToolFilePath = uri_tool
     java_man = instantiate_java_code_manipulator(java_path, URIToolFilePath)
-
     # Generate Java Code Model
-
     try:
         java_man.generateFromSchema(xsd_file)
     except:
         raise StandardError('Cannot create Java Code')
-
-    ## create dicts for standard like this: dict[name] = 'C'/'P'/'' (as for 'Class', 'Property' and unknown)
-    standard_dict = standard_concept_type(xsd_file)
-
-    return java_man, standard_dict
+    return java_man
 
 
 # def reference_init(tmp_folder, xsd_file, ont_file, standard_dict, model_path, ext):
@@ -135,6 +137,13 @@ def get_candidates(tmp_folder, xsd_file, ont_file, standard_dict, model_path, re
     candidates_dict = prune_mismatch_type(candidates_dict, standard_dict, reference_dict)
 
     return candidates_dict
+
+
+def annotate_dict_and_build(dict_confirmed, tmp_folder, uri_tool, xsd_file):
+    java_man = generate_code_model(tmp_folder, uri_tool, xsd_file)
+    for key, value in dict_confirmed.items():
+        java_man.annotate(key, value)
+    java_man.build()
 
 
 def annotate_dict(java_man, dict_confirmed):
