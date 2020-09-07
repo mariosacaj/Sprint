@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest, Http404
-from annotator.forms import UploadFileForm
 from annotator.api import *
 import tempfile
 import os
@@ -73,14 +72,11 @@ def create_user_folder(request):
 
 def upload_standard(request):
     if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
         if handle_file(request, 'standard'):
             request.session['std_up'] = True
             return HttpResponseRedirect('/standard_select/')
     else:
-        form = UploadFileForm()
-    return render(request, 'annotator/upload.html', {'form': form,
-                                                     'var': 'standard'})
+        return render(request, 'annotator/upload.html', {'var': 'standard'})
 
 
 def standard_select(request):
@@ -116,13 +112,11 @@ def upload_reference(request):
     if not request.session['std_sel']:
         return HttpResponseRedirect('/standard_select/')
     if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
         if handle_file(request, 'reference'):
             request.session['ref_up'] = True
             return HttpResponseRedirect('/reference_select/')
     else:
-        form = UploadFileForm()
-    return render(request, 'annotator/upload.html', {'form': form, 'var': 'reference'})
+        return render(request, 'annotator/upload.html', {'var': 'reference'})
 
 
 def reference_select(request):
