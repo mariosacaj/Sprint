@@ -11,14 +11,6 @@ import shutil
 
 # SHARED_DICT = {}
 
-
-def create_user_folder(request):
-    ## create tmp folder for this session
-    temp_dir = tempfile.mkdtemp(dir=PATH_FILES)
-    request.session['tmp'] = temp_dir
-    return temp_dir
-
-
 def index(request):
     # prune_shared_dict()
     try:
@@ -47,6 +39,13 @@ def index(request):
         #
         # SHARED_DICT[request.session.session_key] = session_dict
     return render(request, 'annotator/index.html')
+
+
+def create_user_folder(request):
+    ## create tmp folder for this session
+    temp_dir = tempfile.mkdtemp(dir=PATH_FILES)
+    request.session['tmp'] = temp_dir
+    return temp_dir
 
 
 # def prune_shared_dict():
@@ -85,7 +84,6 @@ def upload_standard(request):
 
 
 def standard_select(request):
-
     if not request.session['std_up']:
         return HttpResponseRedirect('/standard_upload/')
     if request.session['std_sel']:
