@@ -1,1 +1,0 @@
-Leave this folder untouched. Here files related to a specific user session are stored and deleted.
