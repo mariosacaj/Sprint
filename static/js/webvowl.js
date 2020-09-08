@@ -192,67 +192,67 @@ webvowl =
 	    this.getRectangularRepresentation = function (){
 	      return rectangularRepresentation;
 	    };
-	    
-	    this.getHalos = function (){
-	      return haloGroupElement;
-	    };
-	    
-	    // Properties
-	    this.collapsible = function ( p ){
-	      if ( !arguments.length ) return collapsible;
-	      collapsible = p;
-	      return this;
-	    };
-	    
-	    this.textBlock = function ( p ){
-	      if ( !arguments.length ) return textBlock;
-	      textBlock = p;
-	      return this;
-	    };
-	    
-	    /**
-	     * This might not be equal to the actual radius, because the instance count is used for its calculation.
-	     * @param p
-	     * @returns {*}
-	     */
-	    this.radius = function ( p ){
-	      if ( !arguments.length ) return radius;
-	      radius = p;
-	      return this;
-	    };
-	    
-	    
-	    // Functions
-	    this.setHoverHighlighting = function ( enable ){
-	      that.nodeElement().selectAll("circle").classed("hovered", enable);
-	    };
-	    
-	    this.textWidth = function ( yOffset ){
-	      var availableWidth = this.actualRadius() * 2;
-	      
-	      // if the text is not placed in the center of the circle, it can't have the full width
-	      if ( yOffset ) {
-	        var relativeOffset = Math.abs(yOffset) / this.actualRadius();
-	        var isOffsetInsideOfNode = relativeOffset <= 1;
-	        
-	        if ( isOffsetInsideOfNode ) {
-	          availableWidth = Math.cos(relativeOffset) * availableWidth;
-	        } else {
-	          availableWidth = 0;
-	        }
-	      }
-	      
-	      return availableWidth;
-	    };
-	    
-	    this.toggleFocus = function (){
-	      that.focused(!that.focused());
-	      if ( that.nodeElement() )
-	        that.nodeElement().select("circle").classed("focused", that.focused());
-	      graph.resetSearchHighlight();
-	      graph.options().searchMenu().clearText();
-	      
-	    };
+
+		  this.getHalos = function () {
+			  return haloGroupElement;
+		  };
+
+		  // Properties
+		  this.collapsible = function (p) {
+			  if (!arguments.length) return collapsible;
+			  collapsible = p;
+			  return this;
+		  };
+
+		  this.textBlock = function (p) {
+			  if (!arguments.length) return textBlock;
+			  textBlock = p;
+			  return this;
+		  };
+
+		  /**
+		   * This might not be equal to the actual radius, because the instance count is used for its calculation.
+		   * @param p
+		   * @returns {*}
+		   */
+		  this.radius = function (p) {
+			  if (!arguments.length) return radius;
+			  radius = p;
+			  return this;
+		  };
+
+
+		  // functions
+		  this.setHoverHighlighting = function (enable) {
+			  that.nodeElement().selectAll("circle").classed("hovered", enable);
+		  };
+
+		  this.textWidth = function (yOffset) {
+			  var availableWidth = this.actualRadius() * 2;
+
+			  // if the text is not placed in the center of the circle, it can't have the full width
+			  if (yOffset) {
+				  var relativeOffset = Math.abs(yOffset) / this.actualRadius();
+				  var isOffsetInsideOfNode = relativeOffset <= 1;
+
+				  if (isOffsetInsideOfNode) {
+					  availableWidth = Math.cos(relativeOffset) * availableWidth;
+				  } else {
+					  availableWidth = 0;
+				  }
+			  }
+
+			  return availableWidth;
+		  };
+
+		  this.toggleFocus = function () {
+			  that.focused(!that.focused());
+			  if (that.nodeElement())
+				  that.nodeElement().select("circle").classed("focused", that.focused());
+			  graph.resetSearchHighlight();
+			  graph.options().searchMenu().clearText();
+
+		  };
 	    
 	    this.actualRadius = function (){
 	      if ( !graph.options().scaleNodesByIndividuals() || that.individuals().length <= 0 ) {
@@ -2565,68 +2565,68 @@ webvowl =
 	  
 	  var o = function ( graph ){
 	    BaseNode.apply(this, arguments);
-	    
-	    var that = this,
-	      height = 20,
-	      width = 60,
-	      pinGroupElement,
-	      haloGroupElement,
-	      labelWidth = 80,
-	      myWidth = 80,
-	      defaultWidth = 80,
-	      shapeElement,
-	      textBlock,
-	      smallestRadius = height / 2;
-	    
-	    that.renderType("rect");
-	    // Properties
-	    this.height = function ( p ){
-	      if ( !arguments.length ) return height;
-	      height = p;
-	      return this;
-	    };
-	    
-	    this.width = function ( p ){
-	      if ( !arguments.length ) return width;
-	      width = p;
-	      return this;
-	    };
-	    
-	    this.getHalos = function (){
-	      return haloGroupElement;
-	    };
-	    
-	    // Functions
-	    // for compatibility reasons // TODO resolve
-	    this.actualRadius = function (){
-	      return smallestRadius;
-	    };
-	    
-	    this.distanceToBorder = function ( dx, dy ){
-	      return rectangularElementTools.distanceToBorder(that, dx, dy);
-	    };
-	    
-	    this.setHoverHighlighting = function ( enable ){
-	      that.nodeElement().selectAll("rect").classed("hovered", enable);
-	      
-	      var haloGroup = that.getHalos();
-	      if ( haloGroup ) {
-	        var test = haloGroup.selectAll(".searchResultA");
-	        test.classed("searchResultA", false);
-	        test.classed("searchResultB", true);
-	      }
-	      
-	    };
-	    
-	    
-	    // overwrite the labelWith;
-	    
-	    
-	    this.textWidth = function (){
-	      return labelWidth;
-	    };
-	    this.width = function (){
-	      return labelWidth;
+
+		  var that = this,
+			  height = 20,
+			  width = 60,
+			  pinGroupElement,
+			  haloGroupElement,
+			  labelWidth = 80,
+			  myWidth = 80,
+			  defaultWidth = 80,
+			  shapeElement,
+			  textBlock,
+			  smallestRadius = height / 2;
+
+		  that.renderType("rect");
+		  // Properties
+		  this.height = function (p) {
+			  if (!arguments.length) return height;
+			  height = p;
+			  return this;
+		  };
+
+		  this.width = function (p) {
+			  if (!arguments.length) return width;
+			  width = p;
+			  return this;
+		  };
+
+		  this.getHalos = function () {
+			  return haloGroupElement;
+		  };
+
+		  // functions
+		  // for compatibility reasons // TODO resolve
+		  this.actualRadius = function () {
+			  return smallestRadius;
+		  };
+
+		  this.distanceToBorder = function (dx, dy) {
+			  return rectangularElementTools.distanceToBorder(that, dx, dy);
+		  };
+
+		  this.setHoverHighlighting = function (enable) {
+			  that.nodeElement().selectAll("rect").classed("hovered", enable);
+
+			  var haloGroup = that.getHalos();
+			  if (haloGroup) {
+				  var test = haloGroup.selectAll(".searchResultA");
+				  test.classed("searchResultA", false);
+				  test.classed("searchResultB", true);
+			  }
+
+		  };
+
+
+		  // overwrite the labelWith;
+
+
+		  this.textWidth = function () {
+			  return labelWidth;
+		  };
+		  this.width = function () {
+			  return labelWidth;
 	    };
 	    
 	    this.getMyWidth = function (){
@@ -3154,66 +3154,66 @@ webvowl =
 	    };
 	    
 	    this.minCardinality = function ( p ){
-	      if ( !arguments.length ) return minCardinality;
-	      minCardinality = p;
-	      return this;
-	    };
-	    
-	    this.range = function ( p ){
-	      if ( !arguments.length ) return range;
-	      range = p;
-	      return this;
-	    };
-	    
-	    this.redundantProperties = function ( p ){
-	      if ( !arguments.length ) return redundantProperties;
-	      redundantProperties = p;
-	      return this;
-	    };
-	    
-	    this.subproperties = function ( p ){
-	      if ( !arguments.length ) return subproperties;
-	      subproperties = p;
-	      return this;
-	    };
-	    
-	    this.superproperties = function ( p ){
-	      if ( !arguments.length ) return superproperties;
-	      superproperties = p;
-	      return this;
-	    };
-	    
-	    
-	    // Functions
-	    this.distanceToBorder = function ( dx, dy ){
-	      return rectangularElementTools.distanceToBorder(that, dx, dy);
-	    };
-	    
-	    this.linkHasMarker = function (){
-	      return linkType !== "dashed";
-	    };
-	    
-	    this.markerId = function (){
-	      return "marker" + that.id();
-	    };
-	    
-	    this.toggleFocus = function (){
-	      that.focused(!that.focused());
-	      labelElement.select("rect").classed("focused", that.focused());
-	      graph.resetSearchHighlight();
-	      graph.options().searchMenu().clearText();
-	    };
-	    this.getShapeElement = function (){
-	      return shapeElement;
-	    };
-	    
-	    this.textBlock = function (){
-	      return textElement;
-	    };
-	    
-	    this.redrawElement = function (){
-	      shapeElement.remove();
-	      textElement.remove();
+			if (!arguments.length) return minCardinality;
+			minCardinality = p;
+			return this;
+		};
+
+		  this.range = function (p) {
+			  if (!arguments.length) return range;
+			  range = p;
+			  return this;
+		  };
+
+		  this.redundantProperties = function (p) {
+			  if (!arguments.length) return redundantProperties;
+			  redundantProperties = p;
+			  return this;
+		  };
+
+		  this.subproperties = function (p) {
+			  if (!arguments.length) return subproperties;
+			  subproperties = p;
+			  return this;
+		  };
+
+		  this.superproperties = function (p) {
+			  if (!arguments.length) return superproperties;
+			  superproperties = p;
+			  return this;
+		  };
+
+
+		  // functions
+		  this.distanceToBorder = function (dx, dy) {
+			  return rectangularElementTools.distanceToBorder(that, dx, dy);
+		  };
+
+		  this.linkHasMarker = function () {
+			  return linkType !== "dashed";
+		  };
+
+		  this.markerId = function () {
+			  return "marker" + that.id();
+		  };
+
+		  this.toggleFocus = function () {
+			  that.focused(!that.focused());
+			  labelElement.select("rect").classed("focused", that.focused());
+			  graph.resetSearchHighlight();
+			  graph.options().searchMenu().clearText();
+		  };
+		  this.getShapeElement = function () {
+			  return shapeElement;
+		  };
+
+		  this.textBlock = function () {
+			  return textElement;
+		  };
+
+		  this.redrawElement = function () {
+			  shapeElement.remove();
+			  textElement.remove();
 	      
 	      that.drawLabel(that.labelElement());
 	      that.animateDynamicLabelWidth(graph.options().dynamicLabelWidth());
@@ -10995,52 +10995,52 @@ webvowl =
 	   * // => false
 	   */
 	  function isEmpty(value) {
-	    if (isArrayLike(value) &&
-	        (isArray(value) || isString(value) ||
-	          isFunction(value.splice) || isArguments(value))) {
-	      return !value.length;
-	    }
-	    return !nativeKeys(value).length;
+		  if (isArrayLike(value) &&
+			  (isArray(value) || isString(value) ||
+				  isFunction(value.splice) || isArguments(value))) {
+			  return !value.length;
+		  }
+		  return !nativeKeys(value).length;
 	  }
 
-	  /**
-	   * Performs a deep comparison between two values to determine if they are
-	   * equivalent.
-	   *
-	   * **Note:** This method supports comparing arrays, array buffers, booleans,
-	   * date objects, error objects, maps, numbers, `Object` objects, regexes,
-	   * sets, strings, symbols, and typed arrays. `Object` objects are compared
-	   * by their own, not inherited, enumerable properties. Functions and DOM
-	   * nodes are compared by strict equality, i.e. `===`.
-	   *
-	   * @static
-	   * @memberOf _
-	   * @since 0.1.0
-	   * @category Lang
-	   * @param {*} value The value to compare.
-	   * @param {*} other The other value to compare.
-	   * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	   * @example
-	   *
-	   * var object = { 'a': 1 };
-	   * var other = { 'a': 1 };
-	   *
-	   * _.isEqual(object, other);
-	   * // => true
-	   *
-	   * object === other;
-	   * // => false
-	   */
-	  function isEqual(value, other) {
-	    return baseIsEqual(value, other);
-	  }
+					/**
+					 * Performs a deep comparison between two values to determine if they are
+					 * equivalent.
+					 *
+					 * **Note:** This method supports comparing arrays, array buffers, booleans,
+					 * date objects, error objects, maps, numbers, `Object` objects, regexes,
+					 * sets, strings, symbols, and typed arrays. `Object` objects are compared
+					 * by their own, not inherited, enumerable properties. functions and DOM
+					 * nodes are compared by strict equality, i.e. `===`.
+					 *
+					 * @static
+					 * @memberOf _
+					 * @since 0.1.0
+					 * @category Lang
+					 * @param {*} value The value to compare.
+					 * @param {*} other The other value to compare.
+					 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+					 * @example
+					 *
+					 * var object = { 'a': 1 };
+					 * var other = { 'a': 1 };
+					 *
+					 * _.isEqual(object, other);
+					 * // => true
+					 *
+					 * object === other;
+					 * // => false
+					 */
+					function isEqual(value, other) {
+						return baseIsEqual(value, other);
+					}
 
-	  /**
-	   * Checks if `value` is a finite primitive number.
-	   *
-	   * **Note:** This method is based on
-	   * [`Number.isFinite`](https://mdn.io/Number/isFinite).
-	   *
+					/**
+					 * Checks if `value` is a finite primitive number.
+					 *
+					 * **Note:** This method is based on
+					 * [`Number.isFinite`](https://mdn.io/Number/isFinite).
+					 *
 	   * @static
 	   * @memberOf _
 	   * @since 0.1.0
@@ -15752,48 +15752,48 @@ webvowl =
 	    
 	    return map;
 	  }
-	  
-	  function setBackgroundColorForElements( elements, backgroundColor ){
-	    elements.forEach(function ( element ){
-	      element.backgroundColor(backgroundColor);
-	    });
-	  }
-	  
-	  function resetBackgroundColors( elements ){
-	    console.log("Resetting color");
-	    elements.forEach(function ( element ){
-	      element.backgroundColor(null);
-	    });
-	  }
-	  
-	  filter.colorModeType = function ( p ){
-	    if ( !arguments.length ) return colorModeType;
-	    colorModeType = p;
-	    return filter;
-	  };
-	  
-	  filter.enabled = function ( p ){
-	    if ( !arguments.length ) return enabled;
-	    enabled = p;
-	    return filter;
-	  };
-	  
-	  filter.reset = function (){
-	    enabled = DEFAULT_STATE;
-	  };
-	  
-	  
-	  // Functions a filter must have
-	  filter.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  filter.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return filter;
+
+		function setBackgroundColorForElements(elements, backgroundColor) {
+			elements.forEach(function (element) {
+				element.backgroundColor(backgroundColor);
+			});
+		}
+
+		function resetBackgroundColors(elements) {
+			console.log("Resetting color");
+			elements.forEach(function (element) {
+				element.backgroundColor(null);
+			});
+		}
+
+		filter.colorModeType = function (p) {
+			if (!arguments.length) return colorModeType;
+			colorModeType = p;
+			return filter;
+		};
+
+		filter.enabled = function (p) {
+			if (!arguments.length) return enabled;
+			enabled = p;
+			return filter;
+		};
+
+		filter.reset = function () {
+			enabled = DEFAULT_STATE;
+		};
+
+
+		// functions a filter must have
+		filter.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		filter.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return filter;
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
@@ -15815,47 +15815,47 @@ webvowl =
 	  
 	  var filter = {},
 	    nodes,
-	    properties,
-	    enabled = DEFAULT_STATE,
-	    filteredNodes,
-	    filteredProperties;
-	  
-	  
-	  /**
-	   * If enabled, redundant details won't be drawn anymore.
-	   * @param untouchedNodes
-	   * @param untouchedProperties
-	   */
-	  filter.filter = function ( untouchedNodes, untouchedProperties ){
-	    nodes = untouchedNodes;
-	    properties = untouchedProperties;
-	    graph.options().compactNotation(enabled);
-	    filteredNodes = nodes;
-	    filteredProperties = properties;
-	  };
-	  
-	  filter.enabled = function ( p ){
-	    if ( !arguments.length ) return enabled;
-	    enabled = p;
-	    return filter;
-	  };
-	  
-	  filter.reset = function (){
-	    enabled = DEFAULT_STATE;
-	  };
-	  
-	  
-	  // Functions a filter must have
-	  filter.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  filter.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return filter;
+		  properties,
+		  enabled = DEFAULT_STATE,
+		  filteredNodes,
+		  filteredProperties;
+
+
+		/**
+		 * If enabled, redundant details won't be drawn anymore.
+		 * @param untouchedNodes
+		 * @param untouchedProperties
+		 */
+		filter.filter = function (untouchedNodes, untouchedProperties) {
+			nodes = untouchedNodes;
+			properties = untouchedProperties;
+			graph.options().compactNotation(enabled);
+			filteredNodes = nodes;
+			filteredProperties = properties;
+		};
+
+		filter.enabled = function (p) {
+			if (!arguments.length) return enabled;
+			enabled = p;
+			return filter;
+		};
+
+		filter.reset = function () {
+			enabled = DEFAULT_STATE;
+		};
+
+
+		// functions a filter must have
+		filter.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		filter.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return filter;
 	};
 
 
@@ -15881,47 +15881,47 @@ webvowl =
 	   * @param untouchedNodes
 	   * @param untouchedProperties
 	   */
-	  filter.filter = function ( untouchedNodes, untouchedProperties ){
-	    nodes = untouchedNodes;
-	    properties = untouchedProperties;
-	    
-	    if ( this.enabled() ) {
-	      removeDatatypesAndLiterals();
-	    }
-	    
-	    filteredNodes = nodes;
-	    filteredProperties = properties;
+	  filter.filter = function (untouchedNodes, untouchedProperties) {
+		  nodes = untouchedNodes;
+		  properties = untouchedProperties;
+
+		  if (this.enabled()) {
+			  removeDatatypesAndLiterals();
+		  }
+
+		  filteredNodes = nodes;
+		  filteredProperties = properties;
 	  };
-	  
-	  function removeDatatypesAndLiterals(){
-	    var filteredData = filterTools.filterNodesAndTidy(nodes, properties, isNoDatatypeOrLiteral);
-	    
-	    nodes = filteredData.nodes;
-	    properties = filteredData.properties;
-	  }
-	  
-	  function isNoDatatypeOrLiteral( node ){
-	    return !elementTools.isDatatype(node);
-	  }
-	  
-	  filter.enabled = function ( p ){
-	    if ( !arguments.length ) return enabled;
-	    enabled = p;
-	    return filter;
-	  };
-	  
-	  
-	  // Functions a filter must have
-	  filter.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  filter.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return filter;
+
+		function removeDatatypesAndLiterals() {
+			var filteredData = filterTools.filterNodesAndTidy(nodes, properties, isNoDatatypeOrLiteral);
+
+			nodes = filteredData.nodes;
+			properties = filteredData.properties;
+		}
+
+		function isNoDatatypeOrLiteral(node) {
+			return !elementTools.isDatatype(node);
+		}
+
+		filter.enabled = function (p) {
+			if (!arguments.length) return enabled;
+			enabled = p;
+			return filter;
+		};
+
+
+		// functions a filter must have
+		filter.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		filter.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return filter;
 	};
 
 
@@ -16015,48 +16015,48 @@ webvowl =
 	  filter.filter = function ( untouchedNodes, untouchedProperties ){
 	    nodes = untouchedNodes;
 	    properties = untouchedProperties;
-	    
-	    if ( this.enabled() ) {
-	      removeDisjointWithProperties();
-	    }
-	    
-	    filteredNodes = nodes;
-	    filteredProperties = properties;
+
+		  if (this.enabled()) {
+			  removeDisjointWithProperties();
+		  }
+
+		  filteredNodes = nodes;
+		  filteredProperties = properties;
 	  };
-	  
-	  function removeDisjointWithProperties(){
-	    var cleanedProperties = [],
-	      i, l, property;
-	    
-	    for ( i = 0, l = properties.length; i < l; i++ ) {
-	      property = properties[i];
-	      
-	      if ( !(property instanceof OwlDisjointWith) ) {
-	        cleanedProperties.push(property);
-	      }
-	    }
-	    
-	    properties = cleanedProperties;
-	  }
-	  
-	  filter.enabled = function ( p ){
-	    if ( !arguments.length ) return enabled;
-	    enabled = p;
-	    return filter;
-	  };
-	  
-	  
-	  // Functions a filter must have
-	  filter.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  filter.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return filter;
+
+		function removeDisjointWithProperties() {
+			var cleanedProperties = [],
+				i, l, property;
+
+			for (i = 0, l = properties.length; i < l; i++) {
+				property = properties[i];
+
+				if (!(property instanceof OwlDisjointWith)) {
+					cleanedProperties.push(property);
+				}
+			}
+
+			properties = cleanedProperties;
+		}
+
+		filter.enabled = function (p) {
+			if (!arguments.length) return enabled;
+			enabled = p;
+			return filter;
+		};
+
+
+		// functions a filter must have
+		filter.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		filter.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return filter;
 	};
 
 
@@ -16178,51 +16178,49 @@ webvowl =
 	      
 	    }
 	    var nodesToRemove = [];
-	    var newNodes = [];
-	    // todo: test and make it faster
-	    for ( i = 0; i < nodes.length; i++ ) {
-	      var nodeId = nodes[i].id();
-	      if ( nodes[i].type() === "rdfs:Literal" ) {
-	        if ( literalUsageMap[nodeId] === undefined ) {
-	          nodesToRemove.push(nodeId);
-	        }
-	        else {
-	          newNodes.push(nodes[i]);
-	        }
-	        // check for node type == OWL:THING
-	      } else if ( nodes[i].type() === "owl:Thing" ) {
-	        if ( thingUsageMap[nodeId] === undefined ) {
-	          nodesToRemove.push(nodeId);
-	        }
-	        else {
-	          newNodes.push(nodes[i]);
-	        }
-	      } else {
-	        newNodes.push(nodes[i]);
-	      }
-	    }
-	    
-	    filteredNodes = newNodes;
-	    filteredProperties = properties;
-	    removedNodes = nodesToRemove;
+		  var newNodes = [];
+		  // todo: test and make it faster
+		  for (i = 0; i < nodes.length; i++) {
+			  var nodeId = nodes[i].id();
+			  if (nodes[i].type() === "rdfs:Literal") {
+				  if (literalUsageMap[nodeId] === undefined) {
+					  nodesToRemove.push(nodeId);
+				  } else {
+					  newNodes.push(nodes[i]);
+				  }
+				  // check for node type == OWL:THING
+			  } else if (nodes[i].type() === "owl:Thing") {
+				  if (thingUsageMap[nodeId] === undefined) {
+					  nodesToRemove.push(nodeId);
+				  } else {
+					  newNodes.push(nodes[i]);
+				  }
+			  } else {
+				  newNodes.push(nodes[i]);
+			  }
+		  }
+
+		  filteredNodes = newNodes;
+		  filteredProperties = properties;
+		  removedNodes = nodesToRemove;
 	  };
-	  
-	  
-	  // Functions a filter must have
-	  filter.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  filter.removedNodes = function (){
-	    return removedNodes;
-	  };
-	  
-	  filter.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return filter;
+
+
+		// functions a filter must have
+		filter.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		filter.removedNodes = function () {
+			return removedNodes;
+		};
+
+		filter.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return filter;
 	};
 
 
@@ -16344,47 +16342,47 @@ webvowl =
 	    nodes = filteredData.nodes;
 	    properties = filteredData.properties;
 	  }
-	  
-	  function filterByNodeDegree( nodes, properties, minDegree ){
-	    return filterTools.filterNodesAndTidy(nodes, properties, hasRequiredDegree(minDegree));
-	  }
-	  
-	  function hasRequiredDegree( minDegree ){
-	    return function ( node ){
-	      return filterOutDatatypes(node.links()).length >= minDegree;
-	    };
-	  }
-	  
-	  filter.setMaxDegreeSetter = function ( _maxDegreeSetter ){
-	    maxDegreeSetter = _maxDegreeSetter;
-	  };
-	  
-	  filter.setDegreeGetter = function ( _degreeGetter ){
-	    degreeGetter = _degreeGetter;
-	  };
-	  
-	  filter.setDegreeSetter = function ( _degreeSetter ){
-	    degreeSetter = _degreeSetter;
-	  };
-	  
-	  filter.enabled = function ( p ){
-	    if ( !arguments.length ) return enabled;
-	    enabled = p;
-	    return filter;
-	  };
-	  
-	  
-	  // Functions a filter must have
-	  filter.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  filter.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return filter;
+
+		function filterByNodeDegree(nodes, properties, minDegree) {
+			return filterTools.filterNodesAndTidy(nodes, properties, hasRequiredDegree(minDegree));
+		}
+
+		function hasRequiredDegree(minDegree) {
+			return function (node) {
+				return filterOutDatatypes(node.links()).length >= minDegree;
+			};
+		}
+
+		filter.setMaxDegreeSetter = function (_maxDegreeSetter) {
+			maxDegreeSetter = _maxDegreeSetter;
+		};
+
+		filter.setDegreeGetter = function (_degreeGetter) {
+			degreeGetter = _degreeGetter;
+		};
+
+		filter.setDegreeSetter = function (_degreeSetter) {
+			degreeSetter = _degreeSetter;
+		};
+
+		filter.enabled = function (p) {
+			if (!arguments.length) return enabled;
+			enabled = p;
+			return filter;
+		};
+
+
+		// functions a filter must have
+		filter.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		filter.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return filter;
 	};
 
 
@@ -16405,47 +16403,47 @@ webvowl =
 	    nodes,
 	    properties,
 	    enabled = DEFAULT_STATE,
-	    filteredNodes,
-	    filteredProperties;
-	  
-	  
-	  /**
-	   * If enabled, the scaling of nodes according to individuals will be enabled.
-	   * @param untouchedNodes
-	   * @param untouchedProperties
-	   */
-	  filter.filter = function ( untouchedNodes, untouchedProperties ){
-	    nodes = untouchedNodes;
-	    properties = untouchedProperties;
-	    
-	    graph.options().scaleNodesByIndividuals(enabled);
-	    
-	    filteredNodes = nodes;
-	    filteredProperties = properties;
-	  };
-	  
-	  filter.enabled = function ( p ){
-	    if ( !arguments.length ) return enabled;
-	    enabled = p;
-	    return filter;
-	  };
-	  
-	  filter.reset = function (){
-	    enabled = DEFAULT_STATE;
-	  };
-	  
-	  
-	  // Functions a filter must have
-	  filter.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  filter.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return filter;
+		  filteredNodes,
+		  filteredProperties;
+
+
+		/**
+		 * If enabled, the scaling of nodes according to individuals will be enabled.
+		 * @param untouchedNodes
+		 * @param untouchedProperties
+		 */
+		filter.filter = function (untouchedNodes, untouchedProperties) {
+			nodes = untouchedNodes;
+			properties = untouchedProperties;
+
+			graph.options().scaleNodesByIndividuals(enabled);
+
+			filteredNodes = nodes;
+			filteredProperties = properties;
+		};
+
+		filter.enabled = function (p) {
+			if (!arguments.length) return enabled;
+			enabled = p;
+			return filter;
+		};
+
+		filter.reset = function () {
+			enabled = DEFAULT_STATE;
+		};
+
+
+		// functions a filter must have
+		filter.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		filter.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return filter;
 	};
 
 
@@ -16489,48 +16487,48 @@ webvowl =
 	  }
 	  
 	  function isNoObjectProperty( property ){
-	    return !elementTools.isObjectProperty(property);
+		  return !elementTools.isObjectProperty(property);
 	  }
-	  
-	  function isNoFloatingThing( node ){
-	    var isNoThing = !elementTools.isThing(node);
-	    var hasNonFilteredProperties = hasPropertiesOtherThanObjectProperties(node, properties);
-	    return isNoThing || hasNonFilteredProperties;
-	  }
-	  
-	  function hasPropertiesOtherThanObjectProperties( node, properties ){
-	    for ( var i = 0; i < properties.length; i++ ) {
-	      var property = properties[i];
-	      if ( property.domain() !== node && property.range() !== node ) {
-	        continue;
-	      }
-	      
-	      if ( isNoObjectProperty(property) ) {
-	        return true;
-	      }
-	    }
-	    
-	    return false;
-	  }
-	  
-	  filter.enabled = function ( p ){
-	    if ( !arguments.length ) return enabled;
-	    enabled = p;
-	    return filter;
-	  };
-	  
-	  
-	  // Functions a filter must have
-	  filter.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  filter.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return filter;
+
+		function isNoFloatingThing(node) {
+			var isNoThing = !elementTools.isThing(node);
+			var hasNonFilteredProperties = hasPropertiesOtherThanObjectProperties(node, properties);
+			return isNoThing || hasNonFilteredProperties;
+		}
+
+		function hasPropertiesOtherThanObjectProperties(node, properties) {
+			for (var i = 0; i < properties.length; i++) {
+				var property = properties[i];
+				if (property.domain() !== node && property.range() !== node) {
+					continue;
+				}
+
+				if (isNoObjectProperty(property)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		filter.enabled = function (p) {
+			if (!arguments.length) return enabled;
+			enabled = p;
+			return filter;
+		};
+
+
+		// functions a filter must have
+		filter.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		filter.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return filter;
 	};
 
 
@@ -24907,47 +24905,47 @@ webvowl =
 	   * @param untouchedNodes
 	   * @param untouchedProperties
 	   */
-	  filter.filter = function ( untouchedNodes, untouchedProperties ){
-	    nodes = untouchedNodes;
-	    properties = untouchedProperties;
-	    
-	    if ( this.enabled() ) {
-	      removeSetOperators();
-	    }
-	    
-	    filteredNodes = nodes;
-	    filteredProperties = properties;
+	  filter.filter = function (untouchedNodes, untouchedProperties) {
+		  nodes = untouchedNodes;
+		  properties = untouchedProperties;
+
+		  if (this.enabled()) {
+			  removeSetOperators();
+		  }
+
+		  filteredNodes = nodes;
+		  filteredProperties = properties;
 	  };
-	  
-	  function removeSetOperators(){
-	    var filteredData = filterTools.filterNodesAndTidy(nodes, properties, isNoSetOperator);
-	    
-	    nodes = filteredData.nodes;
-	    properties = filteredData.properties;
-	  }
-	  
-	  function isNoSetOperator( node ){
-	    return !(node instanceof SetOperatorNode);
-	  }
-	  
-	  filter.enabled = function ( p ){
-	    if ( !arguments.length ) return enabled;
-	    enabled = p;
-	    return filter;
-	  };
-	  
-	  
-	  // Functions a filter must have
-	  filter.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  filter.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return filter;
+
+		function removeSetOperators() {
+			var filteredData = filterTools.filterNodesAndTidy(nodes, properties, isNoSetOperator);
+
+			nodes = filteredData.nodes;
+			properties = filteredData.properties;
+		}
+
+		function isNoSetOperator(node) {
+			return !(node instanceof SetOperatorNode);
+		}
+
+		filter.enabled = function (p) {
+			if (!arguments.length) return enabled;
+			enabled = p;
+			return filter;
+		};
+
+
+		// functions a filter must have
+		filter.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		filter.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return filter;
 	};
 
 
@@ -25140,47 +25138,47 @@ webvowl =
 	  statistics.edgeCount = function (){
 	    return edgeCount;
 	  };
-	  
-	  statistics.occurencesOfPropertyTypes = function (){
-	    return occurencesOfPropertyTypes;
-	  };
-	  
-	  statistics.classCount = function (){
-	    return classCount;
-	  };
-	  
-	  statistics.datatypeCount = function (){
-	    return datatypeCount;
-	  };
-	  
-	  statistics.datatypePropertyCount = function (){
-	    return datatypePropertyCount;
-	  };
-	  
-	  statistics.objectPropertyCount = function (){
-	    return objectPropertyCount;
-	  };
-	  
-	  statistics.propertyCount = function (){
-	    return propertyCount;
-	  };
-	  
-	  statistics.totalIndividualCount = function (){
-	    return totalIndividualCount;
-	  };
-	  
-	  
-	  // Functions a filter must have
-	  statistics.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  statistics.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return statistics;
+
+		statistics.occurencesOfPropertyTypes = function () {
+			return occurencesOfPropertyTypes;
+		};
+
+		statistics.classCount = function () {
+			return classCount;
+		};
+
+		statistics.datatypeCount = function () {
+			return datatypeCount;
+		};
+
+		statistics.datatypePropertyCount = function () {
+			return datatypePropertyCount;
+		};
+
+		statistics.objectPropertyCount = function () {
+			return objectPropertyCount;
+		};
+
+		statistics.propertyCount = function () {
+			return propertyCount;
+		};
+
+		statistics.totalIndividualCount = function () {
+			return totalIndividualCount;
+		};
+
+
+		// functions a filter must have
+		statistics.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		statistics.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return statistics;
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
@@ -25326,48 +25324,48 @@ webvowl =
 	      if ( property.domain() === subclass ) {
 	        superClassCount += 1;
 	      }
-	      
-	      if ( superClassCount > 1 ) {
-	        return false;
-	      }
-	    }
-	    
-	    return true;
+
+			if (superClassCount > 1) {
+				return false;
+			}
+		}
+
+		  return true;
 	  }
-	  
-	  function removeUnneededElements( array, removableElements ){
-	    var disjoint = [],
-	      element,
-	      i,
-	      l;
-	    
-	    for ( i = 0, l = array.length; i < l; i++ ) {
-	      element = array[i];
-	      if ( removableElements.indexOf(element) === -1 ) {
-	        disjoint.push(element);
-	      }
-	    }
-	    return disjoint;
-	  }
-	  
-	  filter.enabled = function ( p ){
-	    if ( !arguments.length ) return enabled;
-	    enabled = p;
-	    return filter;
-	  };
-	  
-	  
-	  // Functions a filter must have
-	  filter.filteredNodes = function (){
-	    return filteredNodes;
-	  };
-	  
-	  filter.filteredProperties = function (){
-	    return filteredProperties;
-	  };
-	  
-	  
-	  return filter;
+
+		function removeUnneededElements(array, removableElements) {
+			var disjoint = [],
+				element,
+				i,
+				l;
+
+			for (i = 0, l = array.length; i < l; i++) {
+				element = array[i];
+				if (removableElements.indexOf(element) === -1) {
+					disjoint.push(element);
+				}
+			}
+			return disjoint;
+		}
+
+		filter.enabled = function (p) {
+			if (!arguments.length) return enabled;
+			enabled = p;
+			return filter;
+		};
+
+
+		// functions a filter must have
+		filter.filteredNodes = function () {
+			return filteredNodes;
+		};
+
+		filter.filteredProperties = function () {
+			return filteredProperties;
+		};
+
+
+		return filter;
 	};
 
 

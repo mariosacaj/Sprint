@@ -1,15 +1,10 @@
-from .Functions.MatchVocab import *
-from .Functions.SimilarWordbyModel import *
-from .Functions.TwoDMatrixOperations import *
-from .Functions.MatchVocab import matchWordsModel
-from .Functions.MatchPair import getValueThreshold
+from .functions.match_vocab import matchCompoundToVocab, matchWordsModel
+from .functions.match_pairs import getValueThreshold, isMatchExistscomp
 from typing import List, Any, Union
-from .Functions.MatchPair import isMatchExistscomp
-from .Functions.ReadWriteFiles import readTextFile, writeCsv
-from .Functions.TwoDMatrixOperations import makeCompound2dArray
+from .functions.SimilarWordbyModel import getSimilarWordAvg
+from .functions.extract_from_files import readTextFile, writeCsv, readFile_ontology, readFile_standard
+from .functions.TwoDMatrixOperations import makeCompound2dArray, splitToList
 from collections import defaultdict
-from annotator.tool.FileManager.ReadFiles import readFile_standard
-from annotator.tool.FileManager.QualifiedReadFiles import readFile_ontology
 
 
 def produce_final_candidates(xsd_file, ont_file,

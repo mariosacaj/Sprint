@@ -3,14 +3,13 @@
    * As an alternative, it is possible to create a new conda environment, to activate it, to install pip using conda and to install the requirements using pip
 2. Place the google model in `/model`, accordingly to the `readme.me` file you can find there.
 3. Install Java 13.
-4. Go to `annotator/tool/JavaLoad.py`.
-5. Set the `jvmpath` value of the `jpype.startJVM()` function to the absolute path of your Java Virtual Machine (sometimes is not necessary to specify it as `jpype` finds it on its own).
 
 Warning: Pycharm 2020.1 has a weird bug related to the `xml.dom.minidom` package dependency. It shouldn't be a problem though.
 
 # Deployment:
 ### Development
-Run `python manage.py runserver`
+1. Run `python manage.py runserver`
+2. Go to `http://127.0.0.1:8000`
 
 ### Production
 1. Set `DEBUG = False` in `Sprint/settings.py`
@@ -21,4 +20,3 @@ Run `python manage.py runserver`
     * `usgi` should point to `Sprint/wsgi.py`.
     * `nginx` should be set to serve on its own the static files and call `usgi` for every other request
     *  `Apache` with `mod_wsgi` can also be used
-    *  IMPORTANT: `usgi` or `mod_wsgi` MUST be set to use 1 worker/process and many threads.

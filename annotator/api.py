@@ -1,19 +1,23 @@
 import shutil
 import zipfile
-
-from annotator.tool.JavaLoad import *
-from annotator.tool.FileManager.ConceptType import standard_concept_type, reference_concept_type
-from annotator.exceptions import *
+import os
+import subprocess
 import json
-from annotator.tool.FileManager.ReadFiles import xsd2str as x2s
-from annotator.tool.Mapping.Routines import rdflib, get_ontology, os, subprocess, produce_final_candidates, \
-    prune_mismatch_type, xp
 
-standardInput = 'standard/'
-referenceInput = 'reference/'
+from annotator.exceptions import *
 
+from .tool.java_helper import instantiate_java_code_manipulator
+from .tool.functions.preprocessing import standard_concept_type, reference_concept_type
+from .tool.functions.extract_from_files import xsd2str as x2s, get_ontology, rdflib, xp
+from .tool.routines import produce_final_candidates, prune_mismatch_type
+
+# Directories
+standard_dir = 'standard/'
+reference_dir = 'reference/'
 output_dir = 'output_map/'
 java_dir = 'javaclass/'
+
+# Intermediate files
 source_rw = 's_SumArray3.csv'
 target_rw = 't_SumArray3.csv'
 write_pathVecOrgThr = 'SumVecOrgThr.csv'
@@ -162,12 +166,12 @@ def build(java_man):
 
 def file_writedown_mng(f, flag, request, temp_dir):
     if flag == 'standard':
-        input = standardInput
+        input = standard_dir
         path = 'std'
         sel = 'std_sel'
         fun = check_standard
     else:
-        input = referenceInput
+        input = reference_dir
         path = 'ref'
         sel = 'ref_sel'
         fun = check_reference
