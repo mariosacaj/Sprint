@@ -1,4 +1,3 @@
-import csv
 
 #finding similarity for list of words within model, number = topmost example 10, 20 etc
 def getSimilarWordsAndVec(inputList, model, number):
