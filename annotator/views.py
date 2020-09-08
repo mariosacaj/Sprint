@@ -86,14 +86,14 @@ def standard_select(request):
         return standard_already_selected(request)
 
     if request.method == 'POST':
-        std_dir = os.path.join(request.session['tmp'], standardInput)
+        # std_dir_abs = os.path.join(request.session['tmp'], standard_dir)
         ## ASSIGNMENT IS USR CHOICE
         std_file = 'std.xsd'
         try:
-            standard_dict = standard_init(request.session['tmp'], std_dir + std_file, URI_TOOL_PATH)
+            standard_dict = standard_init(request.session['tmp'], std_file, URI_TOOL_PATH)
         except BaseException as e:
             return HttpResponse(e)
-        request.session['std'] = std_dir + std_file
+        request.session['std'] = std_file
         request.session['standard_dict'] = standard_dict
         request.session['std_sel'] = True
     else:
@@ -126,16 +126,16 @@ def reference_select(request):
         return reference_already_selected(request)
 
     if request.method == 'POST':
-        ref_dir = os.path.join(request.session['tmp'], referenceInput)
+        # ref_dir_abs = os.path.join(request.session['tmp'], reference_dir)
         ## ASSIGNMENT IS USR CHOICE
         ref_file = 'it.owl'
         try:
-            reference_dict, ext = reference_init(ref_dir + ref_file)
+            reference_dict, ext = reference_init(ref_file)
         except BaseException as e:
             return HttpResponseBadRequest(e)
         request.session['ext'] = ext
         request.session['ref_sel'] = True
-        request.session['ref'] = ref_dir + ref_file
+        request.session['ref'] = ref_file
         request.session['reference_dict'] = reference_dict
         return HttpResponseRedirect('/compare/')
     else:
