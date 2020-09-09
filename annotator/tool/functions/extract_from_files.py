@@ -5,8 +5,29 @@ import rdflib
 import re
 import xml.etree.ElementTree as ET
 from owlready2 import get_ontology
+from lxml import etree
 
-from .preprocessing import file_type
+
+def file_type(path, filename):
+    ext = None
+    try:
+        etree.parse(path + filename)
+        try:
+            xp.parse(path + filename)
+            ext = 'xsd'
+        except:
+            ext = 'xml'
+    except:
+        try:
+            rdflib.Graph().load(path + filename, format="ttl")
+            ext = 'ttl'
+        except:
+            get_ontology(path + filename).load()
+            ext = 'owl'
+
+    if ext is None:
+        raise ValueError('Unsupported file type')
+    return ext
 
 
 def readcsv(filepath):

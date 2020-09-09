@@ -1,8 +1,7 @@
 import re
-from lxml import etree
 
 from .extract_from_files import readQualifiedOWLClass, readQualifiedOWLProperty, \
-    readQualifiedTurtle, readXsdFilecomplextype, readXsdFileElementAttribute, readXsdFile, get_ontology, xp, ET, rdflib
+    readQualifiedTurtle, readXsdFilecomplextype, readXsdFileElementAttribute, readXsdFile, ET
 
 
 def get_xml_raw_vocab_list(xml_path, xml_name):
@@ -38,27 +37,6 @@ def getFileExtension(filename):
     elif (ext == ttl):
         return ttl
 
-
-def file_type(path, filename):
-    ext = None
-    try:
-        etree.parse(path + filename)
-        try:
-            xp.parse(path + filename)
-            ext = 'xsd'
-        except:
-            ext = 'xml'
-    except:
-        try:
-            rdflib.Graph().load(path + filename, format="ttl")
-            ext = 'ttl'
-        except:
-            get_ontology(path + filename).load()
-            ext = 'owl'
-
-    if ext is None:
-        raise ValueError('Unsupported file type')
-    return ext
 
 
 def standard_concept_type(standard_path):
