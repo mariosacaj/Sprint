@@ -6,7 +6,7 @@ import json
 
 from annotator.exceptions import *
 
-from .tool.java_helper import instantiate_java_code_manipulator
+from .tool.java_helper import instantiate_java_code_manipulator, instantiate_ont_converter, startJVM
 from .tool.functions.preprocessing import standard_concept_type, reference_concept_type
 from .tool.functions.extract_from_files import xsd2str as x2s, get_ontology, rdflib, xp
 from .tool.routines import produce_final_candidates, prune_mismatch_type
@@ -63,9 +63,11 @@ def xsd2str(std_path):
     return x2s(std_path)
 
 
-def standard_init(tmp_folder, xsd_file, uri_tool):
+def standard_init(tmp_folder, xsd_file, uri_tool, ont_tool):
     # check if code model can be created
-    generate_code_model(tmp_folder, uri_tool, xsd_file)
+    startJVM(uri_tool, ont_tool)
+
+    generate_code_model(tmp_folder, xsd_file)
 
     # create dicts for standard like this: dict[name] = 'C'/'P'/'' (as for 'Class', 'Property' and unknown)
     standard_dict = standard_concept_type(xsd_file)
@@ -73,13 +75,12 @@ def standard_init(tmp_folder, xsd_file, uri_tool):
     return standard_dict
 
 
-def generate_code_model(tmp_folder, uri_tool, xsd_file):
+def generate_code_model(tmp_folder, xsd_file):
     java_path = os.path.join(tmp_folder, java_dir)
     if not os.path.exists(java_path):
         os.makedirs(java_path)
     # load Java Library for Java code manipulation
-    URIToolFilePath = uri_tool
-    java_man = instantiate_java_code_manipulator(java_path, URIToolFilePath)
+    java_man = instantiate_java_code_manipulator(java_path)
     # Generate Java Code Model
     try:
         java_man.generateFromSchema(xsd_file)
@@ -88,36 +89,20 @@ def generate_code_model(tmp_folder, uri_tool, xsd_file):
     return java_man
 
 
-# def reference_init(tmp_folder, xsd_file, ont_file, standard_dict, model_path, ext):
-#     from gensim.models import KeyedVectors
-#     # user specific
-#     model = KeyedVectors.load(model_path, mmap='r')
-#     model.syn0norm = model.syn0  # prevent recalc of normed vectors
-#     # … plus whatever else you wanted to do with the model
-#
-#     vocab_list = list(model.vocab.keys())
-#
-#     ext = check_reference(ont_file)
-#
-#     reference_dict = reference_concept_type(ont_file, ext)
-#
-#     output_path = os.path.join(tmp_folder, output_dir)
-#
-#     if not os.path.exists(output_path):
-#         os.makedirs(output_path)
-#
-#     ## candidates creation with mapping tool
-#     candidates_dict = produce_final_candidates(xsd_file, ont_file,
-#                                                output_path, vocab_list,
-#                                                model, source_rw, target_rw, write_pathVecOrgThr, writepathCompound, ext)
-#
-#     candidates_dict = prune_mismatch_type(candidates_dict, standard_dict, reference_dict)
-#     return reference_dict, candidates_dict
-
-def reference_init(ont_file):
-    ext = check_reference(ont_file)
-    reference_dict = reference_concept_type(ont_file, ext)
-    return reference_dict, ext
+def reference_init(ont_file, ext):
+    new_ont_file = ont_file
+    new_ext = ext
+    # Translate to OWL if possible
+    if ext == 'ttl':
+        try:
+            Converter = instantiate_ont_converter()
+            Converter.convert(ont_file, ont_file + ".owl")
+            new_ont_file = ont_file + ".owl"
+            new_ext = "owl"
+        except:
+            pass
+    reference_dict = reference_concept_type(new_ont_file, new_ext)
+    return reference_dict, new_ext, new_ont_file
 
 
 def get_candidates(tmp_folder, xsd_file, ont_file, standard_dict, model_path, reference_dict, ext):
@@ -143,8 +128,8 @@ def get_candidates(tmp_folder, xsd_file, ont_file, standard_dict, model_path, re
     return candidates_dict
 
 
-def annotate_dict_and_build(dict_confirmed, tmp_folder, uri_tool, xsd_file):
-    java_man = generate_code_model(tmp_folder, uri_tool, xsd_file)
+def annotate_dict_and_build(dict_confirmed, tmp_folder, xsd_file):
+    java_man = generate_code_model(tmp_folder, xsd_file)
     for key, value in dict_confirmed.items():
         java_man.annotate(key, value)
     java_man.build()

@@ -133,3 +133,5 @@ model_org_name = 'GoogleNews-vectors-negative300.bin'
 URI_TOOL_PATH = os.path.join(TOOLS_DIR, 'URIConverterTool.jar')
 
 OWL_TOOL_PATH = os.path.join(TOOLS_DIR, 'owl2vowl.jar')
+
+ONT_TOOL_PATH = os.path.join(TOOLS_DIR, 'OntologyConverter.jar')
