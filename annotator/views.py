@@ -184,6 +184,7 @@ def download(request):
 
     dict_confirmed = {'a': '1', 'b': '2', 'c': '3'}
 
+    validation(request, dict_confirmed)
     annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'])
 
     return send_zip(file_dir, request)
@@ -195,6 +196,28 @@ def send_zip(file_dir, request):
         response = HttpResponse(fh.read(), content_type="application/zip")
         response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(fpath)
         return response
+
+
+def validation(request, dict_confirmed):
+    for key, value in dict_confirmed.items():
+        std_type = request.session['standard_dict']
+        ref_type = request.session['reference_dict']
+        if ref_type != '' and std_type != '' and std_type != ref_type:
+            raise AnnotationError('Validation failed')
+
+
+def return_standard_type(request):
+    try:
+        return JsonResponse(request.session['standard_dict'])
+    except:
+        return HttpResponseBadRequest()
+
+
+def return_reference_type(request):
+    try:
+        return JsonResponse(request.session['reference_dict'])
+    except:
+        return HttpResponseBadRequest()
 
 
 def get_associations(request):

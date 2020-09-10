@@ -14,5 +14,7 @@ urlpatterns = [
     path('getXSD/', views.get_xsd, name='get_xsd'),
     path("getStandardPath", views.get_standard_path, name='get_standard_path'),
     path("getReferencePath", views.get_reference_path, name='get_reference_path'),
-    path("redirect/", views.redirect_view, name='redirect')
+    path("redirect/", views.redirect_view, name='redirect'),
+    path("get_std_type/", views.return_standard_type, name='get_std_type'),
+    path("get_ref_type/", views.return_reference_type, name='get_ref_type')
 ]

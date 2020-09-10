@@ -1,14 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
- <link href="https://fonts.googleapis.com/css2?family=Acme&display=swap" rel="stylesheet"> 
-<link rel="stylesheet" href="/static/upload.css" type="text/css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Acme&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "upload.css" %}" type="text/css">
+
 </head>
 <body>
 <div class="upload_container">
-	<h1>{% block title %}Mapping tool{% endblock %}</h1>
-	<span class="button_container">
+    <h1>{% block title %}Mapping tool{% endblock %}</h1>
+    <span class="button_container">
 	<a href="{% url 'standard' %}" class="button button1">Start mapping</a>
 	<a href="{% url 'index' %}" class="button button2">Refresh</a>
 	</span>
