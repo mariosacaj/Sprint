@@ -94,13 +94,11 @@ def reference_init(ont_file, ext):
     new_ext = ext
     # Translate to OWL if possible
     if ext == 'ttl':
-        try:
             Converter = instantiate_ont_converter()
             Converter.convert(ont_file, ont_file + ".owl")
             new_ont_file = ont_file + ".owl"
             new_ext = "owl"
-        except:
-            pass
+
     reference_dict = reference_concept_type(new_ont_file, new_ext)
     return reference_dict, new_ext, new_ont_file
 

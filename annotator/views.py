@@ -11,7 +11,8 @@ import shutil
 
 def index(request):
     try:
-        request.session['tmp']
+
+        request.session['tmp_']
     except KeyError:
         # Initialize
 
@@ -33,6 +34,10 @@ def index(request):
         request.session['tmp'] = create_user_folder(request)
         request.session['ext'] = None
 
+        # Redirect Info
+        request.session["msg_r"] = "Redirecting..."
+        request.session["url_r"] = reverse("index")
+
     return render(request, 'annotator/index.html')
 
 
@@ -51,9 +56,9 @@ def upload_standard(request):
                 process_standard(request, request.session['std'])
             request.session['std_up'] = True
         except StandardError as e:
-            redirect_wait(request, e, "standard")
+            return redirect_wait(request, e, "standard")
         except BaseException as r:
-            redirect_wait(request, "ERROR: " + str(r), "index")
+            return redirect_wait(request, "ERROR: " + str(r), "index")
     else:
         return render(request, 'annotator/upload.html', {'var': 'standard'})
     return HttpResponseRedirect('/standard_select/')
@@ -74,9 +79,9 @@ def standard_select(request):
             try:
                 process_standard(request, std_file)
             except StandardError as e:
-                redirect_wait(request, e, "standard_select")
+                return redirect_wait(request, e, "standard_select")
             except BaseException as r:
-                redirect_wait(request, "ERROR: " + str(r), "index")
+                return redirect_wait(request, "ERROR: " + str(r), "index")
         else:
             return render(request, 'annotator/select.html')
     return HttpResponseRedirect('/reference_upload/')
@@ -101,9 +106,9 @@ def upload_reference(request):
                 process_reference(request, request.session['ref'])
             request.session['ref_up'] = True
         except ReferenceError as e:
-            redirect_wait(request, e, "reference")
+            return redirect_wait(request, e, "reference")
         except BaseException as r:
-            redirect_wait(request, "ERROR: " + str(r), "index")
+            return redirect_wait(request, "ERROR: " + str(r), "index")
     else:
         return render(request, 'annotator/upload.html', {'var': 'reference'})
     return HttpResponseRedirect('/reference_select/')
@@ -124,9 +129,9 @@ def reference_select(request):
             try:
                 process_reference(request, ref_file)
             except ReferenceError as e:
-                redirect_wait(request, e, "reference_select")
+                return redirect_wait(request, e, "reference_select")
             except BaseException as r:
-                redirect_wait(request, "ERROR: " + str(r), "index")
+                return redirect_wait(request, "ERROR: " + str(r), "index")
         else:
             return render(request, 'annotator/select.html')
     return HttpResponseRedirect('/compare/')
@@ -147,8 +152,7 @@ def path_to_dict(path):
     d = {'name': os.path.basename(path)}
     if os.path.isdir(path):
         d['type'] = "directory"
-        d['children'] = [path_to_dict(os.path.join(path, x)) for x in os.listdir \
-            (path)]
+        d['children'] = [path_to_dict(os.path.join(path, x)) for x in os.listdir(path)]
     else:
         d['type'] = "file"
     return d
@@ -236,16 +240,6 @@ def get_xsd(request):
     return HttpResponse(y, content_type="application/xml")
 
 
-# def upload_file(request):
-#     if request.method == 'POST':
-#         form = UploadFileForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             handle_uploaded_file(request.FILES['file'])
-#             return HttpResponseRedirect('/success/url/')
-#     else:
-#         form = UploadFileForm()
-#     return render(request, 'upload.html', {'form': form})
-
 def handle_uploaded_file(source, tmp):
     fd, filepath = tempfile.mkstemp(prefix=source.name, dir=tmp)
     with open(filepath, 'wb') as dest:
@@ -262,28 +256,28 @@ def handle_file(request, flag: str):
 
 def file_writedown(f, flag, request, temp_dir):
     if flag == 'standard':
-        input = standard_dir
+        input_path = standard_dir
         path = 'std'
         iszip = 'std_zip'
     else:
-        input = reference_dir
+        input_path = reference_dir
         path = 'ref'
         iszip = 'ref_zip'
-    input = os.path.join(temp_dir, input)
+    input_path = os.path.join(temp_dir, input_path)
 
-    if os.path.exists(input):
-        shutil.rmtree(input)
-    os.makedirs(input)
+    if os.path.exists(input_path):
+        shutil.rmtree(input_path)
+    os.makedirs(input_path)
     # IS ZIP
     if zipfile.is_zipfile(f):
         with zipfile.ZipFile(f, 'r') as zipObj:
             # Extract all the contents of zip file in different directory
-            zipObj.extractall(input)
+            zipObj.extractall(input_path)
         request.session[iszip] = True
-        request.session[path] = input
+        request.session[path] = input_path
     else:
         file_name = os.path.basename(f)
-        file_path = os.path.join(input, file_name)
+        file_path = os.path.join(input_path, file_name)
 
         shutil.copy(f, file_path)
         request.session[iszip] = False
@@ -291,4 +285,11 @@ def file_writedown(f, flag, request, temp_dir):
 
 
 def redirect_wait(request, msg, view_name):
-    render(request, 'annotator/redirect.html', {"msg": msg, "url": reverse(view_name)})
+    request.session["msg_r"] = str(msg)
+    request.session["url_r"] = reverse(view_name)
+    return HttpResponseRedirect('/redirect/')
+
+
+def redirect_view(request):
+    return render(request, 'annotator/redirect.html',
+                  {"msg": request.session["msg_r"], "url": request.session["url_r"]})

@@ -34,5 +34,5 @@ def instantiate_java_code_manipulator(java_path):
 
 # jvmpath='/usr/lib/jvm/java-13-oracle/bin',
 def instantiate_ont_converter():
-    Converter = dynamic_import('it.polimi.converter', 'Converter')
+    Converter = jpype.JPackage('it').polimi.converter.Converter
     return Converter

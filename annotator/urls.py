@@ -13,5 +13,6 @@ urlpatterns = [
     path('getAssociations/', views.get_associations, name='get_associations'),
     path('getXSD/', views.get_xsd, name='get_xsd'),
     path("getStandardPath", views.get_standard_path, name='get_standard_path'),
-    path("getReferencePath", views.get_reference_path, name='get_reference_path')
+    path("getReferencePath", views.get_reference_path, name='get_reference_path'),
+    path("redirect/", views.redirect_view, name='redirect')
 ]
