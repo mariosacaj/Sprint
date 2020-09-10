@@ -634,14 +634,14 @@ function colorize() {
 
 
 	for(let i=0; i<tspans.length; ++i) {
-		if(tspans[i].innerHTML.includes('name=')) {
-														      	tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "red";
+        if (tspans[i].innerHTML.includes('xsd:complexType') || tspans[i].innerHTML.includes('<span class="hiddenText">xsd:</span>complexType')) {
+		    tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "red";
 			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.fill = "red";
 			tspans[i].parentNode.style.fill = "red";
 		}
 			
 
-		else if(tspans[i].innerHTML.includes('ref=')) {
+        else if (tspans[i].innerHTML.includes('xsd:element') || tspans[i].innerHTML.includes('xsd:attribute') || tspans[i].innerHTML.includes('<span class="hiddenText">xsd:</span>element') || tspans[i].innerHTML.includes('<span class="hiddenText">xsd:</span>attribute')) {
 			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "green";
 			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.fill = "green";
 			tspans[i].parentNode.style.fill = "green";
@@ -663,7 +663,7 @@ function decolorize() {
 	for(let i=0; i<tspans.length; ++i) {
 
 		if(tspans[i].innerHTML.includes('name=')) {
-														      	tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "black";
+			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "black";
 			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.fill = "white";
 			tspans[i].parentNode.style.fill = "black";
 		}
