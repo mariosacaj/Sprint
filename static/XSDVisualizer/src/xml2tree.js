@@ -685,21 +685,42 @@ document.getElementById("decolorize").style.display = "none";
 
 function shorten() {
 
-	tspans = document.getElementsByTagName("tspan");
-	for(let i=0; i<tspans.length; ++i) {
-		if(tspans[i].innerHTML.includes('xsd:')) {
+    tspans = document.getElementsByTagName("tspan");
+    let otherSchemata = true;
+    for (let i = 0; i < tspans.length; ++i) {
+
+        if (tspans[i].innerHTML.includes('name=') || tspans[i].innerHTML.includes('ref=')) {
+            let temp = tspans[i].innerHTML;
+            temp = temp.replace(/"/g, '<span class="hiddenText">"</span>');
+            temp = temp.replace("name=", '<span class="hiddenText">name=</span>');
+            temp = temp.replace("ref=", '<span class="hiddenText">ref=</span>');
+            tspans[i].innerHTML = temp;
+        }
+
+        if (tspans[i].innerHTML.includes("xsd:schema") && otherSchemata) {
+            otherSchemata = false;
+            let parent = tspans[i].parentNode;
+            parent.removeChild(parent.children[0]);
+            let innerHTML_parent = parent.innerHTML;
+
+            let split_string = innerHTML_parent.split('targetNamespace="');
+            let second_split = split_string[1].split('"');
+            let text_to_display = second_split[0];
+            let hiddenText = '<span class="hiddenText">' + parent.innerHTML + '</span>';
+            //alert('<tspan style="font-weight: bold" dy="23" x=" - 10">' + text_to_display + '</tspan>' + hiddenText);
+            //alert(parent.innerHTML);
+
+            parent.innerHTML = '<tspan style="font-weight: bold" dy="23" x=" - 10">' + text_to_display + '</tspan>' + hiddenText;
+        }
+        else if (tspans[i].innerHTML.includes('xsd:') && !tspans[i].innerHTML.includes("xsd:schema")) {
 			let temp = tspans[i].innerHTML;
 			temp = temp.replace("xsd:", '<span class="hiddenText">xsd:</span>');
 			tspans[i].innerHTML = temp;
 		}
 
-		if(tspans[i].innerHTML.includes('name=') || tspans[i].innerHTML.includes('ref=')) {
-			let temp = tspans[i].innerHTML;
-			temp = temp.replace(/"/g, '<span class="hiddenText">"</span>');
-			temp = temp.replace("name=", '<span class="hiddenText">name=</span>');
-	temp = temp.replace("ref=", '<span class="hiddenText">ref=</span>');
-			tspans[i].innerHTML = temp;
-		}
+		
+
+        
 	}
 
 	document.getElementById("shorten").style.display = "none";
@@ -711,8 +732,16 @@ function shorten() {
 function enlarge() {
 
 	tspans = document.getElementsByTagName("tspan");
-	for(let i=0; i<tspans.length; ++i) {
-		if(tspans[i].innerHTML.includes('name=') || tspans[i].innerHTML.includes('xsd:') || tspans[i].innerHTML.includes('ref=')) {
+    for (let i = 0; i < tspans.length; ++i) {
+        if (tspans[i].innerHTML.includes('xsd:schema')) {
+            let parent = tspans[i].parentNode.parentNode;
+            let innerHTML_parent = parent.innerHTML;
+            innerHTML_parent = innerHTML_parent.replace(/<span class="hiddenText">/g, '');
+            innerHTML_parent = innerHTML_parent.replace(/<\/span>/g, '');
+            parent.innerHTML = innerHTML_parent;
+
+        }
+        else if ((tspans[i].innerHTML.includes('name=') || tspans[i].innerHTML.includes('xsd:') || tspans[i].innerHTML.includes('ref=')) && !tspans[i].innerHTML.includes("xsd:schema")) {
 			let temp = tspans[i].innerHTML;
 			temp = temp.replace(/<span class="hiddenText">/g, '');
 			temp = temp.replace(/<\/span>/g, '');
