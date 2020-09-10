@@ -346,9 +346,14 @@ function attachAssociationListener() {
 
 	setTimeout(function() {
 		if(doc!=null && doc!=undefined) {
-			var el = doc.getElementById("locateAssociation"); // assuming the embedded document has such an element
-			el.addEventListener("click", showAssociationOnGraph, false);
-			console.log("Attached association listeners");
+            var el = doc.getElementById("locateAssociation"); // assuming the embedded document has such an element
+            if (el == null) {
+                attachAssociationListener();
+            }
+            else {
+                el.addEventListener("click", showAssociationOnGraph, false);
+                console.log("Attached association listeners");
+            }
 		} else {
 			attachAssociationListener();
 		}
