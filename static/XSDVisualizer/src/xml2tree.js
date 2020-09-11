@@ -7,6 +7,13 @@
  * @param {boolean} isAttributes - Whether to show or not all additional attributes.
  * @param {boolean} isJSON - Specifies type of the input (JSON/XML).
  */
+
+document.addEventListener("DOMContentLoaded", colorize, false);
+document.addEventListener("DOMContentLoaded", toggleDetails, false);
+document.addEventListener("DOMContentLoaded", compress, false);
+document.addEventListener("DOMContentLoaded", shorten, false);
+
+
 function xml2tree(divClass, file, impNodes, isAttributes, isJSON) {
 	if (isJSON) {
 		var newText = readTextFile(file);
