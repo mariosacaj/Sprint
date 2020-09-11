@@ -645,7 +645,15 @@ function colorize() {
 			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "green";
 			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.fill = "green";
 			tspans[i].parentNode.style.fill = "green";
-		}
+        }
+
+        else if (tspans[i].innerHTML.includes('xsd:simpleType') || tspans[i].innerHTML.includes('<span class="hiddenText">xsd:</span>simpleType')) {
+            tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "orange";
+            tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.fill = "orange";
+            tspans[i].parentNode.style.fill = "orange";
+        }
+
+
 
 
 	}
