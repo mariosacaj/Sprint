@@ -8,6 +8,7 @@
  * @param {boolean} isJSON - Specifies type of the input (JSON/XML).
  */
 
+document.addEventListener("DOMContentLoaded", bringUp, false);
 document.addEventListener("DOMContentLoaded", colorize, false);
 document.addEventListener("DOMContentLoaded", toggleDetails, false);
 document.addEventListener("DOMContentLoaded", compress, false);
@@ -796,4 +797,22 @@ function compress() { // Compression
 	else {
 		compressButton.childNodes[0].className = 'compress';
 	}
+}
+
+
+function bringUp() { // bring the name at the first place, rather than one of the properties
+    let all_nodes = document.querySelectorAll(".node text");
+    for (let i = 0; i < all_nodes.length; ++i) {
+        let current_first_child = all_nodes[i].firstChild;
+        let text_first = current_first_child.textContent;
+        if (!text_first.includes("name=")) {
+            // Find the subnode with 'name=' and swap
+            for (let j = 0; j < all_nodes[i].children.length; ++j) {
+                if (all_nodes[i].children[j].textContent.includes("name=")) {
+                    all_nodes[i].firstChild.textContent = all_nodes[i].children[j].textContent;
+                    all_nodes[i].children[j].textContent = text_first;
+                }
+            }
+        }
+    }
 }
