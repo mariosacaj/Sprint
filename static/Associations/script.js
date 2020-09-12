@@ -161,8 +161,8 @@ function colorLine() {
 	this.parentNode.parentNode.className = "selectedRow";
 
 	var evt = document.createEvent("HTMLEvents"); 
-        evt.initEvent("click", false, true); // adding this created a magic and passes it as if keypressed
-        document.getElementById("locateAssociation").dispatchEvent(evt);
+    evt.initEvent("click", false, true); // adding this created a magic and passes it as if keypressed
+    document.getElementById("locateAssociation").dispatchEvent(evt);
 }
 
 function suggestedStandards(ontologyValue) {

@@ -7,6 +7,14 @@
  * @param {boolean} isAttributes - Whether to show or not all additional attributes.
  * @param {boolean} isJSON - Specifies type of the input (JSON/XML).
  */
+
+document.addEventListener("DOMContentLoaded", bringUp, false);
+document.addEventListener("DOMContentLoaded", colorize, false);
+document.addEventListener("DOMContentLoaded", toggleDetails, false);
+document.addEventListener("DOMContentLoaded", compress, false);
+document.addEventListener("DOMContentLoaded", shorten, false);
+
+
 function xml2tree(divClass, file, impNodes, isAttributes, isJSON) {
 	if (isJSON) {
 		var newText = readTextFile(file);
@@ -634,18 +642,26 @@ function colorize() {
 
 
 	for(let i=0; i<tspans.length; ++i) {
-		if(tspans[i].innerHTML.includes('name=')) {
-														      	tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "red";
+        if (tspans[i].innerHTML.includes('xsd:complexType') || tspans[i].innerHTML.includes('<span class="hiddenText">xsd:</span>complexType')) {
+		    tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "red";
 			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.fill = "red";
 			tspans[i].parentNode.style.fill = "red";
 		}
 			
 
-		else if(tspans[i].innerHTML.includes('ref=')) {
+        else if (tspans[i].innerHTML.includes('xsd:element') || tspans[i].innerHTML.includes('xsd:attribute') || tspans[i].innerHTML.includes('<span class="hiddenText">xsd:</span>element') || tspans[i].innerHTML.includes('<span class="hiddenText">xsd:</span>attribute')) {
 			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "green";
 			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.fill = "green";
 			tspans[i].parentNode.style.fill = "green";
-		}
+        }
+
+        else if (tspans[i].innerHTML.includes('xsd:simpleType') || tspans[i].innerHTML.includes('<span class="hiddenText">xsd:</span>simpleType')) {
+            tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "orange";
+            tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.fill = "orange";
+            tspans[i].parentNode.style.fill = "orange";
+        }
+
+
 
 
 	}
@@ -663,7 +679,7 @@ function decolorize() {
 	for(let i=0; i<tspans.length; ++i) {
 
 		if(tspans[i].innerHTML.includes('name=')) {
-														      	tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "black";
+			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.stroke = "black";
 			tspans[i].parentNode.parentNode.getElementsByTagName("circle")[0].style.fill = "white";
 			tspans[i].parentNode.style.fill = "black";
 		}
@@ -685,21 +701,42 @@ document.getElementById("decolorize").style.display = "none";
 
 function shorten() {
 
-	tspans = document.getElementsByTagName("tspan");
-	for(let i=0; i<tspans.length; ++i) {
-		if(tspans[i].innerHTML.includes('xsd:')) {
+    tspans = document.getElementsByTagName("tspan");
+    let otherSchemata = true;
+    for (let i = 0; i < tspans.length; ++i) {
+
+        if (tspans[i].innerHTML.includes('name=') || tspans[i].innerHTML.includes('ref=')) {
+            let temp = tspans[i].innerHTML;
+            temp = temp.replace(/"/g, '<span class="hiddenText">"</span>');
+            temp = temp.replace("name=", '<span class="hiddenText">name=</span>');
+            temp = temp.replace("ref=", '<span class="hiddenText">ref=</span>');
+            tspans[i].innerHTML = temp;
+        }
+
+        if (tspans[i].innerHTML.includes("xsd:schema") && otherSchemata) {
+            otherSchemata = false;
+            let parent = tspans[i].parentNode;
+            parent.removeChild(parent.children[0]);
+            let innerHTML_parent = parent.innerHTML;
+
+            let split_string = innerHTML_parent.split('targetNamespace="');
+            let second_split = split_string[1].split('"');
+            let text_to_display = second_split[0];
+            let hiddenText = '<span class="hiddenText">' + parent.innerHTML + '</span>';
+            //alert('<tspan style="font-weight: bold" dy="23" x=" - 10">' + text_to_display + '</tspan>' + hiddenText);
+            //alert(parent.innerHTML);
+
+            parent.innerHTML = '<tspan style="font-weight: bold" dy="23" x=" - 10">' + text_to_display + '</tspan>' + hiddenText;
+        }
+        else if (tspans[i].innerHTML.includes('xsd:') && !tspans[i].innerHTML.includes("xsd:schema")) {
 			let temp = tspans[i].innerHTML;
 			temp = temp.replace("xsd:", '<span class="hiddenText">xsd:</span>');
 			tspans[i].innerHTML = temp;
 		}
 
-		if(tspans[i].innerHTML.includes('name=') || tspans[i].innerHTML.includes('ref=')) {
-			let temp = tspans[i].innerHTML;
-			temp = temp.replace(/"/g, '<span class="hiddenText">"</span>');
-			temp = temp.replace("name=", '<span class="hiddenText">name=</span>');
-	temp = temp.replace("ref=", '<span class="hiddenText">ref=</span>');
-			tspans[i].innerHTML = temp;
-		}
+		
+
+        
 	}
 
 	document.getElementById("shorten").style.display = "none";
@@ -711,8 +748,16 @@ function shorten() {
 function enlarge() {
 
 	tspans = document.getElementsByTagName("tspan");
-	for(let i=0; i<tspans.length; ++i) {
-		if(tspans[i].innerHTML.includes('name=') || tspans[i].innerHTML.includes('xsd:') || tspans[i].innerHTML.includes('ref=')) {
+    for (let i = 0; i < tspans.length; ++i) {
+        if (tspans[i].innerHTML.includes('xsd:schema')) {
+            let parent = tspans[i].parentNode.parentNode;
+            let innerHTML_parent = parent.innerHTML;
+            innerHTML_parent = innerHTML_parent.replace(/<span class="hiddenText">/g, '');
+            innerHTML_parent = innerHTML_parent.replace(/<\/span>/g, '');
+            parent.innerHTML = innerHTML_parent;
+
+        }
+        else if ((tspans[i].innerHTML.includes('name=') || tspans[i].innerHTML.includes('xsd:') || tspans[i].innerHTML.includes('ref=')) && !tspans[i].innerHTML.includes("xsd:schema")) {
 			let temp = tspans[i].innerHTML;
 			temp = temp.replace(/<span class="hiddenText">/g, '');
 			temp = temp.replace(/<\/span>/g, '');
@@ -752,4 +797,22 @@ function compress() { // Compression
 	else {
 		compressButton.childNodes[0].className = 'compress';
 	}
+}
+
+
+function bringUp() { // bring the name at the first place, rather than one of the properties
+    let all_nodes = document.querySelectorAll(".node text");
+    for (let i = 0; i < all_nodes.length; ++i) {
+        let current_first_child = all_nodes[i].firstChild;
+        let text_first = current_first_child.textContent;
+        if (!text_first.includes("name=")) {
+            // Find the subnode with 'name=' and swap
+            for (let j = 0; j < all_nodes[i].children.length; ++j) {
+                if (all_nodes[i].children[j].textContent.includes("name=")) {
+                    all_nodes[i].firstChild.textContent = all_nodes[i].children[j].textContent;
+                    all_nodes[i].children[j].textContent = text_first;
+                }
+            }
+        }
+    }
 }

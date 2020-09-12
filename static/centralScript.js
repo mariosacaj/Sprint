@@ -13,9 +13,14 @@ function retrieveData() {
 		var doc = obj.contentDocument; // get the inner DOM
 	setTimeout(function() {
 		if(doc!=null && doc!=undefined) {
-			var el = doc.getElementById("sendData"); // assuming the embedded document has such an element
-			el.addEventListener("click", sendData, false);
-			console.log("Added event listener");
+            var el = doc.getElementById("sendData"); // assuming the embedded document has such an element
+            if (el == null) {
+                retrieveData();
+            }
+            else {
+                el.addEventListener("click", sendData, false);
+                console.log("Added event listener");
+            }
 		}
 		else {
 			retrieveData();
@@ -346,9 +351,14 @@ function attachAssociationListener() {
 
 	setTimeout(function() {
 		if(doc!=null && doc!=undefined) {
-			var el = doc.getElementById("locateAssociation"); // assuming the embedded document has such an element
-			el.addEventListener("click", showAssociationOnGraph, false);
-			console.log("Attached association listeners");
+            var el = doc.getElementById("locateAssociation"); // assuming the embedded document has such an element
+            if (el == null) {
+                attachAssociationListener();
+            }
+            else {
+                el.addEventListener("click", showAssociationOnGraph, false);
+                console.log("Attached association listeners");
+            }
 		} else {
 			attachAssociationListener();
 		}
