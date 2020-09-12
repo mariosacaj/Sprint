@@ -1,11 +1,16 @@
-{% load static %}
+﻿{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Acme&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
-    <title>Select file to process</title>
+    <title>File selection</title>
+    <link rel="stylesheet" type="text/css" href="{% static "upload.css" %}">
 </head>
 <body>
-
+    <div class="upload_container">
+        <h1>Select the <span class="var">{{ var }}</span> file</h1>
+       
+    </div>
 </body>
 </html>

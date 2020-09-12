@@ -125,6 +125,7 @@ def reference_select(request):
             ref_file = 'it.owl'
             #
             #
+			
 
             try:
                 process_reference(request, ref_file)
@@ -133,7 +134,7 @@ def reference_select(request):
             except BaseException as r:
                 return redirect_wait(request, "ERROR: " + str(r), "index")
         else:
-            return render(request, 'annotator/select.html')
+            return render(request, 'annotator/select.html', {'var': 'reference', 'treeStruct': treeStruct})
     return HttpResponseRedirect('/compare/')
 
 
