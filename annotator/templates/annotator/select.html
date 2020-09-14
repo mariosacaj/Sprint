@@ -14,6 +14,11 @@
     <div class="upload_container">
         <h1>Select the <span class="var">{{ var }}</span> file</h1>
         <div id="treeStructure"></div>
+
+        <form action="/reference_upload/" method="POST">
+            <input type="text" id="zipPath" name="pathToFile" value="" hidden />
+            <input type="submit" value="Confirm" class="confirm_tree"/>
+        </form>
     </div>
 </body>
 
@@ -23,49 +28,11 @@
     console.log(structure);
     structure[0].name = "Root folder";
    
-
-    var structure001 = [{
-        name: 'file 1'
-    }, {
-        name: 'file 2'
-    }, {
-        name: 'folder 1',
-        open: false,
-        type: Tree.FOLDER,
-        selected: true,
-        children: [{
-            name: 'file 1/1'
-        }, {
-            name: 'file 1/2'
-        }, {
-            name: 'folder 1/1',
-            type: Tree.FOLDER,
-            children: [{
-                name: 'folder 1/1/1',
-                type: Tree.FOLDER,
-                children: [{
-                    name: 'folder 1/1/1/1',
-                    type: Tree.FOLDER,
-                    children: [{
-                        name: 'file 1/1/1/1/1'
-                    }, {
-                        name: 'file 1/1/1/1/2'
-                    }]
-                }]
-            }]
-        }]
-    }, {
-        name: 'folder 2 (asynced)',
-        type: Tree.FOLDER,
-        asynced: true
-    }];
-    console.log(structure);
-    console.log([structure001]);
     var tree = new Tree(document.getElementById('treeStructure'), {
         navigate: true // allow navigate with ArrowUp and ArrowDown
     });
     tree.on('open', e => console.log('open', e));
-    tree.on('select', e => console.log('select', e));
+    tree.on('select', e => getPathSelected());
     tree.on('action', e => console.log('action', e));
     tree.on('fetch', e => console.log('fetch', e));
     tree.on('browse', e => console.log('browse', e));
@@ -77,5 +44,30 @@
 
     tree.json(structure);
 
+
+    function getPathSelected() {
+        let currently_selected = document.querySelector("#treeStructure .selected");
+
+        if (currently_selected.dataset.type == "file") {
+            let path = currently_selected.parentNode.querySelector("summary").textContent + "/" + currently_selected.textContent;
+            currently_selected = currently_selected.parentNode;
+
+            while (currently_selected.parentNode.querySelector("summary").textContent != "") {
+                path = currently_selected.parentNode.querySelector("summary").textContent + "/" + path;
+                currently_selected = currently_selected.parentNode;
+            }
+
+
+            path = path.split(/\/(.+)/)[1];
+
+            path = "{{root_path | escapejs}}" + path;
+
+            console.log(path);
+
+            document.querySelector("#zipPath").value = path;
+        }
+       
+        
+    }
 </script>
 </html>

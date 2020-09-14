@@ -85,11 +85,12 @@ def standard_select(request):
         else:
 		    # Folder which contains the extracted .zip file
             std_dir_abs = os.path.join(request.session['tmp'], standard_dir)
+
            
 		    # Get content of folder and subfolders in the JSON format 
             tree_structure = path_to_dict(std_dir_abs)
 
-            return render(request, 'annotator/select.html',  {'var': 'standard', 'tree': json.dumps(tree_structure)})
+            return render(request, 'annotator/select.html',  {'var': 'standard', 'tree': json.dumps(tree_structure), 'root_path': std_dir_abs})
     return HttpResponseRedirect('/reference_upload/')
 
 
@@ -140,7 +141,10 @@ def reference_select(request):
             except BaseException as r:
                 return redirect_wait(request, "ERROR: " + str(r), "index")
         else:
-            return render(request, 'annotator/select.html', {'var': 'reference', 'treeStruct': treeStruct})
+            ref_dir_abs = os.path.join(request.session['tmp'], reference_dir)
+            tree_structure = path_to_dict(ref_dir_abs)
+
+            return render(request, 'annotator/select.html', {'var': 'reference', 'tree': json.dumps(tree_structure), 'root_path': ref_dir_abs})
     return HttpResponseRedirect('/compare/')
 
 

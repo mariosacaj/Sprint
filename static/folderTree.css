@@ -131,3 +131,21 @@ body {
 h1 > .var {
     color: rgb(250, 218, 94) !important;
 }
+
+.confirm_tree {
+    position: fixed;
+    right: 5vw;
+    bottom: 5vh;
+    font-size: 20px;
+    background-color: rgba(255, 165, 0, 0.6);
+    padding: 15px;
+    border: 3px solid rgba(57, 47, 29, 0.4);
+    transition-duration: 0.4s;
+    font-family: 'Acme', sans-serif;
+    color: white;
+}
+
+.confirm_tree:hover {
+    background-color: rgba(255, 239, 0, 0.6);
+    cursor: pointer;
+}
