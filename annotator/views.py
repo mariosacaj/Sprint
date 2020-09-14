@@ -7,6 +7,7 @@ import os
 from annotator.exceptions import *
 from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, URI_TOOL_PATH, OWL_TOOL_PATH, ONT_TOOL_PATH
 import shutil
+import json
 
 
 def index(request):
@@ -70,7 +71,6 @@ def standard_select(request):
     if not request.session['std_sel']:
         if request.method == 'POST':
 
-            # std_dir_abs = os.path.join(request.session['tmp'], standard_dir)
             # ASSIGNMENT IS USR CHOICE
             std_file = 'std.xsd'
             #
@@ -83,7 +83,14 @@ def standard_select(request):
             except BaseException as r:
                 return redirect_wait(request, "ERROR: " + str(r), "index")
         else:
-            return render(request, 'annotator/select.html')
+		    # Folder which contains the extracted .zip file
+            std_dir_abs = os.path.join(request.session['tmp'], standard_dir)
+
+           
+		    # Get content of folder and subfolders in the JSON format 
+            tree_structure = path_to_dict(std_dir_abs)
+
+            return render(request, 'annotator/select.html',  {'var': 'standard', 'tree': json.dumps(tree_structure), 'root_path': std_dir_abs})
     return HttpResponseRedirect('/reference_upload/')
 
 
@@ -125,6 +132,7 @@ def reference_select(request):
             ref_file = 'it.owl'
             #
             #
+			
 
             try:
                 process_reference(request, ref_file)
@@ -133,7 +141,10 @@ def reference_select(request):
             except BaseException as r:
                 return redirect_wait(request, "ERROR: " + str(r), "index")
         else:
-            return render(request, 'annotator/select.html')
+            ref_dir_abs = os.path.join(request.session['tmp'], reference_dir)
+            tree_structure = path_to_dict(ref_dir_abs)
+
+            return render(request, 'annotator/select.html', {'var': 'reference', 'tree': json.dumps(tree_structure), 'root_path': ref_dir_abs})
     return HttpResponseRedirect('/compare/')
 
 
@@ -151,7 +162,7 @@ def process_reference(request, ref_file):
 def path_to_dict(path):
     d = {'name': os.path.basename(path)}
     if os.path.isdir(path):
-        d['type'] = "directory"
+        d['type'] = "folder"
         d['children'] = [path_to_dict(os.path.join(path, x)) for x in os.listdir(path)]
     else:
         d['type'] = "file"

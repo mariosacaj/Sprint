@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", getAssociations, false);
+
+
 var arraysElements  = [];
 var JSONtext = undefined;
 
@@ -14,7 +16,10 @@ document.getElementById("addAssociation").addEventListener("click", createMenu, 
     }
 };
 xhttp.open("GET", "http://127.0.0.1:8000/getAssociations", true);
-xhttp.send();
+    xhttp.send();
+
+    document.querySelector("#enlarge img").addEventListener("click", enlargeTable, false);
+    document.querySelector("#reduce img").addEventListener("click", reduceTable, false);
 }
 
 function getTerms(JSONtext) {
@@ -287,4 +292,26 @@ function clickOnAssociation() {
 		this.style.backgroundColor = "black";
 		this.style.color = "white";
 	}
+}
+
+function enlargeTable() {
+    let table = document.querySelector("table");
+    let old_scale = 1.0;
+    if (table.style.transform.includes("scale")) {
+        old_scale = table.style.transform.split("scale(")[1].split(")")[0];
+    }
+    let new_scale = parseFloat(old_scale) + 0.1;
+    table.style.transform = "scale(" + new_scale + ")";
+    table.style.transformOrigin = "top left";
+}
+
+function reduceTable() {
+    let table = document.querySelector("table");
+    let old_scale = 1.0;
+    if (table.style.transform.includes("scale")) {
+        old_scale = table.style.transform.split("scale(")[1].split(")")[0];
+    }
+    let new_scale = parseFloat(old_scale) - 0.1;
+    table.style.transform = "scale(" + new_scale + ")";
+    table.style.transformOrigin = "top left";
 }
