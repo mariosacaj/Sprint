@@ -17,6 +17,7 @@ def startJVM(URIToolFilePath, OntologyConverter):
     if not jpype.isJVMStarted():
         jpype.startJVM(ignoreUnrecognized=False, classpath=[URIToolFilePath, OntologyConverter], convertStrings=False)
 
+    # jvmpath='/usr/lib/jvm/java-13-oracle/bin'
 
 def instantiate_java_code_manipulator(java_path):
     """
@@ -32,7 +33,10 @@ def instantiate_java_code_manipulator(java_path):
     return JavaCodeMan(java_path)
 
 
-# jvmpath='/usr/lib/jvm/java-13-oracle/bin',
 def instantiate_ont_converter():
+    """
+    Convert turtle (TTL) standards into XSD/RDF standards (with OWL semantics). Needed for GUI
+    :return: Ontology Converter
+    """
     Converter = jpype.JPackage('it').polimi.converter.Converter
     return Converter

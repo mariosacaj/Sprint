@@ -11,15 +11,16 @@
     <link rel="stylesheet" type="text/css" href="{% static "upload.css" %}">
 </head>
 <body>
-    <div class="upload_container">
-        <h1>Select the <span class="var">{{ var }}</span> file</h1>
-        <div id="treeStructure"></div>
+<div class="upload_container">
+    <h1>Select the <span class="var">{{ var }}</span> file</h1>
+    <div id="treeStructure"></div>
 
-        <form action="/reference_upload/" method="POST">
-            <input type="text" id="zipPath" name="pathToFile" value="" hidden />
-            <input type="submit" value="Confirm" class="confirm_tree"/>
-        </form>
-    </div>
+    <form action="/{{ var }}_select/" method="POST">
+        {% csrf_token %}
+        <input type="text" id="zipPath" name="pathToFile" value="" hidden/>
+        <input type="submit" value="Confirm" class="confirm_tree"/>
+    </form>
+</div>
 </body>
 
 <script>
@@ -27,7 +28,7 @@
 
     console.log(structure);
     structure[0].name = "Root folder";
-   
+
     var tree = new Tree(document.getElementById('treeStructure'), {
         navigate: true // allow navigate with ArrowUp and ArrowDown
     });
@@ -59,8 +60,6 @@
 
 
             path = path.split(/\/(.+)/)[1];
-
-            path = "{{root_path | escapejs}}" + path;
 
             console.log(path);
 

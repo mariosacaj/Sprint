@@ -1,18 +1,30 @@
+import shutil
+import json
+import os
+import tempfile
+import zipfile
+
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
-from annotator.api import *
-import tempfile
-import os
-from annotator.exceptions import *
+
 from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, URI_TOOL_PATH, OWL_TOOL_PATH, ONT_TOOL_PATH
-import shutil
-import json
+from annotator.api import standard_init, reference_init, annotate_dict_and_build, owl2json, standard_dir, \
+    reference_dir, java_dir, check_standard, check_reference, xsd2str, get_candidates
+from annotator.exceptions import *
+
+
+# index() -> upload_standard() (-> standard_select() if zip uploaded)
+# -> upload_reference() (-> reference_select() if zip uploaded) -> compare() -> download()
+
+def is_hidden(p):
+    return p.startswith('.') or p.startswith('__') or p.endswith('.ini')
 
 
 def index(request):
     try:
-
+        # tmp_ is never created in the proj so this always throws an Exception.
+        # Kept is needed in the future
         request.session['tmp_']
     except KeyError:
         # Initialize
@@ -70,39 +82,48 @@ def standard_select(request):
         return HttpResponseRedirect('/standard_upload/')
     if not request.session['std_sel']:
         if request.method == 'POST':
-
-            # ASSIGNMENT IS USR CHOICE
-            std_file = 'std.xsd'
-            #
-            #
-
             try:
+                # Bind relative file path coming from front-end with the
+                # missing part (result is actual place in server's filesystem)
+                path = request.POST["pathToFile"]
+                std_dir_abs = os.path.join(request.session['tmp'], standard_dir)
+                std_file = os.path.join(std_dir_abs, path)
                 process_standard(request, std_file)
             except StandardError as e:
+                # Reload
                 return redirect_wait(request, e, "standard_select")
+            except KeyError:
+                return HttpResponseBadRequest()
             except BaseException as r:
+                # Redirect to Home page
                 return redirect_wait(request, "ERROR: " + str(r), "index")
         else:
-		    # Folder which contains the extracted .zip file
+            # Folder which contains the extracted .zip file
             std_dir_abs = os.path.join(request.session['tmp'], standard_dir)
 
-           
-		    # Get content of folder and subfolders in the JSON format 
+            # Get content of folder and subfolders in the JSON format
             tree_structure = path_to_dict(std_dir_abs)
 
-            return render(request, 'annotator/select.html',  {'var': 'standard', 'tree': json.dumps(tree_structure), 'root_path': std_dir_abs})
+            # Ask user for actual file inside zip folder
+            return render(request, 'annotator/select.html',
+                          {'var': 'standard', 'tree': json.dumps(tree_structure), 'root_path': std_dir_abs})
     return HttpResponseRedirect('/reference_upload/')
 
 
 def process_standard(request, std_file):
     if not check_standard(std_file):
         raise StandardError("File not well formatted")
+    # Check if Java classes can be generated with JAXB libraries, produce a dictionary
+    # that binds standard concepts with their type ("C" for classes, "P" for properties)
     standard_dict = standard_init(request.session['tmp'], std_file, URI_TOOL_PATH, ONT_TOOL_PATH)
+    # Path to file
     request.session['std'] = std_file
     request.session['standard_dict'] = standard_dict
+    # File is valid and has been selected
     request.session['std_sel'] = True
 
 
+# Same as for standard
 def upload_reference(request):
     if not request.session['std_sel']:
         return HttpResponseRedirect('/standard_select/')
@@ -121,30 +142,29 @@ def upload_reference(request):
     return HttpResponseRedirect('/reference_select/')
 
 
+# Same as for standard
 def reference_select(request):
     if not request.session['ref_up']:
         return HttpResponseRedirect('/reference_upload/')
     if not request.session['ref_sel']:
         if request.method == 'POST':
-
-            #
-            # ASSIGNMENT IS USR CHOICE
-            ref_file = 'it.owl'
-            #
-            #
-			
-
             try:
+                path = request.POST['pathToFile']
+                ref_dir_abs = os.path.join(request.session['tmp'], reference_dir)
+                ref_file = os.path.join(ref_dir_abs, path)
                 process_reference(request, ref_file)
             except ReferenceError as e:
                 return redirect_wait(request, e, "reference_select")
+            except KeyError:
+                return HttpResponseBadRequest()
             except BaseException as r:
                 return redirect_wait(request, "ERROR: " + str(r), "index")
         else:
             ref_dir_abs = os.path.join(request.session['tmp'], reference_dir)
             tree_structure = path_to_dict(ref_dir_abs)
 
-            return render(request, 'annotator/select.html', {'var': 'reference', 'tree': json.dumps(tree_structure), 'root_path': ref_dir_abs})
+            return render(request, 'annotator/select.html',
+                          {'var': 'reference', 'tree': json.dumps(tree_structure), 'root_path': ref_dir_abs})
     return HttpResponseRedirect('/compare/')
 
 
@@ -152,35 +172,43 @@ def process_reference(request, ref_file):
     ext = check_reference(ref_file)
     if ext == '':
         raise ReferenceError("File not well formatted")
-    reference_dict, ext, new_ref_file = reference_init(ref_file, ext)
-    request.session['ext'] = ext
+    # check reference, if it is TTL and can be converted in OWL format do it,
+    # then produce a dictionary that binds each reference concept with its type
+    # ("C" for classes and "P" for properties)
+    reference_dict, new_ext, new_ref_file = reference_init(ref_file, ext)
+    # Ext is actual format not filename extension
+    request.session['ext'] = new_ext
     request.session['ref_sel'] = True
     request.session['ref'] = new_ref_file
     request.session['reference_dict'] = reference_dict
 
 
+# helper function for std/ref select
 def path_to_dict(path):
     d = {'name': os.path.basename(path)}
     if os.path.isdir(path):
         d['type'] = "folder"
-        d['children'] = [path_to_dict(os.path.join(path, x)) for x in os.listdir(path)]
+        d['children'] = [path_to_dict(os.path.join(path, x)) for x in os.listdir(path) if not is_hidden(x)]
     else:
         d['type'] = "file"
     return d
 
 
+# Not used
 def get_standard_path(request):
     if not request.session['std_up'] and request.session['std_sel']:
         return HttpResponseBadRequest()
     return JsonResponse(path_to_dict(request.session['std']))
 
 
+# Not used
 def get_reference_path(request):
     if not request.session['ref_up'] and request.session['ref_sel']:
         return HttpResponseBadRequest()
     return JsonResponse(path_to_dict(request.session['ref']))
 
 
+# Renders the most important page where STD/REF associations are made
 def compare(request):
     if not request.session['ref_sel'] or not request.session['std_sel']:
         return HttpResponseBadRequest()
@@ -188,19 +216,26 @@ def compare(request):
     return render(request, 'annotator/compare.html')
 
 
+# Post the associations and build the annotated JAVA classes
+# Then zip them and send them to client
 def download(request):
-    if not request.session['std_sel']:
-        return HttpResponseRedirect('/compare/')
-    file_dir = os.path.join(request.session['tmp'], java_dir)
+    if request.method == 'POST':
+        if not request.session['std_sel']:
+            return HttpResponseRedirect('/compare/')
+        file_dir = os.path.join(request.session['tmp'], java_dir)
+        try:
+            dict_confirmed = request.POST["associations"]
+        except KeyError:
+            return HttpResponseBadRequest()
+        validation(request, dict_confirmed)
+        annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'])
 
-    dict_confirmed = {'a': '1', 'b': '2', 'c': '3'}
-
-    validation(request, dict_confirmed)
-    annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'])
-
-    return send_zip(file_dir, request)
+        return send_zip(file_dir, request)
+    else:
+        return HttpResponseBadRequest()
 
 
+# From now on, helper functions only
 def send_zip(file_dir, request):
     fpath = shutil.make_archive(file_dir, 'zip', file_dir)
     with open(fpath, 'rb') as fh:
@@ -232,17 +267,6 @@ def return_reference_type(request):
 
 
 def get_associations(request):
-    # JSON FORMAT {
-    #              "standardName1": [
-    #                                   ["ref1", 2],
-    #                                   ["ref2", 3]
-    #                               ],
-    #
-    #              "standardName2": [
-    #                                   ["ref0", 2],
-    #                                   ["ref3", 4]
-    #                               ]
-    #             }
     try:
         candidates_dict = get_candidates(request.session['tmp'], request.session['std'],
                                          request.session['ref'], request.session['standard_dict'],
@@ -254,6 +278,7 @@ def get_associations(request):
     return JsonResponse(candidates_dict, safe=False)
 
 
+# Convert OWL ontology in proper format so that it can be visualized
 def get_ontology(request):
     if not request.session['ref_sel']:
         return HttpResponseBadRequest()
@@ -274,18 +299,16 @@ def get_xsd(request):
     return HttpResponse(y, content_type="application/xml")
 
 
-def handle_uploaded_file(source, tmp):
-    fd, filepath = tempfile.mkstemp(prefix=source.name, dir=tmp)
-    with open(filepath, 'wb') as dest:
-        shutil.copyfileobj(source, dest)
-    return filepath
-
-
 def handle_file(request, flag: str):
     temp_dir = request.session['tmp']
     f = request.FILES['file']
-    f = handle_uploaded_file(f, request.session['tmp'])
-    file_writedown(f, flag, request, temp_dir)
+    # Write memory object in persistent file
+    fd, filepath = tempfile.mkstemp(prefix=f.name, dir=request.session['tmp'])
+    with open(filepath, 'wb') as dest:
+        shutil.copyfileobj(f, dest)
+
+    # Check if file is zip then extract or move in actual folder
+    file_writedown(filepath, flag, request, temp_dir)
 
 
 def file_writedown(f, flag, request, temp_dir):
@@ -297,6 +320,7 @@ def file_writedown(f, flag, request, temp_dir):
         input_path = reference_dir
         path = 'ref'
         iszip = 'ref_zip'
+
     input_path = os.path.join(temp_dir, input_path)
 
     if os.path.exists(input_path):
@@ -319,6 +343,7 @@ def file_writedown(f, flag, request, temp_dir):
 
 
 def redirect_wait(request, msg, view_name):
+    # Renders Redirect page with error message
     request.session["msg_r"] = str(msg)
     request.session["url_r"] = reverse(view_name)
     return HttpResponseRedirect('/redirect/')

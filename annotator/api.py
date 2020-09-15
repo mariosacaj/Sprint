@@ -1,6 +1,4 @@
-import shutil
 import sys
-import zipfile
 import os
 import subprocess
 import json
@@ -151,41 +149,40 @@ def annotate(java_man, std_concept_str, ref_concept_str):
 def build(java_man):
     java_man.build()
 
-
-def file_writedown_mng(f, flag, request, temp_dir):
-    if flag == 'standard':
-        input = standard_dir
-        path = 'std'
-        sel = 'std_sel'
-        fun = check_standard
-    else:
-        input = reference_dir
-        path = 'ref'
-        sel = 'ref_sel'
-        fun = check_reference
-    input = os.path.join(temp_dir, input)
-    if os.path.exists(input):
-        shutil.rmtree(input)
-    os.makedirs(input)
-    # IS ZIP
-    if zipfile.is_zipfile(f):
-        with zipfile.ZipFile(f, 'r') as zipObj:
-            # Extract all the contents of zip file in different directory
-            zipObj.extractall(input)
-        request.session[sel] = False
-        request.session[path] = input
-        os.remove(f)
-        return True
-    # IS SINGLE FILE
-    elif fun(f):
-        file_name = os.path.basename(f)
-        file_path = os.path.join(input, file_name)
-
-        shutil.copy(f, file_path)
-        request.session[sel] = True
-        request.session[path] = file_path
-        os.remove(f)
-        return True
-    else:
-        os.remove(f)
-        return False
+# def file_writedown_mng(f, flag, request, temp_dir):
+#     if flag == 'standard':
+#         input = standard_dir
+#         path = 'std'
+#         sel = 'std_sel'
+#         fun = check_standard
+#     else:
+#         input = reference_dir
+#         path = 'ref'
+#         sel = 'ref_sel'
+#         fun = check_reference
+#     input = os.path.join(temp_dir, input)
+#     if os.path.exists(input):
+#         shutil.rmtree(input)
+#     os.makedirs(input)
+#     # IS ZIP
+#     if zipfile.is_zipfile(f):
+#         with zipfile.ZipFile(f, 'r') as zipObj:
+#             # Extract all the contents of zip file in different directory
+#             zipObj.extractall(input)
+#         request.session[sel] = False
+#         request.session[path] = input
+#         os.remove(f)
+#         return True
+#     # IS SINGLE FILE
+#     elif fun(f):
+#         file_name = os.path.basename(f)
+#         file_path = os.path.join(input, file_name)
+#
+#         shutil.copy(f, file_path)
+#         request.session[sel] = True
+#         request.session[path] = file_path
+#         os.remove(f)
+#         return True
+#     else:
+#         os.remove(f)
+#         return False
