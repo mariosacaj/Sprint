@@ -2,7 +2,7 @@
 /annotator/tool/data/model/
 /annotator/tool/data/javaclass/
 /model
-/sprint_files/
+/session_files/
 .DS_Store
 /.idea/
 /Sprint/__pycache__/
