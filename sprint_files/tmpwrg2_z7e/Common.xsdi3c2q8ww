@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:common="http://domainmodel.pts_fsm.org/2015/10/29/common"
+        targetNamespace="http://domainmodel.pts_fsm.org/2015/10/29/common" elementFormDefault="qualified">
+
+    <xsd:simpleType name="URL">
+        <xsd:restriction base="xsd:anyURI">
+            <xsd:pattern value="http://.+"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="DateOrDateTime">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">A construct to validate either a date or a
+                dateTime value.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:union memberTypes="xsd:date xsd:dateTime"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="DateOrMonthDay">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">A construct to validate either a date or a month
+                and day
+                value.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:union memberTypes="xsd:date xsd:gMonthDay"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="DateOrYearMonth">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">A construct to validate either a date or a year month value.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:union memberTypes="xsd:date xsd:gYearMonth"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="DateOrTimeOrDateTime">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">A construct to validate either a date or a time or a dateTime value.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:union memberTypes="xsd:date xsd:dateTime xsd:time"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="Numeric1to999">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">Used for Numeric values, from 1 to 999 inclusive.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:integer">
+            <xsd:maxInclusive value="999"/>
+            <xsd:minInclusive value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="Percentage">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">Used for percentage values.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:decimal">
+            <xsd:maxInclusive value="100.00"/>
+            <xsd:minInclusive value="0.00"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="NumericNonNegativeDecimal">
+        <xsd:annotation>
+            <xsd:documentation>The non-negative-decimal type specifies a non-negative decimal value.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0.00"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="StringLength0to255">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">Used for Character Strings, length 0 to 255.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="0"/>
+            <xsd:maxLength value="255"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="StringLength1to64">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">Used for Character Strings, length 1 to 64.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="64"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="AdditionalEntry">
+        <xsd:sequence>
+            <xsd:element name="key" minOccurs="1" maxOccurs="1" type="common:StringLength0to255">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">Key in key/value pair. Occurrence Indicators : one and only one key
+                        has to be defined.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="valuetype" minOccurs="0" maxOccurs="1" type="common:MasterData.GUID">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">MasterData type used to define the type of a value provided in a
+                        key-value pair. Occurrence Indicators : optional parameter, if not defined the "value" will be
+                        considered as a string.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="value" minOccurs="1" maxOccurs="1" type="common:GenericTextMessage">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">Value in key/value pair. Occurrence Indicators : one and only one
+                        value has to be defined.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="GenericTextMessage">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="text" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+        <xsd:attribute name="LanguageId" type="common:MasterData.GUID" use="required">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">MasterData type used to define the language of a text. The values are
+                    taken over from standard ISO 639.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType name="GenericStatus">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Status" type="common:MasterData.GUID" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">MasterData used to define the status of a business object.
+                        Occurrence Indicators : optional parameter,
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="DateTime" type="common:DateOrDateTime" use="optional">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">Status Date and Time.</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+
+    <!-- xsd:simpleType name="FunctionalId">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">Used for functional Ids, everything is allowed except whitespaces.
+			</xsd:documentation>
+		</xsd:annotation>
+        <xsd:restriction base="xsd:string">
+			<xsd:pattern value="[\S]*"/>
+        </xsd:restriction>
+    </xsd:simpleType-->
+
+    <xsd:simpleType name="GUID">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="external.GUID">
+        <xsd:restriction base="common:GUID"/>
+        <!-- Temporary type to distinguish between the different ways of using IDs and IDrefs -->
+    </xsd:simpleType>
+    <xsd:simpleType name="MasterData.GUID">
+        <xsd:restriction base="xsd:NMTOKEN"/>
+        <!-- Temporary type to distinguish between the different ways of using IDs and IDrefs -->
+    </xsd:simpleType>
+
+    <xsd:complexType name="FSM.ID">
+        <xsd:attribute name="RSP_ID" type="xsd:NMTOKEN"/>
+        <xsd:attribute name="DIST_ID" type="xsd:NMTOKEN"/>
+        <xsd:attribute name="GUID" type="common:external.GUID"/>
+        <xsd:attribute name="Id" type="xsd:ID"/>
+        <xsd:attribute name="Refids" type="xsd:IDREFS"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="StartAndDuration">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Start" type="xsd:dateTime"/>
+            <xsd:element name="Duration" type="xsd:duration"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+
+</xsd:schema>

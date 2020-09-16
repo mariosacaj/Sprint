@@ -4,11 +4,9 @@ document.addEventListener("DOMContentLoaded", attachRightClicks, false);
 
 function rightClick(ev) {
 	ev.preventDefault();
-	alert("Right click");
 }
 
 function retrieveData() {
-		console.log("Retrieving data...");
 		var obj = document.getElementById("associations-embed");
 		var doc = obj.contentDocument; // get the inner DOM
 	setTimeout(function() {
@@ -19,7 +17,6 @@ function retrieveData() {
             }
             else {
                 el.addEventListener("click", sendData, false);
-                console.log("Added event listener");
             }
 		}
 		else {
@@ -52,7 +49,6 @@ function attachRightClicksXSD() {
 			}, 500);
 	
 			
-			console.log("Attached right clicks to standard nodes");
 		}
 		else {
 			attachRightClicksXSD();			
@@ -70,7 +66,6 @@ function attachRightClicksOnto() {
 		if(doc!=undefined && doc!=null) {
 			let allShapes = doc.querySelectorAll("circle, rect");
 			setTimeout(function() {
-				console.log("There are " + allShapes.length + " shapes");
 				if(numberShapes < allShapes.length) { // there are new nodes
 					for(let i=0; i<allShapes.length; ++i) {
 							allShapes[i].addEventListener("contextmenu", ontoRC, false);	
@@ -83,7 +78,6 @@ function attachRightClicksOnto() {
 				}
 			}, 1000);
 			
-			console.log("Attached right clicks to ontology nodes");
 		}
 		else {
 			attachRightClicksOnto();			
@@ -182,7 +176,9 @@ function addToAssociation(startingString, startingType) {
 	
 	if(alreadyInserted == false) {
 		//dispatchAddAssociation(doc);
-		if(startingType == "XSD") {
+        startingString = document.querySelectorAll(".right-menu span")[1].textContent;
+        console.log(startingString);
+        if (startingType == "XSD") {
 			chooseStd(startingString, doc.querySelector(".selectedForAssociation"));
 		}	
 		else if(startingType == "Ontology") {
@@ -328,10 +324,18 @@ function findAssociationGivenOntology(currentString) {
 }
 
 function xsdRC(ev) {
-	let currentString = this.innerHTML;
+    let currentString = this.innerHTML;
+
+
+    if (currentString.startsWith("<span")) {
+        currentString = currentString.replace(/<span class=\"hiddenText\">name=<\/span>/gi, "");
+        currentString = currentString.replace(/<span class=\"hiddenText\">\"<\/span>/gi, "");
+    }
+
 	if(currentString.startsWith("name")) {
 		currentString = currentString.replace(/name="/gi, "").replace(/"/gi, "");
-	}
+    }
+    
 	
 	createRMenu(ev, currentString, "XSD");
 	ev.preventDefault();
@@ -345,7 +349,6 @@ function ontoRC(ev) {
 
 function attachAssociationListener() {
 
-		console.log("Retrieving data...");
 		var obj = document.getElementById("associations-embed");
 		var doc = obj.contentDocument; // get the inner DOM
 
@@ -357,7 +360,6 @@ function attachAssociationListener() {
             }
             else {
                 el.addEventListener("click", showAssociationOnGraph, false);
-                console.log("Attached association listeners");
             }
 		} else {
 			attachAssociationListener();
@@ -370,7 +372,7 @@ function getSelection(cell) {
 	if(cell.innerHTML.startsWith("<option>") || cell.innerHTML.startsWith("<optgroup")) {
 		return cell.options[cell.selectedIndex].text;
 	}
-	else if(cell.innerHTML.startsWith("<span>")) {
+	else if(cell.innerHTML.startsWith("<span")) {
 		return cell.firstChild.innerHTML;
 	}
 	else {
@@ -386,7 +388,9 @@ function sendData() {
 	//let allRows = document.querySelectorAll("table tr");
 	let stdCells = doc.querySelectorAll("table tr");
 	let ontCells = doc.querySelectorAll("table tr");
-	
+
+    let valid = true;
+
 
 	let stdValues = [];
 	let ontValues = [];
@@ -396,7 +400,8 @@ function sendData() {
 		let stdCellValue = getSelection(stdCell);
 
 		if(stdValues.includes(stdCellValue)) {
-			stdCell.parentNode.style.backgroundColor = "rgb(255, 153, 153)";
+            stdCell.parentNode.style.backgroundColor = "rgb(255, 153, 153)";
+            valid = false;
 		}
 		else {
 			stdCell.parentNode.style.backgroundColor = "rgb(153, 255, 51)";
@@ -409,13 +414,45 @@ function sendData() {
 		let ontCellValue = getSelection(ontCell);
 
 		if(ontValues.includes(ontCellValue)) {
-			ontCell.parentNode.style.backgroundColor = "rgb(255, 153, 153)";
+            ontCell.parentNode.style.backgroundColor = "rgb(255, 153, 153)";
+            valid = false;
 		}
 		else {
 			ontCell.parentNode.style.backgroundColor = "rgb(153, 255, 51)";
 		}
 		ontValues.push(ontCellValue);
-	}
+    }
+
+    if (valid) {
+
+        // Prepare the data
+        let data_to_send = {};
+        let data_length = stdValues.length;
+
+        for (let i = 0; i < data_length; ++i) {
+            data_to_send[stdValues[i]] = ontValues[i];
+        }
+
+        console.log(data_to_send);
+
+        // Send the data
+
+        xmlhttp = new XMLHttpRequest();
+        var url = "http://127.0.0.1:8000/download/";
+        xmlhttp.open("POST", url, true);
+        xmlhttp.setRequestHeader("Content-type", "application/json");
+        xmlhttp.onreadystatechange = function () { //Call a function when the state changes.
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                alert(xmlhttp.responseText);
+            }
+        }
+        var data = {
+            "associations": data_to_send
+        };
+        xmlhttp.send(JSON.stringify(data));
+
+        
+    }
 }
 
 function showAssociationOnGraph() {
@@ -439,7 +476,6 @@ function showAssociationOnGraph() {
 	var docOnt = objOnt.contentDocument;
 
 	var degreeCollapsing = docOnt.querySelector(".distanceSliderContainer .value").innerHTML;
-	console.log(degreeCollapsing);
 	if(degreeCollapsing != "0") {
 		var resetButton = docOnt.getElementById("reset-button");
 		var clickReset = document.createEvent("HTMLEvents"); 

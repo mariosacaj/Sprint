@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:common="http://domainmodel.pts_fsm.org/2015/10/29/common"
+        xmlns:actors="http://domainmodel.pts_fsm.org/2015/10/29/actors"
+
+        xmlns:fulfilment="http://domainmodel.pts_fsm.org/2015/10/29/fulfilment"
+        targetNamespace="http://domainmodel.pts_fsm.org/2015/10/29/fulfilment" elementFormDefault="qualified">
+
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/common" schemaLocation="../Common/Common.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/actors"
+                schemaLocation="../../StructuralModel-XSD/Common/Actors.xsd"/>
+
+    <xsd:complexType name="Fulfilment">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence>
+                    <xsd:element name="FulfilmentStatus" type="common:GenericStatus" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Fulfilment status. Occurrence Indicators : one and only one
+                                "FulfilmentStatus" can be defined and it is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="PassengerRefsList" type="xsd:IDREFS" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Reference to the related passengers.
+                                Occurrence Indicators : one and only one "PassengerRefsList" can optionally be defined.
+                                IDREFS type allows to add multiple ID references separated with white-spaces.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SegmentRefsList" type="xsd:IDREFS" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Reference to the related segments.
+                                Occurrence Indicators : one and only one "SegmentRefsList" can optionally be defined.
+                                IDREFS type allows to add multiple ID references separated with white-spaces.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="CarrierServiceItemRefsList" type="xsd:IDREFS" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Reference to the related Carrier Service Items.
+                                Occurrence Indicators : one and only one "CarrierServiceItemRefsList" can optionally be
+                                defined. IDREFS type allows to add multiple ID references separated with white-spaces.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="FulfilmentInformation" type="common:AdditionalEntry" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Additional fulfilment information based on key/value pair.
+                                Occurrence Indicators : one to many ""FulfilmentInformation" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="FulfilmentMethod">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="1">
+                    <xsd:element name="FulfilmentMethodTypeId" type="common:MasterData.GUID" minOccurs="1"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to indicate the possible
+                                selectable methods of delivery for the entitlement of the current carrier offer.
+                                Occurrence Indicators : one and only one "FulfilmentMethodTypeId" must be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Supplier" type="actors:Supplier" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Information related to the supplier. Occurrence Indicators
+                                : one and only one "Supplier" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="FulfilmentMethodChangeAllowedAfterBooking" type="xsd:boolean" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Boolean type used to indicate if the Fulfilment Method can
+                                be changed after the booking process is done.
+                                If set to true, the RSP allows to change the fulfilment method after the booking
+                                process. If null or set to false, the RSP doesn't allow to change the fulfilment method
+                                after the booking process.
+                                Occurrence Indicators : one and only one "FulfilmentMethodChangeAllowedAfterBooking" can
+                                optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Notification" type="fulfilment:FulfilmentNotification" minOccurs="1"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicates which scenario of notification must be applied
+                                for this fulfilment according FSM activity diagrams which presents difference options.
+                                Occurrence Indicators : one to many "Notification" can be defined. At least one is
+                                mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="AdditionalInformation" type="common:AdditionalEntry" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Additional fulfilmenent information.
+                                Occurrence Indicators : one to many "AdditionalInformation" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="FulfilmentNotification">
+        <xsd:sequence>
+            <xsd:element name="FulfilmentInformation" type="common:AdditionalEntry" minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">Additional fulfilment information using key/value pair.
+                        Occurrence Indicators : one to many "FulfilmentInformation" can optionally be defined.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="NotificationId" type="common:MasterData.GUID" use="required">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">MasterData type used to define the type of technical notification.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="NotificationIsMandatory" type="xsd:boolean" use="required">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">Boolean used to indicates either the notification is mandatory.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+</xsd:schema>

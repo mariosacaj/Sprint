@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", getAssociations, false);
 
-
 var arraysElements  = [];
 var JSONtext = undefined;
 
@@ -10,7 +9,8 @@ function getAssociations() {
 xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
 	JSONtext = xhttp.responseText;
-	arraysElements = getTerms(JSONtext);
+        arraysElements = getTerms(JSONtext);
+        console.log(arraysElements);
 	createMenu();
 document.getElementById("addAssociation").addEventListener("click", createMenu, false);
     }
@@ -315,3 +315,4 @@ function reduceTable() {
     table.style.transform = "scale(" + new_scale + ")";
     table.style.transformOrigin = "top left";
 }
+

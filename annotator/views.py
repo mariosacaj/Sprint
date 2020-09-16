@@ -7,6 +7,8 @@ import zipfile
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
+from django.views.decorators.csrf import csrf_exempt
+
 
 from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, URI_TOOL_PATH, OWL_TOOL_PATH, ONT_TOOL_PATH
 from annotator.api import standard_init, reference_init, annotate_dict_and_build, owl2json, standard_dir, \
@@ -218,13 +220,15 @@ def compare(request):
 
 # Post the associations and build the annotated JAVA classes
 # Then zip them and send them to client
+@csrf_exempt
 def download(request):
+    print(json.loads(request.body))
     if request.method == 'POST':
         if not request.session['std_sel']:
             return HttpResponseRedirect('/compare/')
         file_dir = os.path.join(request.session['tmp'], java_dir)
         try:
-            dict_confirmed = request.POST["associations"]
+            dict_confirmed = json.loads(request.body)['associations']
         except KeyError:
             return HttpResponseBadRequest()
         validation(request, dict_confirmed)
@@ -352,3 +356,5 @@ def redirect_wait(request, msg, view_name):
 def redirect_view(request):
     return render(request, 'annotator/redirect.html',
                   {"msg": request.session["msg_r"], "url": request.session["url_r"]})
+
+	

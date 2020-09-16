@@ -1,0 +1,1128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:roles="http://domainmodel.pts_fsm.org/2015/10/29/roles"
+        xmlns:common="http://domainmodel.pts_fsm.org/2015/10/29/common"
+        xmlns:offering="http://domainmodel.pts_fsm.org/2015/10/29/offering"
+        xmlns:tariff="http://domainmodel.pts_fsm.org/2015/10/29/tariff"
+        xmlns:payment="http://domainmodel.pts_fsm.org/2015/10/29/payment"
+        xmlns:journeyplan="http://domainmodel.pts_fsm.org/2015/10/29/journeyplan"
+        xmlns:infrastructure="http://domainmodel.pts_fsm.org/2015/10/29/infrastructure"
+        targetNamespace="http://domainmodel.pts_fsm.org/2015/10/29/tariff" elementFormDefault="qualified">
+
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/roles" schemaLocation="../Common/Roles.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/offering"
+                schemaLocation="../Offering/Offering.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/infrastructure"
+                schemaLocation="../GeoInfra/Infrastructure.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/journeyplan"
+                schemaLocation="../GeoInfra/JourneyPlan.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/payment" schemaLocation="Payment.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/common" schemaLocation="../Common/Common.xsd"/>
+
+    <!-- CARDS AND PASSES -->
+
+    <xsd:complexType name="Pass">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+                    <xsd:element name="ExpirationDate" type="xsd:dateTime" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Expire date of the current PRM pass. Occurrence Indicators
+                                : one and only one expiration date can optionally be defined (some cards may never
+                                expire).
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="Identifier" type="xsd:string" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">The identifier may be a number or an alpha-numeric string. It
+                            depends on the service provider whether it must be provided or not.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="TypeId" type="common:MasterData.GUID" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to indicates the type of the PRM pass.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="IssuerId" type="common:MasterData.GUID" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to indicate the name of the entity who has
+                            issued the current PRM pass.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="OwnerName" type="xsd:string" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Some cards do not have an identifier but are bound to the
+                            owner’s name. The name may consist of first name, last name, title, etc. Setting the name is
+                            optional and is controlled by the service providers.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="BenefitCard">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="ExpirationDate" type="xsd:dateTime" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Expire date of the current PRM pass. Occurrence Indicators
+                                : one and only one expiration date can optionally be defined (some cards may never
+                                expire).
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="Identifier" type="xsd:string" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">The identifier may be a number or an alpha-numeric string.
+                            Structure and format are proprietary to each service provider and reseller.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="TypeId" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to distinguish different typologies of
+                            benefit entitlements (e.g. railcard, loyaltycard, both, etc..)
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="IssuerId" type="common:MasterData.GUID" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to identify uniquely the issuer of the
+                            card.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="OwnerName" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">A benefit card/entitlement may be bound to a person, e.g. by
+                            name.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="CorporateAccount">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:attribute name="Code" type="xsd:string" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">The code identifier of the account may be a number or an
+                            alpha-numeric string. Structure and format are proprietary to each service provider and
+                            reseller.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="AddresseeId" type="common:MasterData.GUID" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to identify the addressee keeper of the
+                            account which is always a service provider or a reseller. The value must be set.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="Credentials" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Credentials might be necessary to uniquely identify the
+                            account.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="Contract" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">A contract number might be necessary to uniquely identify the
+                            account.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Voucher">
+        <xsd:complexContent>
+            <xsd:extension base="tariff:BenefitCard">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="EffectiveDate" type="xsd:dateTime" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Starting date of the validity of the voucher.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="VoucherUseTypeId" type="common:MasterData.GUID" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to identify the type of usage the
+                                voucher is valid for.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="ReasonForIssue" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">The reason or base for creating a voucher of specific type can
+                            be added. This may impact the handling of the voucher, e.g. during payment.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="LoyaltyCard">
+        <xsd:complexContent>
+            <xsd:extension base="tariff:BenefitCard">
+                <xsd:sequence/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <!-- SPECIALS -->
+
+    <xsd:complexType name="SpecialOffer">
+        <xsd:complexContent>
+            <xsd:extension base="tariff:BenefitCard">
+                <xsd:sequence/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="SpecialOrder">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">A service provider may publish special offers which are restricted in time
+                and context (e.g. bound to a public event). The request shall be able to refer to this special or
+                promotional offer by a unique identifier. This may be a key or a special name in combination with the
+                service provider. The service provider will take this entry into account when creating the carrier-offer
+                but he is not forced to do so.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="SupplierId" type="common:MasterData.GUID">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to identify the Addressee supplying
+                                the special order.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="Identifier" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">The identifier may be a number or an alpha-numeric string. It
+                            is provided with the special offer and must be known by the user (POS or private customer).
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <!-- SALES AFTER-SALES CONDITIONS -->
+
+    <xsd:complexType name="SalesCondition">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="VehicleBindingType" type="tariff:AllowedVehicles" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Vehicle-bound sales conditions for the current offer.
+                                Occurrence Indicators : one to many "VehicleBindingType" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SalesConditionText" type="common:GenericTextMessage" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Sales conditions of the current offer as plain text.
+                                Occurrence Indicators : one to many "SalesConditionsText" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ImmediatePaymentCondition" type="payment:ImmediatePaymentCondition" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Condition for immediate payment
+                                Occurrence Indicators : one and only one "ImmediatePaymentCondition" can optionally be
+                                defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="Open" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Indicates if the product is linked to a particular train or
+                            not.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="ReservationRequired" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Indicates if a reservation will be required afterwards or not
+                            (e.g. separate seat reservation).
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="ImmediatePaymentAvailability" type="payment:ImmediatePaymentAvailability">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Indicates if the product is linked to a particular train or
+                            not.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AfterSalesCondition">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="UpgradeConstraintId" type="common:MasterData.GUID" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to indicate if an upgrade is possible
+                                or not.
+                                Occurrence Indicators : one and only one "UpgradeConstraintId" can optionally be
+                                defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="UpgradeIdType" type="common:MasterData.GUID" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to list the different types of upgrade
+                                possible (e.g. meal at place, additional luggage, etc..)
+                                Occurrence Indicators : one and only one "UpgradeIdType" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Refunding" type="tariff:Refunding" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Details the refund conditions attached to the current
+                                offer.
+                                Occurrence Indicators : one and only one "Refunding" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Exchange" type="tariff:Exchange" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Details the exchange conditions attached to the current
+                                offer.
+                                Occurrence Indicators : one and only one "Exchange" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="AfterSalesConditionText" type="common:GenericTextMessage" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">After sales conditions related to the current offer as
+                                plain text.
+                                Occurrence Indicators : one and only one "AfterSalesConditionsText" can optionally be
+                                defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ImmediatePaymentCondition" type="payment:ImmediatePaymentCondition" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Condition for immediate payment
+                                Occurrence Indicators : one and only one "AfterSalesConditionsText" can optionally be
+                                defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="ImmediatePaymentAvailability" type="payment:ImmediatePaymentAvailability">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Indicates if the product is linked to a particular train or
+                            not.
+                            Occurrence Indicators : one and only one "ImmediatePaymentAvailability" can optionally be
+                            defined.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <!-- ZONES AREAS -->
+
+    <xsd:complexType name="ValidityArea">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Area" type="tariff:Area" minOccurs="0"/>
+                    <xsd:element name="AlternativePath" type="tariff:AlternativePath" minOccurs="0"
+                                 maxOccurs="unbounded"/>
+                    <xsd:element name="TrailingArea" type="tariff:Area" minOccurs="0"/>
+                    <xsd:element name="LeadingArea" type="tariff:Area" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ValidityPeriod">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="DayOfWeek" type="common:MasterData.GUID" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to identify the validity period type
+                                (e.g. Monday, Tuesday, etc..). Multiple occurrences have to be considered as an END.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="TimeRange" type="tariff:TimeRange" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicates the daily time range of validity. Multiple
+                                occurrences have to be considered as an END.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Start" type="xsd:dateTime" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicates the start date of validity.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="End" type="xsd:dateTime" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicate the end date of validity.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="BlackoutDate" type="xsd:date" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">list of blackout dates to be excluded from the validity
+                                period.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AllowedVehicles">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="VehicleTypeId" type="common:MasterData.GUID" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">MasterData type used to indicates the allowed vehicles for the
+                        current product.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="VehicleId" type="xsd:NMTOKEN" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">List of allowed vehicles for the current product.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="TimeRange">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Start" type="xsd:dateTime" minOccurs="0"/>
+            <xsd:element name="End" type="xsd:dateTime" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ControllingConstraint">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">Indicates weather additional information is required for identification
+                during the sale process.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="ProofOfIdentityId" type="common:MasterData.GUID">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to specify which type of proof of
+                                identity is required for the sale process.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="CardIssuerId" type="common:MasterData.GUID">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to identify an Addressee. The type
+                                Addressee is defined in master data domain Addressee. The value is set only if a type of
+                                proof of identity is set (e.g. Italian Ministry of Foreing Affairs),
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="IdentityByAccount" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">The user has an account in the system of one of the rail
+                            service providers or in the system of the resellser. The account name must be set.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="AccountDirectoryOwner" type="common:MasterData.GUID">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to indicate if the user is identified by a
+                            system account, the owner of the directory of the user accounts must be set. An entry
+                            “Addressee” must exist in the master data.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="SpecialTerms">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Condition" type="common:MasterData.GUID" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to indicate conditions for special
+                                terms.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="TermAsPlainText" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Product">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Description" type="common:GenericTextMessage" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Intelligible short description to be used for display
+                                purposes.
+                                Occurrence Indicator : only one description can optionally be provided.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ProductInformation" type="common:AdditionalEntry" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Key/value pair used to add particular product information
+                                related to product owner business logic.
+                                Occurrence Indicator : one to many "ProductInformation" can be provided.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="Code" type="xsd:NMTOKEN" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Unique product identifier within the product catalog of a given
+                            product owner.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="DisplayName" type="xsd:string" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Intelligible product name to be used for display purposes. RSPs
+                            could return DisplayNames translated in the language specified in request.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="QualityOfServiceId" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to classify products based on levels of
+                            service (e.g. 1st, 2nd, premium, not applicable, etc..)
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="VolatilityIndex" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to give a rough estimation of how much
+                            volatile over time a given product is.
+                            Can be leveraged by the caching mechanisms of Distributors and Retailers to improve the
+                            cache efficiency. The possible values
+                            represent different degrees of volatility (from non volatile to extremely volatile) and are
+                            defined in the corresponding MasterData type.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="DirectBookable" type="xsd:boolean" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Boolean indicating if a given product can be cached and/or
+                            booked in a direct booking flow.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Refunding">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="HandlingFee" type="tariff:HandlingFee" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">A value must be given even if it is zero. A handling fee
+                                can be indicated as fixed sum or a percentage of the RSP price.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="RefundingFlexibilityLevelId" type="common:MasterData.GUID" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to specify the refunding flexibility level
+                            for the current carrier offer (e.g. non refundable, refundable with conditions, etc..).
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Exchange">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="HandlingFee" type="tariff:HandlingFee" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">A value must be given even if it is zero. A handling fee
+                                can be indicated as fixed sum or a percentage of the RSP price.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="ExchangeFlexibilityLevelId" type="common:MasterData.GUID" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to specify the exchange flexibility level
+                            for the current carrier offer (e.g. non exchangeable, exchangeable with conditions, etc..).
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AlternativePath">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="StopPlace" type="infrastructure:StopPlace" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+                <xsd:attribute name="PathName" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Amount">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Both FlatFeeAmount and Percentage can be provided.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="FlatFeeAmount" type="xsd:decimal" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">An amount of money. The value is set according to the currency
+                        specified with CurrencyId.
+                        Occurrence Indicators : one and only one "FlatFeeAmount" can optionally be defined. If not
+                        defined, then a "PercentageAmount" has to be defined.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="PercentageAmount" type="common:Percentage" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">A value indicating an amount of money as a percentage for the
+                        current fare element.
+                        Occurrence Indicators : one and only one "PercentageAmount" can optionally be defined. If not
+                        defined, then a "FlatFeeAmount" has to be defined.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Fare">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+                    <xsd:element name="RSPPrice" type="tariff:RSPPrice" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">RSP price. Price expected or received by the RSP, including
+                                VATs and charges.
+                                RSPPrice = NetPrice + VATs + Charges = Reference RSPPrice (not provided) + Discount.
+                                Occurrence Indicators : one to many RSP Price can optionally be defined.
+                                If only one RSP price is defined, then it refers to the global carrier-offer.
+                                If many RSP price are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="NetPrice" type="tariff:NetPrice" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Net Price for the current fare elements.
+                                Price of the service, excluding VATs and charges. Price reference for the calculation of
+                                VAT for the service.
+                                Occurrence Indicators : one to many NetPrice can be defined and this element is
+                                mandatory.
+                                If only one NetPrice is defined, then it refers to the global carrier-offer.
+                                If many NetPrices are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Discount" type="tariff:Discount" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">List of discounts applied to the current fare element.
+                                Discount received in comparison with Reference RSPPrice (not provided). Negative Amount.
+                                Occurrence Indicators : one to many Discount can optionally be defined.
+                                If only one Discount is defined, then it refers to the global carrier-offer.
+                                If many Discount are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="VAT" type="tariff:VAT" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">List of taxes applied to the current fare element.
+                                VAT taxes (including possible VATs on charges).
+                                Occurrence Indicators : one to many VAT can optionally be defined.
+                                If only one VAT is defined, then it refers to the global carrier-offer.
+                                If many VAT are defined, then they can refer to individual passenger, segment, product,
+                                etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Charge" type="tariff:Charge" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">List of charges applied to the current fare element.
+                                Taxes except VATs (e.g. airport taxes).
+                                Occurrence Indicators : one to many Charge can optionally be defined.
+                                If only one Charge is defined, then it refers to the global carrier-offer.
+                                If many Charge are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="FareTypeId" type="common:MasterData.GUID" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to distinguish between the
+                            different types of fare information (e.g. total, detail, etc..) according the fact that Fare
+                            elements
+                            refer to the global carrier offer or to particular elements within the carrier offer.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AfterSaleFare">
+        <xsd:complexContent>
+            <xsd:extension base="tariff:Fare">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Balance" type="tariff:Balance" minOccurs="1" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Balance defines the difference amount between the initial
+                                price and the new price in a context of after sales.
+                                Occurrence Indicators : one to many Balance can be defined and this element is
+                                mandatory.
+                                If only one Balance is defined, then it refers to the global carrier-offer.
+                                If many Balance are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="InitialPrice" type="tariff:InitialPrice" minOccurs="1" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Initial price before after sales process.
+                                Occurrence Indicators : one to many InitialPrice can be defined and this element is
+                                mandatory.
+                                If only one InitialPrice is defined, then it refers to the global carrier-offer.
+                                If many InitialPrice are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="HandlingFee" type="tariff:HandlingFee" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Fees applied on the after sale process.
+                                Occurrence Indicators : one to many HandlingFee can be defined and this element is
+                                mandatory.
+                                If only one HandlingFee is defined, then it refers to the global carrier-offer.
+                                If many HandlingFee are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Balance">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="RSPPrice" type="tariff:RSPPrice" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">RSP price. Price expected or received by the RSP, including
+                                VATs and charges.
+                                RSPPrice = NetPrice + VATs + Charges = Reference RSPPrice (not provided) + Discount.
+                                Occurrence Indicators : one to many RSP Price can optionally be defined.
+                                If only one RSP price is defined, then it refers to the global carrier-offer.
+                                If many RSP price are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="NetPrice" type="tariff:NetPrice" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Net Price for the current fare elements.
+                                Price of the service, excluding VATs and charges. Price reference for the calculation of
+                                VAT for the service.
+                                Occurrence Indicators : one to many NetPrice can be defined and this element is
+                                mandatory.
+                                If only one NetPrice is defined, then it refers to the global carrier-offer.
+                                If many NetPrices are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Discount" type="tariff:Discount" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">List of discounts applied to the current fare element.
+                                Discount received in comparison with Reference RSPPrice (not provided). Negative Amount.
+                                Occurrence Indicators : one to many Discount can optionally be defined.
+                                If only one Discount is defined, then it refers to the global carrier-offer.
+                                If many Discount are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="VAT" type="tariff:VAT" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">List of taxes applied to the current fare element.
+                                VAT taxes (including possible VATs on charges).
+                                Occurrence Indicators : one to many VAT can optionally be defined.
+                                If only one VAT is defined, then it refers to the global carrier-offer.
+                                If many VAT are defined, then they can refer to individual passenger, segment, product,
+                                etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Charge" type="tariff:Charge" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">List of charges applied to the current fare element.
+                                Taxes except VATs (e.g. airport taxes).
+                                Occurrence Indicators : one to many Charge can optionally be defined.
+                                If only one Charge is defined, then it refers to the global carrier-offer.
+                                If many Charge are defined, then they can refer to individual passenger, segment,
+                                product, etc...
+                                In this case, the targeted elements are defined using IDREFS attribute.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Charge">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Currency" type="tariff:Currency" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Currency Information. Occurrence Indicators : one and only
+                                one "Currency" element has to be defined.
+                                The setting of a value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Amount" type="tariff:Amount" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Amount in the defined currency. Both FlatFeeAmount and
+                                Percentage can be provided.
+                                Occurrence Indicators : one and only one amount has to be defined. The setting of a
+                                value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Description" type="common:GenericTextMessage" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">May give reasons for a charge or refer to a regulation via
+                                URI.
+                                Occurrence Indicators : one and only one Description can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="TypeId" type="common:MasterData.GUID"
+                               use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData type used to distinguish the different types of
+                            charges which may be included in the total
+                            price of the carrier-offer (e.g. fee, mark up, etc..). It depends on the agreements between
+                            service providers and resellers, who
+                            will calculate the charges and hence has to set it in this type.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="Refundable" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Boolean indicating whether a fee is refundable or not.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="NetPrice">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Currency" type="tariff:Currency" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Currency Information. Occurrence Indicators : one and only
+                                one "Currency" element has to be defined.
+                                The setting of a value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Amount" type="tariff:Amount" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Amount in the defined currency. Both FlatFeeAmount and
+                                Percentage can be provided.
+                                Occurrence Indicators : one and only one amount has to be defined. The setting of a
+                                value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="InitialPrice">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Currency" type="tariff:Currency" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Currency Information. Occurrence Indicators : one and only
+                                one "Currency" element has to be defined.
+                                The setting of a value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Amount" type="tariff:Amount" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Amount in the defined currency. Both FlatFeeAmount and
+                                Percentage can be provided.
+                                Occurrence Indicators : one and only one amount has to be defined. The setting of a
+                                value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="HandlingFee">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Currency" type="tariff:Currency" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Currency Information. Occurrence Indicators : one and only
+                                one "Currency" element has to be defined.
+                                The setting of a value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="FirstSegmentStatusId" type="common:MasterData.GUID" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to indicate the status of the first
+                                segment. If the refunding depends on the status of the first segment, a value has to be
+                                set.
+                                If no value is set, the refunding condition is valid at any status.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Amount" type="tariff:Amount" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Amount in the defined currency. Both FlatFeeAmount and
+                                Percentage can be provided.
+                                Occurrence Indicators : one and only one amount has to be defined. The setting of a
+                                value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ValidityPeriodStart" type="xsd:dateTime" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Start of the period of time during which a refunding of the
+                                specified type and amount can be requested.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="HandlingPeriodCondition" type="common:GenericTextMessage" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Text containing a time-based condition. It states in detail
+                                how the refund may be applied.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Area">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Region" type="infrastructure:Region" minOccurs="0"/>
+                </xsd:sequence>
+                <xsd:attribute name="AreaName" type="xsd:string"/>
+                <xsd:attribute name="ZoneName" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="RSPPrice">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Currency" type="tariff:Currency" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Currency Information. Occurrence Indicators : one and only
+                                one "Currency" element has to be defined.
+                                The setting of a value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Amount" type="tariff:Amount" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Amount in the defined currency. Both FlatFeeAmount and
+                                Percentage can be provided.
+                                Occurrence Indicators : one and only one amount has to be defined. The setting of a
+                                value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Discount">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">Details the discount applied to a fare element by
+                providing the corresponding discounted amount and the reference to
+                the discount entitlement considered.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Currency" type="tariff:Currency" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Currency Information. Occurrence Indicators : one and only
+                                one "Currency" element has to be defined.
+                                The setting of a value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Amount" type="tariff:Amount" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Amount in the defined currency. Both FlatFeeAmount and
+                                Percentage can be provided.
+                                Occurrence Indicators : one and only one amount has to be defined. The setting of a
+                                value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="VAT">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">Details the tax applied to a fare element.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="Currency" type="tariff:Currency" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Currency Information. Occurrence Indicators : one and only
+                                one "Currency" element has to be defined.
+                                The setting of a value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="CountryId" type="common:MasterData.GUID" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to identify the country
+                                the tax refers to.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Amount" type="tariff:Amount" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Amount in the defined currency. Both FlatFeeAmount and
+                                Percentage can be provided.
+                                Occurrence Indicators : one and only one amount has to be defined. The setting of a
+                                value is mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Currency">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="CurrencyId" type="common:MasterData.GUID" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">MasterData type used to identify the currency
+                        of the fare. The value will override the field defined in Localisation.
+                        Occurrence Indicators : one and only one CurrencyId has to be defined.
+                        The setting of a value is mandatory.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ExchangeRate" type="xsd:decimal" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">An exchange rate may be given if an agreement
+                        requests not to use the caller’s source of exchange rates.
+                        Occurrence Indicators : one and only one ExchangeRate has to be defined.
+                        The setting of a value is mandatory.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

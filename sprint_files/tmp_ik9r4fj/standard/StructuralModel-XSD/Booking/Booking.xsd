@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:common="http://domainmodel.pts_fsm.org/2015/10/29/common"
+        xmlns:offering="http://domainmodel.pts_fsm.org/2015/10/29/offering"
+        xmlns:passenger="http://domainmodel.pts_fsm.org/2015/10/29/passenger"
+        xmlns:fulfilment="http://domainmodel.pts_fsm.org/2015/10/29/fulfilment"
+        xmlns:journeyplan="http://domainmodel.pts_fsm.org/2015/10/29/journeyplan"
+        xmlns:transportation="http://domainmodel.pts_fsm.org/2015/10/29/transportation"
+        xmlns:tariff="http://domainmodel.pts_fsm.org/2015/10/29/tariff"
+        xmlns:payment="http://domainmodel.pts_fsm.org/2015/10/29/payment"
+        xmlns:roles="http://domainmodel.pts_fsm.org/2015/10/29/roles"
+
+        xmlns:booking="http://domainmodel.pts_fsm.org/2015/10/29/booking"
+        targetNamespace="http://domainmodel.pts_fsm.org/2015/10/29/booking" elementFormDefault="qualified">
+
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/common" schemaLocation="../Common/Common.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/offering"
+                schemaLocation="../Offering/Offering.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/passenger"
+                schemaLocation="../Passenger/Passenger.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/fulfilment"
+                schemaLocation="../Sales/Fulfilment.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/journeyplan"
+                schemaLocation="../GeoInfra/JourneyPlan.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/transportation"
+                schemaLocation="../GeoInfra/Transportation.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/tariff" schemaLocation="../Sales/Tariff.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/payment" schemaLocation="../Sales/Payment.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/roles" schemaLocation="../Common/Roles.xsd"/>
+
+    <xsd:complexType name="Booking">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+
+                A business entity created by the Booking process constituting the digital, persistent record of the
+                business agreement established between
+                a Retailer/ Commercial Distributor and a Rail Service Provider by a Booking transaction, where the Rail
+                Service Provider commits to supply
+                the Products described in the booked Carrier Offer(s) and the Retailer/ Commercial Distributor commits
+                to reward the Rail Service Provider
+                for the supplied Products according to the terms and conditions associated with the Carrier Offer(s).
+                Note: Booking is the basis for establishing the relationship (i.e. Contract of Carriage) between
+                Customer/ Passenger and Carrier through
+                the fulfilment and payment process.
+
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="BookingCommercialRef" type="xsd:NMTOKEN" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">
+                                Additional internal RSP reference to the booking that may be used in FSM additionally of
+                                attribute IDs and that may be provided to the customer.
+                                Occurrence Indicators : one and only one "BookingCommercialRef" can optionally be
+                                defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="RelatedBookingIdRefsList" type="xsd:NMTOKENS" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">
+                                For some RSP, an after-sale can lead to a new booking object, this parameters allows to
+                                keep track of previous booking object.
+                                Occurrence Indicators : one to many "RelatedBookingRefsList" can optionally be defined,
+                                "NMTOKENS" type allows to define many IDs separated with withespaces.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="BookingTimeLimit" type="xsd:dateTime" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">
+                                Mandatory expiration dateTime for a Booking in the PREBOOKED status. Booking is invalid,
+                                and can be destroyed, when this time limit is exceeded.
+                                Ignored for a Booking in the FINALLYBOOKED or REVOKED or ERROR status.
+                                Occurrence Indicators : one and only one "BookingTimeLimit" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="CarrierServiceItem" type="booking:CarrierServiceItem" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">
+                                The CarrierServiceItem corresponds to the contract of carriage defined by passengers,
+                                segments, products. It is the smallest element on which an after-sale operation
+                                can occur without impacting other segments, passengers, products combination within a
+                                same booking.
+                                Occurrence Indicators : one to many "CarrierServiceItem" can be defined. At least one is
+                                mandatory.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Itinerary" type="journeyplan:Itinerary" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">List of itineraries used in the serviceItems of this
+                                booking (used for linkage to segments inside the serviceItems).
+                                Occurrence Indicators : one to many "Itinerary" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Passenger" type="passenger:PassengerData" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Booking related passengers. Occurrence Indicators : one to
+                                many "Passenger" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ContactInformation" type="passenger:ContactInformation" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">
+                                Customer Contact Information. Occurrence Indicators : one and only one
+                                "ContactInformation" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="BookingStatus" type="common:GenericStatus" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData : status of the booking.
+                                Occurrence Indicators : one and only one BookingStatus can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="PaymentMode" type="payment:PaymentMode" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Mode of payment used for the booking. Occurrence Indicators
+                                : one to many PaymentMode can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="FulfilmentMethod" type="fulfilment:FulfilmentMethod" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Fulfilment methods used for the booking. Occurrence
+                                Indicators : one to many FulfilmentMethod can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Remark" type="common:GenericTextMessage" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Booking remarks. Occurrence Indicators : one and only one
+                                Remark can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="CarrierServiceItem">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">The CarrierServiceItem corresponds to the contract of carriage defined by
+                passengers, segments, products. It is the smallest element on which an after-sale operation
+                can occur without impacting other segments, passengers, products combination within a same booking.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="CarrierServiceItemStatus" type="common:GenericStatus" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">ReferenceData : status of the carrier service item
+                                Occurrence Indicators : one and only one CarrierServiceItemStatus can optionally be
+                                defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="CarrierServiceItemCommercialRef" type="xsd:NMTOKEN" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Additional internal RSP reference to the CarrierServiceItem
+                                that may be used in FSM additionally of Ids attributes and that may be provided to the
+                                customer..
+                                Occurrence Indicators : one and only one "CarrierServiceItemCommercialRef" can
+                                optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="PassengerRefsList" type="xsd:IDREFS" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Linkage toward one or several passengers of the booking
+                                Occurrence Indicators : IDREFS type allows to add multiple ID references separated with
+                                white-spaces.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SegmentRefsList" type="xsd:IDREFS" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Linkage toward one or several segments of one itinerary of
+                                the booking.
+                                Occurrence Indicators : IDREFS type allows to add multiple ID references separated with
+                                white-spaces.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Product" type="tariff:Product" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">List of unique identification and description of a Product
+                                within the RSP Product Catalog
+                                Occurrence Indicators : one to many products can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ProductOwner" type="roles:ProductOwner" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Owners of the products.
+                                Occurrence Indicators : one to many ProductOwner can optionally be defined. They can
+                                refer to products using IDREFS.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SalesCondition" type="tariff:SalesCondition" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Sales conditions that apply to this serviceItem (thus, to
+                                all passengers / segments)
+                                Occurrence Indicators : one and only one "SalesConditions" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="AfterSalesCondition" type="tariff:AfterSalesCondition" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">After-sales conditions that apply to this serviceItem
+                                (thus, to all passengers / segments)
+                                Occurrence Indicators : one and only one "AfterSalesConditions" can optionally be
+                                defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ValidityArea" type="tariff:ValidityArea" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Defines the area of validity for the products included in
+                                the current Carrier Service Item.
+                                "ValidityArea" can be bound to other elements such as "Products" using IDREFS
+                                attributes.
+                                Occurrence Indicators : one to many ValidityArea can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ValidityPeriod" type="tariff:ValidityPeriod" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Defines the period of validity for the products included in
+                                the current carrier service item.
+                                "ValidityPeriod" can be bound to other elements such as "Products" using IDREFS
+                                attributes. Occurrence Indicators : one to many ValidityPeriod can optionally be
+                                defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ControllingConstraint" type="tariff:ControllingConstraint" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicates weather additional information is required for
+                                identification during the sale process (e.g. passport
+                                information mandatory for the booking step). "ControllingConstraint" can be bound to
+                                other elements such as "Products" using IDREFS attributes.
+                                Occurrence Indicators : one to many ControllingConstraint can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SpecialTerms" type="tariff:SpecialTerms" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Defines special terms. "SpecialTerms" can be bound to other
+                                elements such as "Products" using IDREFS attributes.
+                                Occurrence Indicators : one to many "SpecialTerms" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="BoundCarrierServiceItemRefsList" type="xsd:IDREFS" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Linkage to other Carrier Service Items (e.g. a
+                                transportation service can be defined in a carrier service item
+                                and an associated meal can be defined in another one. In case of a refund for the
+                                transportation service, "BoundCarrierServiceItemRefsList"
+                                is used then to indicates that the meal also need to be refund).
+                                Occurrence Indicators : one and only one "BoundCarrierServiceItemRefsList" can
+                                optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="CombinationCriteria" type="offering:CombinationCriteria" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">
+                                Combinability criteria to be respected when combining the current carrier offer with
+                                other carrier offers to build a total
+                                offer. It is used by distributors/retailers during the orchestration of calls to
+                                multiple RSPs and the generation of
+                                total offers combining the various carrier offers returned by each one of them. This
+                                element defines whether the application
+                                of combination rules is compulsory or combination with wildcard is allowed. Some RSP
+                                will allow the combination of their
+                                offers/ticket types only with a selection of offers/ticket types coming from other RSPs,
+                                some others will not specify any restriction.
+                                Occurrence Indicators : one to many "CombinationCriteria" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="PlaceReference" type="transportation:PlaceReference" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">
+                                Linkage with a specific place reference. Most of the services
+                                and equipment is bound to a compartment or a place. The
+                                reference to a place is made by the class PlaceReference. This
+                                class can only be instantiated if identifiers for coach or
+                                compartment or place are available. This may not always be the
+                                case with the initial request. If a place map is provided with
+                                the itinerary and the client app implements a two-step workflow,
+                                the customer is able to indicate a concrete place. In case of
+                                an adjustment or completion of an offer which encompasses an
+                                addition or change of one of these services the place reference
+                                must be set.
+                                If a rail service provider is able to return a concrete place or a
+                                place map with his carrier-offer, a place bound to a passenger
+                                must be referred to by its ID.
+                                Occurrence Indicators : one to many "PlaceReference" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ConfirmedPRMSupport" type="offering:ConfirmedPRMSupport" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">OnBoard Support for Persons with Reduced Mobility
+                                (dedicated Fare and Conditions).
+                                Occurrence Indicators : one to many "ConfirmedPRMSupport" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ConfirmedAncillaryService" type="offering:ConfirmedAncillaryService"
+                                 minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Onboard included or mandatory ancillary services (dedicated
+                                Fares and Conditions).
+                                Occurrence Indicators : one to many "ConfirmedAncillaryService" can optionally be
+                                defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Fare" type="tariff:Fare" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Information about the price, charges, VAT and discounts
+                                Occurrence Indicators : one to many "Fare" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Fulfilment" type="fulfilment:Fulfilment" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Onboard included or mandatory ancillary services (dedicated
+                                Fares and Conditions).
+                                Occurrence Indicators : one to many "Fulfilment" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="CarbonFootPrint" type="journeyplan:CarbonFootPrint"
+                                 minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Indicates Carbon FootPrint.
+                                Occurrence Indicators : one to many "CarbonFootPrint" can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="StatelessPreBookingCarrierOffer">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="Passenger" type="passenger:PassengerData" minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">Repeats the information related to the passengers specified in
+                        request. It allows the message receiver to validate the response and it is linked to the
+                        PassengerRefsList element in CarrierOffers. Occurrence Indicators : Many passengers can be
+                        defined. At least one passenger is required.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Itinerary" type="journeyplan:Itinerary" minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">Repeats the information related to the itineraries specified in
+                        request. RSPs can return different itineraries only in the case a pre-calculated itinerary is
+                        incorrect. It allows the message receiver to validate the response and it is linked to the
+                        SegmentRefsList element in CarrierOffers. Occurrence Indicators : Many segments can be defined.
+                        At least one segment is required.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="CarrierOffer" type="offering:SaleCarrierOffer" minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation xml:lang="en">List of all carrier offers available for the sale.
+                        Occurrence Indicators : The FSM api supports all possible ways of proposing carrier offers in
+                        case of multiple passengers and segments:
+                        1) single carrier offers for all passengers and segments
+                        2) distinct carrier offers for each passenger but all segments
+                        3) distinct carrier offers for each couple: passenger + segment.
+                        Hybrid situations could occur in case of non homogeneous trips where for example 1 segment is
+                        traveled by only one passenger and another segment is traveled by both passengers.
+                        In this particular scenario, some carrier offers may refer to only one passenger and one
+                        segment, some to all passengers but one segment and some to one passenger but all segments.
+                        The same logic applies also to ancillary services which can be returned either bundled with the
+                        admission within a single carrier offer or listed separately in dedicated carrier offers.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

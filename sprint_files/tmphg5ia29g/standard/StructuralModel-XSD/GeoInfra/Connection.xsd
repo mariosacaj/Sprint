@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:common="http://domainmodel.pts_fsm.org/2015/10/29/common"
+        xmlns:infrastructure="http://domainmodel.pts_fsm.org/2015/10/29/infrastructure"
+
+        xmlns:connection="http://domainmodel.pts_fsm.org/2015/10/29/connection"
+        targetNamespace="http://domainmodel.pts_fsm.org/2015/10/29/connection" elementFormDefault="qualified">
+
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/common" schemaLocation="../Common/Common.xsd"/>
+    <xsd:import namespace="http://domainmodel.pts_fsm.org/2015/10/29/infrastructure"
+                schemaLocation="Infrastructure.xsd"/>
+
+    <xsd:complexType name="ChangePoint">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="ConnectionTime" type="connection:ConnectionTime" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Duration information from the beginning to the end of the
+                                change point. Occurrence Indicators : optional parameter, many "ConnectionTime" can be
+                                defined, one for each "LinkPath"
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="LinkPath" type="connection:LinkPath" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Information on paths passengers need to travel on their
+                                own. Occurrence Indicators : optional parameter, many "LinkPath" can be defined in this
+                                case it needs to refer to the related "ConnectionTime" using IDREFS attributes.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="StopPlaceName" type="xsd:string" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Stop place name.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ConnectionTime">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="MeanOverallChangeTime" type="xsd:duration" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Connection average duration. Occurrence Indicators :
+                                optional parameter, only one "ExperiencedOverallChangeTime" can be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ExperiencedOverallChangeTime" type="xsd:duration" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Connection experienced duration. Occurrence Indicators :
+                                optional parameter, only one "ExperiencedOverallChangeTime" can be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ImpairedOverallChangeTime" type="xsd:duration" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Connection impaired duration. Occurrence Indicators :
+                                optional parameter, only one "ImpairedOverallChangeTime" can be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="WheelchairOverallChangeTime" type="xsd:duration" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Wheel chair connection average duration. Occurrence
+                                Indicators : optional parameter, only one "WheelchairOverallChangeTime" can be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="LinkPath">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="WaitingTimeTypeId" type="common:MasterData.GUID" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData type used to define the type of critical
+                                barriers in a path link. Critical barriers will impact the connection time. The risk is
+                                indicated by a type of barrier or activity that will force the passenger to wait.
+                                Occurrence Indicators : optional parameter, many "WaitingTimeTypeId" can be defined for
+                                a "LinkPath", in this case, the "NavigationPoint" it refers to need to be defined using
+                                IDREFS attributes.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="MobilityAidTypeId" type="common:MasterData.GUID" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData used to define the type of mobility tool that
+                                can be provided to ease the change of vehicle. These are in particular means that
+                                support PRM like trolley or wheel chair. Occurrence Indicators : optional parameter,
+                                many "MobilityAidTypeId" can be defined for a "LinkPath", in this case, the
+                                "NavigationPoint" it refers to need to be defined using IDREFS attributes.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="NavigationPoint" type="connection:NavigationPoint" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Points that represent a particular node in a "LinkPath" to
+                                the next where mobility condition changes (e.g. from the train deboarding point to the
+                                identity control gate, from the identity control gate to the shuttle, from the shuttle
+                                to the boarding platform of the next segment). Occurrence Indicators : one to many
+                                "NavigationPoint" can optionally be defined for each "LinkPath".
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="PathLinkTypeId" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData used to define the type of link path. Link path are
+                            routes between two points of change of vehicle. Most paths start with a platform and end
+                            with a platform and present a simple pedestrian link. In big stations a path may consist of
+                            several links and include stairs, elevators, etc.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="PedestrianPaceId" type="common:MasterData.GUID" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">MasterData used to define the pedestrian pace. The duration of
+                            a connection can be provided for several type of pace, in particular for PRM passenger.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="AidBookable" type="xsd:boolean" use="optional">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">Defines if aid can be booked for this link path.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="NavigationPoint">
+        <xsd:complexContent>
+            <xsd:extension base="common:FSM.ID">
+                <xsd:sequence minOccurs="0">
+                    <xsd:element name="AccessEquipmentId" type="common:MasterData.GUID" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData used to define the access equipment. Any means
+                                or areas that provide access to a stop place or an area within the location is defined.
+                                In particular equipment at the vehicle access area is included. This may be check-in
+                                barriers or equipment for security check. Occurrence Indicator : one to many access
+                                equipment can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="FootpathEquipmentId" type="common:MasterData.GUID" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData used to define the foot path equipment. Any
+                                equipment that may be used by a passenger to cross a stop place or parts of it is
+                                defined. Occurrence Indicator : one to foot path equipment can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="SafetyEquipmentId" type="common:MasterData.GUID" minOccurs="0"
+                                 maxOccurs="unbounded">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">MasterData used to define safety equipments. Any equipment
+                                for the safety and security at a stop place. Occurrence Indicator : one to many safety
+                                equipment can optionally be defined.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="ScheduledStopPoint" type="infrastructure:ScheduledStopPoint" minOccurs="0"
+                                 maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Departure time information of the "NavigationPoint" (e.g.
+                                if NavigationPoint is the boarding point to a shuttle). Occurrence Indicator : one and
+                                only one "ScheduledStopPoint" can optionally be defined for a Navigation Point.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="VehicleAccess" type="infrastructure:VehicleAccess" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation xml:lang="en">Vehicle Access information (e.g. if NavigationPoint is the
+                                boarding point to a shuttle). Occurrence Indicator : one and only one "VehicleAccess"
+                                can optionally be defined for a Navigation Point.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>
