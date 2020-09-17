@@ -262,7 +262,8 @@ function showData(text) {
 	secondRed = [];
 
 	for(let term in second) {
-		secondRed.push(getAfterColon(term));
+		//secondRed.push(getAfterColon(term));
+        secondRed.push(term);
 	}
 	
 

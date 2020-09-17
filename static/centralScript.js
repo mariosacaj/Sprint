@@ -433,8 +433,6 @@ function sendData() {
             data_to_send[stdValues[i]] = ontValues[i];
         }
 
-        console.log(data_to_send);
-
         // Send the data
 
         xmlhttp = new XMLHttpRequest();
