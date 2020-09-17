@@ -438,7 +438,7 @@ function sendData() {
         // Send the data
 
         xmlhttp = new XMLHttpRequest();
-        var url = "http://127.0.0.1:8000/download/";
+        var url = "/download/";
         xmlhttp.open("POST", url, true);
         xmlhttp.setRequestHeader("Content-type", "application/json");
         xmlhttp.onreadystatechange = function () { //Call a function when the state changes.

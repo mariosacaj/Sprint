@@ -1,6 +1,7 @@
 import shutil
 import json
 import os
+import sys
 import tempfile
 import zipfile
 
@@ -8,7 +9,6 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-
 
 from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, URI_TOOL_PATH, OWL_TOOL_PATH, ONT_TOOL_PATH
 from annotator.api import standard_init, reference_init, annotate_dict_and_build, owl2json, standard_dir, \
@@ -229,11 +229,11 @@ def download(request):
         file_dir = os.path.join(request.session['tmp'], java_dir)
         try:
             dict_confirmed = json.loads(request.body)['associations']
-        except KeyError:
+            validation(request, dict_confirmed)
+            annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'])
+        except BaseException as e:
+            sys.stderr.write(e)
             return HttpResponseBadRequest()
-        validation(request, dict_confirmed)
-        annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'])
-
         return send_zip(file_dir, request)
     else:
         return HttpResponseBadRequest()
@@ -250,8 +250,8 @@ def send_zip(file_dir, request):
 
 def validation(request, dict_confirmed):
     for key, value in dict_confirmed.items():
-        std_type = request.session['standard_dict']
-        ref_type = request.session['reference_dict']
+        std_type = request.session['standard_dict'][key]
+        ref_type = request.session['reference_dict'][value]
         if ref_type != '' and std_type != '' and std_type != ref_type:
             raise AnnotationError('Validation failed')
 
@@ -356,5 +356,3 @@ def redirect_wait(request, msg, view_name):
 def redirect_view(request):
     return render(request, 'annotator/redirect.html',
                   {"msg": request.session["msg_r"], "url": request.session["url_r"]})
-
-	

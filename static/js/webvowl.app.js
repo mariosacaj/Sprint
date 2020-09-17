@@ -8218,17 +8218,17 @@ webvowl.app =
 			ontologyMenu.setConversionID(-10000);
 
 			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-			console.log("Waiting for resource");
-			    if (this.readyState == 4 && this.status == 200) {
-			console.log("Resource available");
-			       ontologyContent = xhttp.responseText;
-	console.log(ontologyContent);
-				ontologyIdentifierFromURL = "";
-				parseOntologyContent(ontologyContent);
-			    }
+			xhttp.onreadystatechange = function () {
+				console.log("Waiting for resource");
+				if (this.readyState == 4 && this.status == 200) {
+					console.log("Resource available");
+					ontologyContent = xhttp.responseText;
+					console.log(ontologyContent);
+					ontologyIdentifierFromURL = "";
+					parseOntologyContent(ontologyContent);
+				}
 			};
-			xhttp.open("GET", "http://127.0.0.1:8000/getOntology/", true);
+			xhttp.open("GET", "/getOntology/", true);
 			xhttp.send();
 
 		}

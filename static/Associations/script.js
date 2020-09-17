@@ -6,17 +6,17 @@ var JSONtext = undefined;
 function getAssociations() {
 
 	var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-	JSONtext = xhttp.responseText;
-        arraysElements = getTerms(JSONtext);
-        console.log(arraysElements);
-	createMenu();
-document.getElementById("addAssociation").addEventListener("click", createMenu, false);
-    }
+xhttp.onreadystatechange = function () {
+	if (this.readyState == 4 && this.status == 200) {
+		JSONtext = xhttp.responseText;
+		arraysElements = getTerms(JSONtext);
+		console.log(arraysElements);
+		createMenu();
+		document.getElementById("addAssociation").addEventListener("click", createMenu, false);
+	}
 };
-xhttp.open("GET", "http://127.0.0.1:8000/getAssociations", true);
-    xhttp.send();
+	xhttp.open("GET", "/getAssociations", true);
+	xhttp.send();
 
     document.querySelector("#enlarge img").addEventListener("click", enlargeTable, false);
     document.querySelector("#reduce img").addEventListener("click", reduceTable, false);
