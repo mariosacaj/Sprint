@@ -20,7 +20,7 @@ function searchTerm() {
 	let posX = position.split(",")[0];
 	let posY = position.split(",")[1];
 
-	panZoom.zoom(2);
+	panZoom.zoom(5);
 	panZoom.pan({x:0,y:0});
 	var realZoom= panZoom.getSizes().realZoom;
 
