@@ -85,8 +85,8 @@ def generate_code_model(tmp_folder, xsd_file):
     # Generate Java Code Model
     try:
         java_man.generateFromSchema(xsd_file)
-    except:
-        raise StandardError('Cannot create Java Code')
+    except BaseException as e:
+        raise StandardError('Cannot create Java Code: ' + str(e) + " ")
     return java_man
 
 
