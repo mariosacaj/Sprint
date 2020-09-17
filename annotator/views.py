@@ -232,7 +232,7 @@ def download(request):
             validation(request, dict_confirmed)
             annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'])
         except BaseException as e:
-            sys.stderr.write(e)
+            sys.stderr.write(str(e))
             return HttpResponseBadRequest()
         return send_zip(file_dir, request)
     else:
