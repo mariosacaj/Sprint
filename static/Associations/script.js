@@ -53,8 +53,13 @@ function fillGroup(arraysElements, menu, num, label) {
 	group.appendChild(emptyOption);
 
 	for(let i=0; i<arraysElements[num].length; ++i) {
-		let option = document.createElement("option");
-		option.innerHTML = getAfterColon(arraysElements[num][i]);
+        let option = document.createElement("option");
+        if (num == 0) {
+            option.innerHTML = getAfterColon(arraysElements[num][i]);
+        }
+        else {
+            option.innerHTML = arraysElements[num][i];
+        }
 		group.append(option);
 	}
 
@@ -190,7 +195,8 @@ function suggestedOntologies(standardValue) {
 	for(let key in obj) {
 		if(key.includes(standardValue)) {
 			for(let i=0; i<obj[key].length; ++i) {
-				suggestions.push(getAfterColon(obj[key][i][0]));
+				//suggestions.push(getAfterColon(obj[key][i][0]));
+                suggestions.push(obj[key][i][0]);
 			}
 	}
 		
