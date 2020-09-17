@@ -395,7 +395,6 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 	
 	var diagonal = d3.svg.diagonal()
 		.projection(function(d) { return [d.y, d.x]; });
-	console.log('selectString', '#' + selectString)
 	var svg = d3.select('#' + selectString).append("svg")
 		.attr("width", width + margin.right + margin.left)
 		.attr("height", height + margin.top + margin.bottom)
@@ -782,7 +781,6 @@ function compress() { // Compression
 	nodes = document.querySelectorAll("g .node");
 	for(let i=0; i<nodes.length; ++i) {
 		if(/xsd:.*simpleType/.test(nodes[i].innerHTML) || /xsd:.*element/.test(nodes[i].innerHTML) || /xsd:.*attribute/.test(nodes[i].innerHTML)) {
-			console.log(nodes[i].innerHTML);
 			var clickOnNode = document.createEvent("HTMLEvents");
 			clickOnNode.initEvent("click", false, true);
 			nodes[i].dispatchEvent(clickOnNode);	

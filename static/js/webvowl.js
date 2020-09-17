@@ -6019,11 +6019,11 @@ webvowl =
 	    
 	    
 	    // using the ids of elements if to ensure that loaded elements will not get the same id;
-	    for ( var p = 0; p < unfilteredData.properties.length; p++ ) {
-	      var currentId = unfilteredData.properties[p].id();
+          for (var p = 0; p < unfilteredData.properties.length; p++) {
+              var currentId = unfilteredData.properties[p].id();
 	      if ( currentId.indexOf('objectProperty') !== -1 ) {
-	        // could be ours;
-	        var idStr = currentId.split('objectProperty');
+              // could be ours;
+              var idStr = currentId.split('objectProperty');
 	        if ( idStr[0].length === 0 ) {
 	          var idInt = parseInt(idStr[1]);
 	          if ( eP < idInt ) {
@@ -6036,8 +6036,8 @@ webvowl =
 	    for ( var n = 0; n < unfilteredData.nodes.length; n++ ) {
 	      var currentId_Nodes = unfilteredData.nodes[n].id();
 	      if ( currentId_Nodes.indexOf('Class') !== -1 ) {
-	        // could be ours;
-	        var idStr_Nodes = currentId_Nodes.split('Class');
+              // could be ours; 
+              var idStr_Nodes = currentId_Nodes.split('Class');
 	        if ( idStr_Nodes[0].length === 0 ) {
 	          var idInt_Nodes = parseInt(idStr_Nodes[1]);
 	          if ( eN < idInt_Nodes ) {
@@ -7717,7 +7717,7 @@ webvowl =
 	        aNode.baseIri("http://www.undefinedDatatype.org/#");
 	        aNode.dType(defaultDatatypeName);
 	      } else {
-	        identifier = defaultDatatypeName.split(":")[1];
+              identifier = defaultDatatypeName.split(":")[1];
 	        aNode.label(identifier);
 	        aNode.dType(defaultDatatypeName);
 	        aNode.iri("http://www.w3.org/2001/XMLSchema#" + identifier);
@@ -13524,7 +13524,8 @@ webvowl =
 	            .equivalents(element.equivalent)
 	            .id(element.id)
 	            .intersection(element.intersection)
-	            .label(element.label)
+	            //.label(element.label)
+                  .label(element.iri.split("#")[0].split("/").pop() + ":" + (element.iri.split("#")[1]))
 	            // .type(element.type) Ignore, because we predefined it
 	            .union(element.union)
 	            .iri(element.iri);
