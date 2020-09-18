@@ -440,17 +440,35 @@ function sendData() {
         xmlhttp.open("POST", url, true);
         xmlhttp.setRequestHeader("Content-type", "application/json");
         xmlhttp.onreadystatechange = function () { //Call a function when the state changes.
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                alert(xmlhttp.responseText);
-            }
-        }
-        var data = {
-            "associations": data_to_send
-        };
-        xmlhttp.send(JSON.stringify(data));
+			var a;
+			if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+				var filename = "output.zip";
+				var disposition = xmlhttp.getResponseHeader('Content-Disposition');
+				if (disposition && disposition.indexOf('attachment') !== -1) {
+					var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+					var matches = filenameRegex.exec(disposition);
+					if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+				}
+				// Trick for making downloadable link
+				a = document.createElement('a');
+				a.href = window.URL.createObjectURL(xmlhttp.response);
+				// Give filename you wish to download
+				a.download = filename;
+				a.style.display = 'none';
+				document.body.appendChild(a);
+				a.click();
+			}
+		}
+		// You should set responseType as blob for binary responses
+		xmlhttp.responseType = 'blob';
+		var data = {
+			"associations": data_to_send
+		};
 
-        
-    }
+		xmlhttp.send(JSON.stringify(data));
+
+
+	}
 }
 
 function showAssociationOnGraph() {
