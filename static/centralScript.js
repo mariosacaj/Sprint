@@ -188,13 +188,27 @@ function addToAssociation(startingString, startingType) {
 }
 
 function chooseStd(value, tr) {
-	let stdSel = tr.childNodes[0].firstChild;
-	stdSel.parentNode.innerHTML = "<span>" + value + "</span>";
+
+    if (tr != null) {
+        let ontSel = tr.childNodes[0].firstChild;
+        ontSel.parentNode.innerHTML = "<span>" + value + "</span>";
+        document.querySelector(".right-menu").style.backgroundColor = "rgba(59, 115, 0, 0.5)";
+    }
+    else {
+        document.querySelector(".right-menu").style.backgroundColor = "rgba(174, 29, 63, 0.5)";
+    }
+
 }
 
 function chooseOntology(value, tr) {
-	let ontSel = tr.childNodes[1].firstChild;
-	ontSel.parentNode.innerHTML = "<span>" + value + "</span>";
+    if (tr != null) {
+        let ontSel = tr.childNodes[1].firstChild;
+        ontSel.parentNode.innerHTML = "<span>" + value + "</span>";
+        document.querySelector(".right-menu").style.backgroundColor = "rgba(59, 115, 0, 0.5)";
+    }
+    else {
+        document.querySelector(".right-menu").style.backgroundColor = "rgba(174, 29, 63, 0.5)";
+    }
 }
 
 function dispatchAddAssociation(doc) {
