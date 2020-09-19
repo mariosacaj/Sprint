@@ -86,7 +86,8 @@ def generate_code_model(tmp_folder, xsd_file):
     try:
         java_man.generateFromSchema(xsd_file)
     except BaseException as e:
-        raise StandardError('Cannot create Java Code: ' + str(e) + " ")
+        raise StandardError(
+            'Cannot create Java Code: most probably dependencies are missing. Please upload the whole standard zip')
     return java_man
 
 

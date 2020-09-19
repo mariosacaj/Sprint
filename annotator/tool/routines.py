@@ -146,11 +146,13 @@ def generate_candidates_dict(dict_source, dict_target, output_path, writepathCom
 def prune_mismatch_type(candidates_dict, standard_dict, reference_dict):
     # get rid of Class to Property and Property to Class matching
     for key, value in candidates_dict.items():
-        for idx, ref_concept in enumerate(value):
+        new_value = []
+        for ref_concept in value:
             std_type = standard_dict[key]
             ref_type = reference_dict[ref_concept[0]]
-            if std_type != '' and ref_type != '' and std_type != ref_type:
-                del value[idx]
+            if not (std_type != '' and ref_type != '' and std_type != ref_type):
+                new_value.append(ref_concept)
+        candidates_dict[key] = new_value
     return {k: v for k, v in candidates_dict.items() if v}
 
 
