@@ -1,25 +1,32 @@
 <html>
-	<head>
-		<link rel="stylesheet" href="src/css/style.css" type="text/css">
-<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-		<script src="src/xml2tree.js"></script>
-		<script src="src/svg-pan-zoom.js"></script> <!-- https://github.com/ariutta/svg-pan-zoom -->
-		<script src="src/script.js"></script>
+<head>
 
-	</head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="src/css/style.css" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" rel="stylesheet">
+
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="src/xml2tree.js"></script>
+    <script src="src/svg-pan-zoom.js"></script> <!-- https://github.com/ariutta/svg-pan-zoom -->
+    <script src="src/script.js"></script>
+
+</head>
 	<body onload="addEL()">
 		<div id="chart1"></div>
 		<input id="searchTerm" type="text" placeholder="Search"></input>
-		<ul>
+		<ul id="optionMenu">
 	
-		<li id="ToggleDetails" onclick="toggleDetails()"><img src="img/details.svg" alt="Show/hide details" placeholder="Show/hide details"></li>
-		<li id="increase1px" onclick="increaseFontSizeBy1px()"><img src="img/increase.svg"></li>
-<li id="decrease1px" onclick="decreaseFontSizeBy1px()"><img src="img/reduce.svg"></li>
-		<li id="colorize" onclick="colorize()"><img src="img/colors.svg"></li>
-		<li id="decolorize" onclick="decolorize()" style="display: none;"><img src="img/decolor.svg"></li>
-		<li id="shorten" onclick="shorten()"><img src="img/shorten.svg"></li>
-		<li id="enlarge" style="display:none;" onclick="enlarge()"><img src="img/enlarge.svg"></li>
-		<li id="compress" onclick="compress()"><img src="img/compress.svg" class="compress"></li>
+		<li id="ToggleDetails" onclick="toggleDetails()"><i class="fas fa-list-alt"></i></li>
+		
+            <li id="increase1px" onclick="increaseFontSizeBy1px()"><span class="lighter"><i class="small fas fa-font"></i></span><span><i class="big fas fa-font"></i></span></li>
+
+            <li id="decrease1px" onclick="decreaseFontSizeBy1px()"><span class="lighter"><i class="big fas fa-font"></i></span><span><i class="small fas fa-font"></i></span></li>
+		<li id="colorize" onclick="colorize()"><i class="fas fa-palette"></i></li>
+		<li id="decolorize" onclick="decolorize()" style="display: none; filter: invert(0.5);"><i class="fas fa-palette"></i></li>
+		<li id="shorten" onclick="shorten()" style="color: gray;"><i class="fas fa-code"></i></li>
+		<li id="enlarge" style="display:none;" onclick="enlarge()"><i class="fas fa-code"></i></li>
+		<li id="compress" onclick="compress()"><i class="fas fa-project-diagram compress"></i></li>
 	</ul>
 
 

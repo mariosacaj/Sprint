@@ -55,18 +55,21 @@ svg {
 	height: 100%;
 }
 
-ul {
+#optionMenu {
 	position: fixed;
 	top: 0px;
-	left: 0px;
+	left: 20px;
 
 	list-style: none;
-background-color: rgba(255, 255, 255, 0.5);
+background-color: rgba(255, 255, 255, 0.7);
 }
 
 li {
 	cursor: pointer;
 	padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: -30px;
 }
 
 li > img {
@@ -74,8 +77,8 @@ li > img {
 
 }
 
-li:hover {
-	background-color: rgba(0.9, 0.9, 0.9, 0.1);
+li i:hover, li:hover {
+	filter: drop-shadow(0 0 7px grey);
 }
 
 .hiddenText {
@@ -98,11 +101,26 @@ li:hover {
 	border: 3px solid rgb(0, 51, 102);
 }
 
-li > .compress {
-	width: 20px;
-	padding: 5px;
+
+li i {
+    font-family: FontAwesome;
+    font-style: normal;
 }
 
-li > .uncompress {
-	width: 30px;
+li span i.big {
+    font-size: 20px;
 }
+
+li span i.small {
+    font-size: 15px;
+}
+
+li i {
+    font-size: 30px;
+}
+
+
+.lighter {
+    color: rgb(128, 128, 128);
+}
+

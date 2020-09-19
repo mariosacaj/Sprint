@@ -592,6 +592,8 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 
 function toggleDetails() {
 
+    console.log("DETAILS");
+
 	allDetails = document.querySelectorAll("tspan~tspan");
 
 	let i=0;
@@ -603,7 +605,18 @@ function toggleDetails() {
 		else {
 			allDetails[i].style.display = "block";
 		}
-	}
+    }
+
+    iconToToggle = document.querySelector("#ToggleDetails");
+
+    
+    if (iconToToggle.style.filter == "invert(0.5)") {
+        iconToToggle.style.filter = "invert(0)";
+    }
+    else {
+        iconToToggle.style.filter = "invert(0.5)";
+    }
+    
 
 
 }
@@ -778,6 +791,8 @@ function simplifyXML(text) {
 }
 
 function compress() { // Compression
+
+
 	nodes = document.querySelectorAll("g .node");
 	for(let i=0; i<nodes.length; ++i) {
 		if(/xsd:.*simpleType/.test(nodes[i].innerHTML) || /xsd:.*element/.test(nodes[i].innerHTML) || /xsd:.*attribute/.test(nodes[i].innerHTML)) {
@@ -788,12 +803,15 @@ function compress() { // Compression
 	}
 	
 	let compressButton = document.querySelector("#compress");
+    let compressIcon = compressButton.querySelector("i");
 
-	if(compressButton.childNodes[0].className == 'compress') {
-		compressButton.childNodes[0].className = 'uncompress';
+	if(compressIcon.className.includes(" compress")) {
+        compressButton.style.color = "black";
+        compressIcon.className = compressIcon.className.replace(" compress", " uncompress");
 	}	
 	else {
-		compressButton.childNodes[0].className = 'compress';
+        compressButton.style.color = "gray";
+        compressIcon.className = compressIcon.className.replace(" uncompress", " compress");
 	}
 }
 
