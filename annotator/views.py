@@ -196,20 +196,6 @@ def path_to_dict(path):
     return d
 
 
-# Not used
-def get_standard_path(request):
-    if not request.session['std_up'] and request.session['std_sel']:
-        return HttpResponseBadRequest()
-    return JsonResponse(path_to_dict(request.session['std']))
-
-
-# Not used
-def get_reference_path(request):
-    if not request.session['ref_up'] and request.session['ref_sel']:
-        return HttpResponseBadRequest()
-    return JsonResponse(path_to_dict(request.session['ref']))
-
-
 # Renders the most important page where STD/REF associations are made
 def compare(request):
     if not request.session['ref_sel'] or not request.session['std_sel']:
@@ -222,7 +208,6 @@ def compare(request):
 # Then zip them and send them to client
 @csrf_exempt
 def download(request):
-    print(json.loads(request.body))
     if request.method == 'POST':
         if not request.session['std_sel']:
             return HttpResponseRedirect('/compare/')
@@ -252,8 +237,40 @@ def validation(request, dict_confirmed):
     for key, value in dict_confirmed.items():
         std_type = request.session['standard_dict'][key]
         ref_type = request.session['reference_dict'][value]
-        if ref_type != '' and std_type != '' and std_type != ref_type:
+        if not is_valid(std_type, ref_type):
             raise AnnotationError('Validation failed')
+
+
+def is_valid(type_base, type_comp):
+    return not (type_base != '' and type_comp != '' and type_comp != type_base)
+
+
+def get_valid_standards(request):
+    if not request.session['std_sel']:
+        return HttpResponseBadRequest()
+    if request.method == 'POST':
+        # term is plain/text content in request body @TODO
+        term = ''
+
+        std_type = request.session['standard_dict'][term]
+        list_valid = [key for (key, value) in request.session['reference_dict'].items() if is_valid(std_type, value)]
+        return JsonResponse(list_valid)
+    else:
+        return HttpResponseBadRequest()
+
+
+def get_valid_references(request):
+    if not request.session['ref_sel']:
+        return HttpResponseBadRequest()
+    if request.method == 'POST':
+        # term is plain/text content in request body @TODO
+        term = ''
+
+        ref_type = request.session['reference_dict'][term]
+        list_valid = [key for (key, value) in request.session['standard_dict'].items() if is_valid(ref_type, value)]
+        return JsonResponse(list_valid)
+    else:
+        return HttpResponseBadRequest()
 
 
 def return_standard_type(request):
