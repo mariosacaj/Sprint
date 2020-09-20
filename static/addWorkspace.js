@@ -11,7 +11,7 @@ function associateAllActions() {
 }
 
 function resizeAll() {
-	document.querySelector("#dialog-ontology #ontology-embed").style.height = parseInt(document.querySelector("#dialog-ontology").style.height.split("px")[0] - 32).toString() + "px";
+	/* document.querySelector("#dialog-ontology #ontology-embed").style.height = parseInt(document.querySelector("#dialog-ontology").style.height.split("px")[0] - 32).toString() + "px";
 document.querySelector("#dialog-ontology #ontology-embed").style.width = document.querySelector("#dialog-ontology").style.width;
 
 
@@ -20,7 +20,19 @@ document.querySelector("#dialog-xsd #xsd-embed").style.width = document.querySel
 
 
 	document.querySelector("#dialog-associations #associations-embed").style.height = parseInt(document.querySelector("#dialog-associations").style.height.split("px")[0] - 32).toString() + "px";
-document.querySelector("#dialog-associations #associations-embed").style.width = document.querySelector("#dialog-associations").style.width;
+document.querySelector("#dialog-associations #associations-embed").style.width = document.querySelector("#dialog-associations").style.width; */
+
+
+    document.querySelector("#dialog-ontology #ontology-embed").style.height = document.querySelector("#dialog-ontology").offsetHeight - 32;
+    document.querySelector("#dialog-ontology #ontology-embed").style.width = document.querySelector("#dialog-ontology").offsetWidth;
+
+
+    document.querySelector("#dialog-xsd #xsd-embed").style.height = document.querySelector("#dialog-xsd").offsetHeight - 32;
+    document.querySelector("#dialog-xsd #xsd-embed").style.width = document.querySelector("#dialog-xsd").offsetWidth;
+
+
+    document.querySelector("#dialog-associations #associations-embed").style.height = document.querySelector("#dialog-associations").offsetHeight - 32;
+    document.querySelector("#dialog-associations #associations-embed").style.width = document.querySelector("#dialog-associations").offsetWidth;
 }
 
 function associateActions(dialogID) {
