@@ -4,6 +4,8 @@
 
   <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" rel="stylesheet">
+
   <link rel="stylesheet" type="text/css" href="{% static "style.css" %}">
   <link rel="stylesheet" type="text/css" href="{% static "modalWindow.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "draggable-resizable-dialog.css" %}">
@@ -38,25 +40,49 @@
 
 
 
-<div id="dialog-ontology" class="dialog" style="display: inherit; overflow: auto !important;"><div class="titlebar">Ontology</div><button class="close" name="close">×</button><button class="minimize" name="minimize">_</button><div class="container" id="ontology-container">
-<object id="ontology-embed" data="{% static "vowl.html" %}" typemustmatch>
-</object>
-   
-  </div></div>
+  <div id="dialog-ontology" class="dialog" style="display: inherit; overflow: auto !important;">
+      <div class="titlebar">Ontology</div>
+      <button class="gotoA" name="gotoA">A</button>
+      <button class="gotoS" name="gotoS">S</button>
+      <button class="gotoO" name="gotoO">O</button>
+      <button class="bringUp" name="bringUp"><i class="fas fa-object-ungroup"></i></button>
 
 
-<div id="dialog-xsd" class="dialog" style="display: inherit; overflow: auto !important;"><div class="titlebar">XSD Standard</div><button class="close" name="close">×</button><button class="minimize" name="minimize">_</button><div class="container" id="xsd-container">
-<object id="xsd-embed" data="{% static "XSDVisualizer/xsd.html" %}" typemustmatch>
-</object>
-   
-  </div></div>
+      <div class="container" id="ontology-container">
+          <object id="ontology-embed" data="{% static "vowl.html" %}" typemustmatch></object>
+
+      </div>
+  </div>
 
 
-<div id="dialog-associations" class="dialog" style="display: inherit; overflow: auto !important;"><div class="titlebar">Associations</div><button class="close" name="close">×</button><button class="minimize" name="minimize">_</button><div class="container" id="associations-container">
-<object id="associations-embed" data="{% static "Associations/associations.html" %}" typemustmatch>
-</object>
-   
-  </div></div>
+  <div id="dialog-xsd" class="dialog" style="display: inherit; overflow: auto !important;">
+      <div class="titlebar">XSD Standard</div>
+      <button class="gotoA" name="gotoA">A</button>
+      <button class="gotoS" name="gotoS">S</button>
+      <button class="gotoO" name="gotoO">O</button>
+      <button class="bringUp" name="bringUp"><i class="fas fa-object-ungroup"></i></button>
+
+      <div class="container" id="xsd-container">
+          <object id="xsd-embed" data="{% static "XSDVisualizer/xsd.html" %}" typemustmatch>
+          </object>
+
+      </div>
+  </div>
+
+
+  <div id="dialog-associations" class="dialog" style="display: inherit; overflow: auto !important;">
+      <div class="titlebar">Associations</div>
+      <button class="gotoA" name="gotoA">A</button>
+      <button class="gotoS" name="gotoS">S</button>
+      <button class="gotoO" name="gotoO">O</button>
+      <button class="bringUp" name="bringUp"><i class="fas fa-object-ungroup"></i></button>
+
+      <div class="container" id="associations-container">
+          <object id="associations-embed" data="{% static "Associations/associations.html" %}" typemustmatch>
+          </object>
+
+      </div>
+  </div>
 
 
 

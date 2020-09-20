@@ -25,12 +25,23 @@ document.querySelector("#dialog-associations #associations-embed").style.width =
 
 function associateActions(dialogID) {
 	dialogDiv = document.getElementById(dialogID);
-closeButton = document.querySelector("#" + dialogID + " .close");
-minimizeButton = document.querySelector("#" + dialogID + " .minimize");
-  dragElement(dialogDiv);
-  dialogDiv.addEventListener("click", activateFocus);
-  closeButton.addEventListener("click", closeWindow);
-  minimizeButton.addEventListener("click", minimizeWindow);  
+    // closeButton = document.querySelector("#" + dialogID + " .close");
+    // minimizeButton = document.querySelector("#" + dialogID + " .minimize");
+
+    goToAssociations = document.querySelector("#" + dialogID + " .gotoA");
+    goToStandard = document.querySelector("#" + dialogID + " .gotoS");
+    goToOntology = document.querySelector("#" + dialogID + " .gotoO");
+
+
+
+    dragElement(dialogDiv);
+    dialogDiv.querySelector(".bringUp").addEventListener("click", activateFocus);
+    goToAssociations.addEventListener("click", gotoA, false);
+    goToStandard.addEventListener("click", gotoS, false);
+    goToOntology.addEventListener("click", gotoO, false);
+
+    // closeButton.addEventListener("click", closeWindow);
+    // minimizeButton.addEventListener("click", minimizeWindow);  
 }
 
 function closeWindow() {
@@ -53,6 +64,51 @@ function minimizeWindow() {
   }
 }
 
+function maxZIndex() {
+    all_workspaces = document.querySelectorAll(".dialog");
+    highest_zIndex = all_workspaces[0].style.zIndex;
+    for (let i = 1; i < all_workspaces.length; ++i) {
+        if (all_workspaces[i].zIndex > highest_zIndex) {
+            higest_zIndex = all_workspaces[i].zIndex;
+        }
+    }
+    return highest_zIndex;
+}
+
+function maximize(dialogBox) {
+    let window_height = window.innerHeight;
+    let window_width = window.innerWidth;
+    dialogBox.style.height = window_height;
+    dialogBox.style.width = window_width;
+    dialogBox.style.top = "0px";
+    dialogBox.style.left = "0px";
+    let bringUp = dialogBox.querySelector(".bringUp");
+
+    let evt = document.createEvent("HTMLEvents");
+    evt.initEvent("click", false, true);
+    bringUp.dispatchEvent(evt);
+
+
+}
+
+function gotoA() {
+    
+    let dialogBox = document.querySelector("#dialog-associations");
+    maximize(dialogBox);
+}
+
+function gotoS() {
+
+    let dialogBox = document.querySelector("#dialog-xsd");
+    maximize(dialogBox);
+}
+
+function gotoO() {
+
+    let dialogBox = document.querySelector("#dialog-ontology");
+    maximize(dialogBox);
+}
+
 
 
 function activateFocus() {
@@ -62,7 +118,7 @@ function activateFocus() {
         zIndexMax = parseInt(document.querySelectorAll(".dialog")[i].style.zIndex);
     }
   }
-  this.style.zIndex = parseInt(zIndexMax+1);
+  this.parentNode.style.zIndex = parseInt(zIndexMax+1);
   
   // Normalize indexes
   let zIndexMin = Number.POSITIVE_INFINITY;

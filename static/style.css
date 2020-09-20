@@ -585,7 +585,7 @@ transition: all 0.4s ease 0s;
 	left: 5px;
 }
 
-button .close, button .minimize, button .hideLeft {
+button .close, button .minimize, button .hideLeft, .gotoA, .gotoS, .gotoO, .bringUp {
   color: white;
 }
 

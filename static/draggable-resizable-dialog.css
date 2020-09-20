@@ -69,7 +69,7 @@
 	cursor: pointer;
 }
 
-.titlebar ~ .close{
+.titlebar ~ .gotoA{
 	width: 32px; /* change NOT allowed */
 	height: 32px; /* same as .dialog .titlebar height */
 	position: absolute;
@@ -81,7 +81,7 @@
 	background: black;
 }
 
-.titlebar ~ .minimize{
+.titlebar ~ .gotoS{
 	width: 32px; /* change NOT allowed */
 	height: 32px; /* same as .dialog .titlebar height */
 	position: absolute;
@@ -93,7 +93,7 @@
 	background: black;
 }
 
-.titlebar ~ .hideLeft{
+.titlebar ~ .gotoO{
 	width: 32px; /* change NOT allowed */
 	height: 32px; /* same as .dialog .titlebar height */
 	position: absolute;
@@ -105,24 +105,40 @@
 	background: black;
 }
 
+.titlebar ~ .bringUp {
+    width: 32px; /* change NOT allowed */
+    height: 32px; /* same as .dialog .titlebar height */
+    position: absolute;
+    top: 0;
+    right: 96px;
+    padding: 0;
+    border: 0;
+    font-size: 1.4em;
+    background: black;
+}
+
 /* .dialog>button.hover, */
-.dialog>.close:hover,
-.dialog>.close.focus
-{
-	box-shadow: inset -16px 0 0 0 #89220b, inset 16px 0 0 0 #89220b;
+.dialog > .gotoO:hover,
+.dialog > .gotoO.focus {
+    box-shadow: inset -16px 0 0 0 #0066cc, inset 16px 0 0 0 #0066cc;
 }
 
-.dialog>.minimize:hover,
-.dialog>.minimize.focus
-{
-	box-shadow: inset -16px 0 0 0 #ded115, inset 16px 0 0 0 #ded115;
+.dialog > .gotoS:hover,
+.dialog > .gotoS.focus {
+    box-shadow: inset -16px 0 0 0 #660000, inset 16px 0 0 0 #660000;
 }
 
-.dialog>.hideLeft:hover,
-.dialog>.hideLeft.focus
-{
-	box-shadow: inset -16px 0 0 0 #09931c, inset 16px 0 0 0 #09931c;
+.dialog > .gotoA:hover,
+.dialog > .gotoA.focus {
+    box-shadow: inset -16px 0 0 0 #999000, inset 16px 0 0 0 #999000;
 }
+
+.dialog > .bringUp:hover,
+.dialog > .bringUp.focus {
+    box-shadow: inset -16px 0 0 0 white, inset 16px 0 0 0 white;
+    color: black;
+}
+
 
 .dialog .close.active {
 	background: red; /* irrelevant */
