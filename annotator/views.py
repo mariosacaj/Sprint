@@ -241,12 +241,22 @@ def validation(request, dict_confirmed):
             raise AnnotationError('Validation failed')
 
 
+def is_valid_view(request):
+    if not request.session['ref_sel'] or request.method != 'POST':
+        return HttpResponseBadRequest()
+    try:
+        pair = json.loads(request.body)['pair']
+        return HttpResponse(str(is_valid(pair[0], pair[1])), content_type="text/plain")
+    except KeyError:
+        return HttpResponseBadRequest()
+
+
 def is_valid(type_base, type_comp):
     return not (type_base != '' and type_comp != '' and type_comp != type_base)
 
 
 def get_valid_standards(request):
-    if not request.session['std_sel']:
+    if not request.session['ref_sel']:
         return HttpResponseBadRequest()
     if request.method == 'POST':
         # term is plain/text content in request body @TODO
