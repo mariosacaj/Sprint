@@ -201,7 +201,11 @@ function createRMenu(ev, currentString, startingType) {
             var a;
             if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
 
-                if (xmlhttp.response == "True") {
+                responseText = xmlhttp.responseText;
+
+                console.log(responseText);
+
+                if (responseText == "True") {
                     listElems = addItemToMenu(listElems, "Add to association", newDiv, addToAssociation.bind(ev, currentString, startingType));
 
                     listElems = addItemToMenu(listElems, "Remove association", newDiv, removeAssociation.bind(ev, currentString, startingType));
