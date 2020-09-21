@@ -120,23 +120,111 @@ function closeMenu() {
 }
 
 function createRMenu(ev, currentString, startingType) {
-	let allRM = document.querySelectorAll(".right-menu");
+    let allRM = document.querySelectorAll(".right-menu");
+
+    var obj = document.getElementById("associations-embed");
+    var doc = obj.contentDocument; // get the inner DOM
+    let selectedRow = doc.querySelector("table tr.selectedForAssociation");	
+
+    let xsdString = undefined;
+    let ontoString = undefined;
+
+
+    if (startingType == "XSD") {
+        xsdString = currentString;
+        let ontoSelector = selectedRow.querySelectorAll("td")[1];
+
+        if (ontoSelector.innerHTML.startsWith("<select>")) {
+            ontoString = ontoSelector.firstChild.options[ontoSelector.firstChild.selectedIndex].text;
+        }
+        else {
+            ontoString = ontoSelector.firstChild.innerHTML;
+        }
+    }
+    else {
+        ontoString = currentString;
+
+        let xsdSelector = selectedRow.querySelectorAll("td")[0];
+
+        if (xsdSelector.innerHTML.startsWith("<select>")) {
+            xsdString = xsdSelector.firstChild.options[xsdSelector.firstChild.selectedIndex].text;
+        }
+        else {
+            xsdString = xsdSelector.firstChild.innerHTML;
+        }
+
+    }
+
+    let validCombination = false;
+   
+
 	for(let i=0; i<allRM.length; ++i) {
 		allRM[i].remove();
 	}
 	let newDiv = document.createElement("div");
 	newDiv.className = "right-menu";
 	let listElems = document.createElement("ul");	
-	
+
+
+
+
 	listElems = addTitleToMenu(listElems, "Options", newDiv);
 	listElems = addItemToMenu(listElems, '<span class="origin">Term</span><br/><span>' + currentString + '</span>');
 	listElems = addItemToMenu(listElems, '<span class="associatedTo">Associated to</span><br/><span>' + findAssociation(currentString, startingType) + '</span>', newDiv);
 
-	listElems = addItemToMenu(listElems, "Add to association", newDiv, addToAssociation.bind(ev, currentString, startingType));
+	
 
-	listElems = addItemToMenu(listElems, "Remove association", newDiv, removeAssociation.bind(ev, currentString, startingType));
+    if (ontoString == "-" || xsdString == "-") {
+        validCombination = true;
+        listElems = addItemToMenu(listElems, "Add to association", newDiv, addToAssociation.bind(ev, currentString, startingType));
 
-	listElems = addCloseToMenu(listElems, "Close menu", newDiv);
+        listElems = addItemToMenu(listElems, "Remove association", newDiv, removeAssociation.bind(ev, currentString, startingType));
+
+        listElems = addCloseToMenu(listElems, "Close menu", newDiv);
+    }
+    else {
+        // Prepare the data
+        let data_to_send = [];
+
+            data_to_send[0] = xsdString;
+            data_to_send[1] = ontoString;
+        
+        console.log(xsdString + ", " + ontoString);
+
+        // Send the data
+
+        xmlhttp = new XMLHttpRequest();
+        var url = "/is_valid/";
+        xmlhttp.open("POST", url, true);
+        xmlhttp.setRequestHeader("Content-type", "application/json");
+        xmlhttp.onreadystatechange = function () { //Call a function when the state changes.
+            var a;
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+
+                if (xmlhttp.response == "True") {
+                    listElems = addItemToMenu(listElems, "Add to association", newDiv, addToAssociation.bind(ev, currentString, startingType));
+
+                    listElems = addItemToMenu(listElems, "Remove association", newDiv, removeAssociation.bind(ev, currentString, startingType));
+
+                    listElems = addCloseToMenu(listElems, "Close menu", newDiv);
+
+                }
+                else {
+                    listElems = addItemToMenu(listElems, "Remove association", newDiv, removeAssociation.bind(ev, currentString, startingType));
+
+                    listElems = addCloseToMenu(listElems, "Close menu", newDiv);
+                }
+                
+            }
+        }
+        // You should set responseType as blob for binary responses
+        var data = {
+            "pair": data_to_send
+        };
+
+        xmlhttp.send(JSON.stringify(data));
+
+    }
 
 	newDiv.appendChild(listElems);
 	document.body.appendChild(newDiv);
@@ -175,7 +263,6 @@ function addToAssociation(startingString, startingType) {
 	}
 	
 	if(alreadyInserted == false) {
-		//dispatchAddAssociation(doc);
         startingString = document.querySelectorAll(".right-menu span")[1].textContent;
         console.log(startingString);
         if (startingType == "XSD") {

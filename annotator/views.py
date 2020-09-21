@@ -240,7 +240,7 @@ def validation(request, dict_confirmed):
         if not is_valid(std_type, ref_type):
             raise AnnotationError('Validation failed')
 
-
+@csrf_exempt
 def is_valid_view(request):
     if not request.session['ref_sel'] or request.method != 'POST':
         return HttpResponseBadRequest()
