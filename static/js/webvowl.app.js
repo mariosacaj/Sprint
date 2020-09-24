@@ -8224,6 +8224,8 @@ webvowl.app =
                     ontologyContent = xhttp.responseText;
                     reducedIndexMap = JSON.parse(ontologyContent).header.prefixList;
 
+
+                    // Souce for flipping: https://stackoverflow.com/questions/23013573/swap-key-with-value-json
                     reducedFlippedIndexes = {};
 
                     for (var key in reducedIndexMap) {
