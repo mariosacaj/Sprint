@@ -1,7 +1,7 @@
 import re
 
 from .extract_from_files import readQualifiedOWLClass, readQualifiedOWLProperty, \
-    readQualifiedTurtle, readXsdFilecomplextype, readXsdFileElementAttribute, readXsdFile, ET
+    readQualifiedTurtle, readXsdFilecomplextype, readXsdFileElementAttribute, readXsdFile, ET, get_namespaces
 
 
 def get_xml_raw_vocab_list(xml_path, xml_name):
@@ -50,23 +50,24 @@ def standard_concept_type(standard_path):
 
 
 def reference_concept_type(reference_path, ext):
+    ns = get_namespaces(reference_path)
     if ext == 'owl':
-        return qualified_concept_type_owl(reference_path)
+        return qualified_concept_type_owl(reference_path, ns), ns
     else:
-        return qualified_concept_type_ttl(reference_path)
+        return qualified_concept_type_ttl(reference_path, ns), ns
 
 
-def qualified_concept_type_ttl(reference_path):
+def qualified_concept_type_ttl(reference_path, ns):
     dict_reference_type = {}
-    for concept in readQualifiedTurtle(reference_path):
+    for concept in readQualifiedTurtle(reference_path, ns):
         dict_reference_type[concept] = ''
     return dict_reference_type
 
 
-def qualified_concept_type_owl(reference_path):
+def qualified_concept_type_owl(reference_path, ns):
     dict_reference_type = {}
-    for concept in readQualifiedOWLClass(reference_path):
+    for concept in readQualifiedOWLClass(reference_path, ns):
         dict_reference_type[concept] = 'C'
-    for concept in readQualifiedOWLProperty(reference_path):
+    for concept in readQualifiedOWLProperty(reference_path, ns):
         dict_reference_type[concept] = 'P'
     return dict_reference_type

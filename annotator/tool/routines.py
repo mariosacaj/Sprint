@@ -9,12 +9,12 @@ from collections import defaultdict
 
 def produce_final_candidates(xsd_file, ont_file,
                              output_path, vocab_list,
-                             model, source_rw, target_rw, write_pathVecOrgThr, writepathCompound, ext):
+                             model, source_rw, target_rw, write_pathVecOrgThr, writepathCompound, ext, ns):
     # Getting n number of matching words for source and target from model
     dict_source, dict_target = extract_and_fetch_from_model(xsd_file,
                                                             ont_file,
                                                             output_path, vocab_list,
-                                                            model, source_rw, target_rw, ext)
+                                                            model, source_rw, target_rw, ext, ns)
     # Matching words from source to target with one another
     produce_candidates(model, output_path, source_rw, target_rw, write_pathVecOrgThr)
     # counting pair match instances
@@ -23,20 +23,17 @@ def produce_final_candidates(xsd_file, ont_file,
     return candidates_dict
 
 
-
-
-
 def extract_and_fetch_from_model(standard_path, reference_path, output_path, vocab_list,
-                                 model, source_rw, target_rw, ext):
+                                 model, source_rw, target_rw, ext, ns):
     # INPUT MUST BE XSD
     fileS = readFile_standard(standard_path)
     # INPUT MUST BE OWL or TTL
-    fileT = readFile_ontology(reference_path, ext)
+    fileT = readFile_ontology(reference_path, ext, ns)
     # lista di stringhe
     print("Step 1: ------------------------>  Reading files has been done.")
     listS = splitToList(fileS)
 
-    ## MUST DEQUALIFY fileT first
+    # MUST DEQUALIFY fileT first
     deq_fileT = []
     for t in fileT:
         deq_fileT.append(t.split(':')[-1])
@@ -103,13 +100,13 @@ def count_and_spit_output(output_path, readpathCompound, writepathCompound):
     if len(scores) == 0:
         scores: List[List[Union[int, Any]]] = [[comp2dArray[0][0], comp2dArray[0][2], 0]]
     for inner in comp2dArray:
-        descision, index = isMatchExistscomp(inner[0], inner[2], scores)
-        if (descision):
+        decision, index = isMatchExistscomp(inner[0], inner[2], scores)
+        if decision:
             scores[index][2] = scores[index][2] + 1
         else:
             tmplist = [inner[0], inner[2], 1]
             scores.append(tmplist)
-            tmplist = []
+
     print("Step 12: ----------------------->  Counting similar instances has been done.")
     writeCsv(scores, output_path, writepathCompound)
     print(" ----------------------> Writing Final Output,Ouput file is ", writepathCompound, )
@@ -155,6 +152,5 @@ def prune_mismatch_type(candidates_dict, standard_dict, reference_dict):
         candidates_dict[key] = new_value
     return {k: v for k, v in candidates_dict.items() if v}
 
-
-def compute_graph_similarity(std_concept, ref_concept, std_tree, owl_ref_graph):
-    pass
+# def compute_graph_similarity(std_concept, ref_concept, std_tree, owl_ref_graph):
+#     pass

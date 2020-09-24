@@ -2,6 +2,7 @@ import sys
 import os
 import subprocess
 import json
+import contextlib
 
 import jpype
 
@@ -35,7 +36,8 @@ def check_standard(standard_path):
 
 def check_reference(reference_path):
     try:
-        rdflib.Graph().load(reference_path, format="ttl")
+        with contextlib.redirect_stderr(None):
+            rdflib.Graph().load(reference_path, format="ttl")
         return 'ttl'
     except:
         try:
@@ -45,9 +47,19 @@ def check_reference(reference_path):
             return ''
 
 
-def owl2json(ref_path, owl_tool):
-    process = subprocess.run(['java', '-jar', owl_tool, '-echo', '-file', ref_path],
-                             stdout=subprocess.PIPE,
+def owl2json(ref_path, owl_tool, ext, ns):
+    ont_file = ref_path
+
+    # Translate to OWL if possible
+    if ext == 'ttl':
+        try:
+            Converter = instantiate_ont_converter()
+            Converter.convert(ont_file, ont_file + ".owl")
+            ont_file = ont_file + ".owl"
+        except jpype.JException as e:
+            sys.stderr.write("TTL->OWL conversion error: " + str(e))
+
+    process = subprocess.run(['java', '-jar', owl_tool, '-echo', '-file', ont_file], stdout=subprocess.PIPE,
                              universal_newlines=True)
 
     if process.returncode is not 0:
@@ -56,8 +68,10 @@ def owl2json(ref_path, owl_tool):
     st = process.stdout
 
     st = st[st.find("{"):st.rfind("}") + 1]
-
-    return json.loads(st)
+    response = json.loads(st)
+    ns_b = {y: x for x, y in ns.iteritems()}
+    response['header']['prefixList'] = ns_b
+    return response
 
 
 def xsd2str(std_path):
@@ -85,29 +99,18 @@ def generate_code_model(tmp_folder, xsd_file):
     # Generate Java Code Model
     try:
         java_man.generateFromSchema(xsd_file)
-    except BaseException as e:
+    except BaseException:
         raise StandardError(
             'Cannot create Java Code: most probably dependencies are missing. Please upload the whole standard zip')
     return java_man
 
 
 def reference_init(ont_file, ext):
-    new_ont_file = ont_file
-    new_ext = ext
-    # Translate to OWL if possible
-    if ext == 'ttl':
-        try:
-            Converter = instantiate_ont_converter()
-            Converter.convert(ont_file, ont_file + ".owl")
-            new_ont_file = ont_file + ".owl"
-            new_ext = "owl"
-        except jpype.JException as e:
-            sys.stderr.write(str(e))
-    reference_dict = reference_concept_type(new_ont_file, new_ext)
-    return reference_dict, new_ext, new_ont_file
+    reference_dict, ns = reference_concept_type(ont_file, ext)
+    return reference_dict, ns
 
 
-def get_candidates(tmp_folder, xsd_file, ont_file, standard_dict, model_path, reference_dict, ext):
+def get_candidates(tmp_folder, xsd_file, ont_file, standard_dict, model_path, reference_dict, ext, ns):
     from gensim.models import KeyedVectors
     # user specific
     model = KeyedVectors.load(model_path, mmap='r')
@@ -123,17 +126,31 @@ def get_candidates(tmp_folder, xsd_file, ont_file, standard_dict, model_path, re
     ## candidates creation with mapping tool
     candidates_dict = produce_final_candidates(xsd_file, ont_file,
                                                output_path, vocab_list,
-                                               model, source_rw, target_rw, write_pathVecOrgThr, writepathCompound, ext)
+                                               model, source_rw, target_rw, write_pathVecOrgThr, writepathCompound, ext,
+                                               ns)
 
     candidates_dict = prune_mismatch_type(candidates_dict, standard_dict, reference_dict)
 
     return candidates_dict
 
 
-def annotate_dict_and_build(dict_confirmed, tmp_folder, xsd_file):
+def annotate_dict_and_build(dict_confirmed: dict, tmp_folder: str, xsd_file: str, ns: dict):
     java_man = generate_code_model(tmp_folder, xsd_file)
     for key, value in dict_confirmed.items():
-        java_man.annotate(key, value)
+        if ":" not in value:
+            java_man.annotate(key, "ontology:" + value)
+        else:
+            java_man.annotate(key, value)
+
+    ns_final = []
+    for k, v in ns.items():
+        if v == '':
+            ns_final.append("ontology")
+        else:
+            ns_final.append(v)
+        ns_final.append(k)
+
+    java_man.insertNamespaces(ns_final)
     java_man.build()
 
 

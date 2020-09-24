@@ -61,6 +61,37 @@ def readXmlFile(xml_path, xml_name):
     return finaList
 
 
+def owl_fix_namespaces_inconsistencies(clist, ns_bindings):
+    strlist = []
+    for c in clist:
+        base_iri = c.iri.replace(c.name, '')
+        try:
+            prefix = ns_bindings[base_iri]
+        except KeyError:
+            prefixList = base_iri.split("/")[-2:]
+            if prefixList[1] == '':
+                prefix = prefixList[0]
+            else:
+                prefix = prefixList[1][:-1]
+
+        if prefix == '':
+            strlist.append(c.name)
+        else:
+            strlist.append(prefix + ':' + c.name)
+
+    return strlist
+
+
+def get_namespaces(filepath):
+    g = rdflib.Graph()
+    g.parse(filepath)
+    ns_bindings = {}
+    for i in list(g.namespaces()):
+        # Ex: ns_bindings['http://www.it2rail.eu/ontology/shopping#'] = 'shopping'
+        ns_bindings[super(rdflib.term.URIRef, i[1]).__repr__()[1:-1]] = i[0]
+    return ns_bindings
+
+
 def clean_split_elem_list(elem_list):
     cleaned_elem_list = []
     for elem in elem_list:
@@ -106,6 +137,7 @@ def readTurtle(filepath, filename):
     g = rdflib.Graph()
     g.load(filepath + filename, format="ttl")
     flist = []
+    mlist = []
     for s, p, o in g:
         term = re.findall(r'#(\w+)', s)
         flist.append(term)
@@ -226,47 +258,41 @@ def readProperties(path, filename):
         return fileread
 
 
-def readFile_ontology(reference_path, ext):
+def readFile_ontology(reference_path, ext, ns):
     if ext == 'owl':
-        fileread = readQualifiedOWL(reference_path)
+        fileread = readQualifiedOWL(reference_path, ns)
         return fileread
     elif ext == 'ttl':
-        fileread = readQualifiedTurtle(reference_path)
+        fileread = readQualifiedTurtle(reference_path, ns)
         return fileread
 
 
-def readQualifiedOWL(reference_path):
+def readQualifiedOWL(reference_path, namespaces):
     onto = get_ontology(reference_path).load()
     clist1 = list(onto.classes())
     clist2 = list(onto.properties())
-    strlist1 = [str(i) for i in clist1]
-    strlist2 = [str(i) for i in clist2]
-    final_term1 = [w.replace('.', ':') for w in strlist1]
-    final_term2 = [w.replace('.', ':') for w in strlist2]
-    final_term = final_term1 + final_term2
+    final_term = owl_fix_namespaces_inconsistencies(clist1 + clist2, namespaces)
     finallist = list(dict.fromkeys(final_term))
     return finallist
 
 
-def readQualifiedOWLClass(reference_path):
+def readQualifiedOWLClass(reference_path, namespaces):
     onto = get_ontology(reference_path).load()
     clist = list(onto.classes())
-    clist = [str(i) for i in clist]
-    clist = [w.replace('.', ':') for w in clist]
+    clist = owl_fix_namespaces_inconsistencies(clist, namespaces)
     clist = list(dict.fromkeys(clist))
     return clist
 
 
-def readQualifiedOWLProperty(reference_path):
+def readQualifiedOWLProperty(reference_path, namespaces):
     onto = get_ontology(reference_path).load()
     plist = list(onto.properties())
-    plist = [str(i) for i in plist]
-    plist = [w.replace('.', ':') for w in plist]
+    plist = owl_fix_namespaces_inconsistencies(plist, namespaces)
     plist = list(dict.fromkeys(plist))
     return plist
 
 
-def readQualifiedTurtle(filepath):
+def readQualifiedTurtle(filepath, namespaces):
     g = rdflib.Graph()
     g.load(filepath, format="ttl")
     term_list = []

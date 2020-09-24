@@ -5,10 +5,12 @@ import sys
 import tempfile
 import zipfile
 
+
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
+
 
 from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, URI_TOOL_PATH, OWL_TOOL_PATH, ONT_TOOL_PATH
 from annotator.api import standard_init, reference_init, annotate_dict_and_build, owl2json, standard_dir, \
@@ -18,6 +20,7 @@ from annotator.exceptions import *
 
 # index() -> upload_standard() (-> standard_select() if zip uploaded)
 # -> upload_reference() (-> reference_select() if zip uploaded) -> compare() -> download()
+
 
 def is_hidden(p):
     return p.startswith('.') or p.startswith('__') or p.endswith('.ini')
@@ -39,9 +42,12 @@ def index(request):
         request.session['ref_sel'] = False
         request.session['ref_zip'] = False
         request.session['done'] = False
+
+        # session data
         request.session['reference_dict'] = None
         request.session['standard_dict'] = None
         request.session['candidates_dict'] = None
+        request.session['namespaces'] = None
 
         # file paths
         request.session['std'] = None
@@ -174,15 +180,15 @@ def process_reference(request, ref_file):
     ext = check_reference(ref_file)
     if ext == '':
         raise ReferenceError("File not well formatted")
-    # check reference, if it is TTL and can be converted in OWL format do it,
+    # check reference
     # then produce a dictionary that binds each reference concept with its type
     # ("C" for classes and "P" for properties)
-    reference_dict, new_ext, new_ref_file = reference_init(ref_file, ext)
+    reference_dict, namespaces = reference_init(ref_file, ext)
     # Ext is actual format not filename extension
-    request.session['ext'] = new_ext
+    request.session['ext'] = ext
     request.session['ref_sel'] = True
-    request.session['ref'] = new_ref_file
     request.session['reference_dict'] = reference_dict
+    request.session['namespaces'] = namespaces
 
 
 # helper function for std/ref select
@@ -302,7 +308,7 @@ def get_associations(request):
         candidates_dict = get_candidates(request.session['tmp'], request.session['std'],
                                          request.session['ref'], request.session['standard_dict'],
                                          MODEL_DIR + MODEL_NAME, request.session['reference_dict'],
-                                         request.session['ext'])
+                                         request.session['ext'], request.session['namespaces'])
         request.session['candidates_dict'] = candidates_dict
     except:
         return HttpResponseBadRequest()
@@ -314,10 +320,11 @@ def get_ontology(request):
     if not request.session['ref_sel']:
         return HttpResponseBadRequest()
     try:
-        y = owl2json(request.session['ref'], OWL_TOOL_PATH)
+        json_response = owl2json(request.session['ref'], OWL_TOOL_PATH, request.session['ext'],
+                                 request.session['namespaces'])
     except ReferenceError:
         return HttpResponseBadRequest()
-    return JsonResponse(y)
+    return JsonResponse(json_response)
 
 
 def get_xsd(request):
