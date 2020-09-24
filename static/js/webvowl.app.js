@@ -8221,9 +8221,15 @@ webvowl.app =
 			xhttp.onreadystatechange = function () {
 				console.log("Waiting for resource");
 				if (this.readyState == 4 && this.status == 200) {
-					console.log("Resource available");
-					ontologyContent = xhttp.responseText;
-					console.log(ontologyContent);
+                    ontologyContent = xhttp.responseText;
+                    reducedIndexMap = JSON.parse(ontologyContent).header.prefixList;
+
+                    reducedFlippedIndexes = {};
+
+                    for (var key in reducedIndexMap) {
+                        reducedFlippedIndexes[reducedIndexMap[key]] = key;
+                    }
+
 					ontologyIdentifierFromURL = "";
 					parseOntologyContent(ontologyContent);
 				}

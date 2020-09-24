@@ -13513,8 +13513,16 @@ webvowl =
 	        
 	        if ( Prototype ) {
 	          addAdditionalAttributes(element, Prototype); // TODO might be unnecessary
-	          
-	          var node = new Prototype(graph);
+                //console.log(reducedFlippedIndexes);
+                let node_label = undefined;
+                try {
+                    node_label = element.iri.replace(element.iri.split("#")[0] + "#", reducedFlippedIndexes[element.iri.split("#")[0] + "#"] + ":");
+                }
+                catch {
+                    node_label = "infrastructure:" + element.label;
+                }
+
+                var node = new Prototype(graph);
 	          node.annotations(element.annotations)
 	            .baseIri(element.baseIri)
 	            .comment(element.comment)
@@ -13523,9 +13531,10 @@ webvowl =
 	            .description(element.description)
 	            .equivalents(element.equivalent)
 	            .id(element.id)
-	            .intersection(element.intersection)
+                  .intersection(element.intersection)
+                  .label(node_label)
 	            //.label(element.label)
-                  .label(element.iri.split("#")[0].split("/").pop() + ":" + (element.iri.split("#")[1]))
+                 // .label(element.iri.split("#")[0].split("/").pop() + ":" + (element.iri.split("#")[1]))
 	            // .type(element.type) Ignore, because we predefined it
 	            .union(element.union)
 	            .iri(element.iri);
