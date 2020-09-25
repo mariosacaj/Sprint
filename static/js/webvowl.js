@@ -13515,12 +13515,42 @@ webvowl =
 	          addAdditionalAttributes(element, Prototype); // TODO might be unnecessary
                 //console.log(reducedFlippedIndexes);
                 let node_label = undefined;
+                let prefix = undefined;
+
+                try {
+                    prefix = reducedFlippedIndexes[element.baseIri + "#"];
+                    let checker = prefix.check_attribute;
+                }
+                catch (e) {
+                    let prefixListSplit = element.baseIri.split("/");
+                    let prefixList = [];
+                    for (let pls = prefixListSplit.length - 2; pls < prefixListSplit.length; ++pls) {
+                        prefixList.push(prefixListSplit[pls]);
+                    }
+                    if (prefixList[1] == '') {
+                        prefix = prefixList[0];
+                    }
+                    else {
+                        prefix = prefixList[1];
+                        prefix[prefix.length - 1] = '';
+                    }
+                }
+
+                if (prefix == "") {
+                    node_label = element.label;
+                }
+                else {
+                    node_label = prefix + ":" + element.label;
+                }
+
+                /*
                 try {
                     node_label = element.iri.replace(element.iri.split("#")[0] + "#", reducedFlippedIndexes[element.iri.split("#")[0] + "#"] + ":");
                 }
                 catch {
                     node_label = "infrastructure:" + element.label;
                 }
+                */
 
                 var node = new Prototype(graph);
 	          node.annotations(element.annotations)
