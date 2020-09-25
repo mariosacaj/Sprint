@@ -13513,21 +13513,24 @@ webvowl =
 	        
 	        if ( Prototype ) {
 	          addAdditionalAttributes(element, Prototype); // TODO might be unnecessary
-                //console.log(reducedFlippedIndexes);
+
+
                 let node_label = undefined;
                 let prefix = undefined;
+                let initial_label = element.label[Object.keys(element.label)[0]];
+                
+                let b_iri = replaceLast(element.iri, initial_label, "");
 
-                try {
-                    prefix = reducedFlippedIndexes[element.baseIri + "#"];
-                    let checker = prefix.check_attribute;
-                }
-                catch (e) {
-                    let prefixListSplit = element.baseIri.split("/");
+                prefix = reducedFlippedIndexes[b_iri];
+
+                if (prefix == undefined) {
+                  
+                    let prefixListSplit = b_iri.split("/");
                     let prefixList = [];
                     for (let pls = prefixListSplit.length - 2; pls < prefixListSplit.length; ++pls) {
                         prefixList.push(prefixListSplit[pls]);
                     }
-                    if (prefixList[1] == '') {
+                    if (prefixList[1] == "") {
                         prefix = prefixList[0];
                     }
                     else {
@@ -13537,20 +13540,13 @@ webvowl =
                 }
 
                 if (prefix == "") {
-                    node_label = element.label;
+                    node_label = initial_label;
                 }
                 else {
-                    node_label = prefix + ":" + element.label;
+                    node_label = prefix + ":" + initial_label;
                 }
 
-                /*
-                try {
-                    node_label = element.iri.replace(element.iri.split("#")[0] + "#", reducedFlippedIndexes[element.iri.split("#")[0] + "#"] + ":");
-                }
-                catch {
-                    node_label = "infrastructure:" + element.label;
-                }
-                */
+      
 
                 var node = new Prototype(graph);
 	          node.annotations(element.annotations)
@@ -13563,9 +13559,6 @@ webvowl =
 	            .id(element.id)
                   .intersection(element.intersection)
                   .label(node_label)
-	            //.label(element.label)
-                 // .label(element.iri.split("#")[0].split("/").pop() + ":" + (element.iri.split("#")[1]))
-	            // .type(element.type) Ignore, because we predefined it
 	            .union(element.union)
 	            .iri(element.iri);
 	          if ( element.pos ) {
@@ -13627,27 +13620,71 @@ webvowl =
 	        
 	        // Then look for a prototype to add its properties
 	        var Prototype = prototypeMap.get(element.type.toLowerCase());
-	        
+
+
 	        if ( Prototype ) {
 	          // Create the matching object and set the properties
-	          var property = new Prototype(graph);
-	          property.annotations(element.annotations)
-	            .baseIri(element.baseIri)
-	            .cardinality(element.cardinality)
-	            .comment(element.comment)
-	            .domain(element.domain)
-	            .description(element.description)
-	            .equivalents(element.equivalent)
-	            .id(element.id)
-	            .inverse(element.inverse)
-	            .label(element.label)
-	            .minCardinality(element.minCardinality)
-	            .maxCardinality(element.maxCardinality)
-	            .range(element.range)
-	            .subproperties(element.subproperty)
-	            .superproperties(element.superproperty)
-	            // .type(element.type) Ignore, because we predefined it
-	            .iri(element.iri);
+                var property = new Prototype(graph);
+
+  
+
+                
+                let node_label = undefined;
+                let prefix = undefined;
+
+                if (element.label != undefined) {
+                    let initial_label = element.label[Object.keys(element.label)[0]];
+
+                    let b_iri = replaceLast(element.iri, initial_label, "");
+
+                    prefix = reducedFlippedIndexes[b_iri];
+
+                    if (prefix == undefined) {
+
+                        let prefixListSplit = b_iri.split("/");
+                        let prefixList = [];
+                        for (let pls = prefixListSplit.length - 2; pls < prefixListSplit.length; ++pls) {
+                            prefixList.push(prefixListSplit[pls]);
+                        }
+                        if (prefixList[1] == "") {
+                            prefix = prefixList[0];
+                        }
+                        else {
+                            prefix = prefixList[1];
+                            prefix[prefix.length - 1] = '';
+                        }
+                    }
+
+                    if (prefix == "") {
+                        node_label = initial_label;
+                    }
+                    else {
+                        node_label = prefix + ":" + initial_label;
+                    }
+
+
+                }
+                else {
+                    node_label = element.label;
+                }
+                    property.annotations(element.annotations)
+                        .baseIri(element.baseIri)
+                        .cardinality(element.cardinality)
+                        .comment(element.comment)
+                        .domain(element.domain)
+                        .description(element.description)
+                        .equivalents(element.equivalent)
+                        .id(element.id)
+                        .inverse(element.inverse)
+                        .label(node_label)
+                        .minCardinality(element.minCardinality)
+                        .maxCardinality(element.maxCardinality)
+                        .range(element.range)
+                        .subproperties(element.subproperty)
+                        .superproperties(element.superproperty)
+                        // .type(element.type) Ignore, because we predefined it
+                        .iri(element.iri);
+                
 	          
 	          // adding property position
 	          if ( element.pos ) {
@@ -25410,4 +25447,12 @@ webvowl =
 
 
 /***/ })
-/******/ ]);
+/******/]);
+
+
+// Source: https://stackoverflow.com/questions/23136691/replace-last-occurrence-word-in-javascript
+function replaceLast(initial, to_replace, replacement) {
+    var n = initial.lastIndexOf(to_replace);
+    str = initial.slice(0, n) + initial.slice(n).replace(to_replace, replacement);
+    return str;
+}
