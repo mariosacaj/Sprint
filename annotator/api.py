@@ -69,7 +69,7 @@ def owl2json(ref_path, owl_tool, ext, ns):
 
     st = st[st.find("{"):st.rfind("}") + 1]
     response = json.loads(st)
-    ns_b = {y: x for x, y in ns.iteritems()}
+    ns_b = {y: x for x, y in ns.items()}
     response['header']['prefixList'] = ns_b
     return response
 
