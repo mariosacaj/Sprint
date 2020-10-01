@@ -12,7 +12,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpRe
 from django.views.decorators.csrf import csrf_exempt
 
 
-from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, URI_TOOL_PATH, OWL_TOOL_PATH, ONT_TOOL_PATH
+from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, ANNOTATOR_TOOL_PATH, OWL_TOOL_PATH, ONT_TOOL_PATH
 from annotator.api import standard_init, reference_init, annotate_dict_and_build, owl2json, standard_dir, \
     reference_dir, java_dir, check_standard, check_reference, xsd2str, get_candidates
 from annotator.exceptions import *
@@ -29,7 +29,7 @@ def is_hidden(p):
 def index(request):
     try:
         # tmp_ is never created in the proj so this always throws an Exception.
-        # Kept is needed in the future
+        # Kept if needed in the future
         request.session['tmp_']
     except KeyError:
         # Initialize
@@ -123,7 +123,7 @@ def process_standard(request, std_file):
         raise StandardError("File not well formatted")
     # Check if Java classes can be generated with JAXB libraries, produce a dictionary
     # that binds standard concepts with their type ("C" for classes, "P" for properties)
-    standard_dict = standard_init(request.session['tmp'], std_file, URI_TOOL_PATH, ONT_TOOL_PATH)
+    standard_dict = standard_init(request.session['tmp'], std_file, ANNOTATOR_TOOL_PATH, ONT_TOOL_PATH)
     # Path to file
     request.session['std'] = std_file
     request.session['standard_dict'] = standard_dict
@@ -221,7 +221,8 @@ def download(request):
         try:
             dict_confirmed = json.loads(request.body)['associations']
             validation(request, dict_confirmed)
-            annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'])
+            annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'],
+                                    request.session['namespaces'])
         except BaseException as e:
             sys.stderr.write(str(e))
             return HttpResponseBadRequest()

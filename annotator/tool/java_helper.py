@@ -10,12 +10,12 @@ def dynamic_import(abs_module_path, class_name):
     return target_class
 
 
-def startJVM(URIToolFilePath, OntologyConverter):
+def startJVM(AnnoToolFilePath, OntologyConverter):
     # Launch the JVM
     # Needs Java13
     # If you have it there's no need to specify jvmpath
     if not jpype.isJVMStarted():
-        jpype.startJVM(ignoreUnrecognized=False, classpath=[URIToolFilePath, OntologyConverter], convertStrings=False)
+        jpype.startJVM(ignoreUnrecognized=False, classpath=[AnnoToolFilePath, OntologyConverter], convertStrings=False)
 
     # jvmpath='/usr/lib/jvm/java-13-oracle/bin'
 

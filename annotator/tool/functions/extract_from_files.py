@@ -51,6 +51,7 @@ def readXmlFile(xml_path, xml_name):
     xml_file = xml_path + xml_name
     tree = ET.parse(xml_file)
     root = tree.getroot()
+
     elem_list = [elem.tag for elem in root.iter()]
     for elem in elem_list:
         cleaned_elem = re.sub('{.*?}', '', elem)
@@ -58,13 +59,14 @@ def readXmlFile(xml_path, xml_name):
         for se in splitted_elem:
             cleaned_elem_list.append(se)
     finaList = list(dict.fromkeys(cleaned_elem_list))
+
     return finaList
 
 
 def owl_fix_namespaces_inconsistencies(clist, ns_bindings):
     strlist = []
     for c in clist:
-        base_iri = c.iri.replace(c.name, '')
+        base_iri = c.iri[-len(c.name):]
         try:
             prefix = ns_bindings[base_iri]
         except KeyError:
@@ -81,6 +83,14 @@ def owl_fix_namespaces_inconsistencies(clist, ns_bindings):
 
     return strlist
 
+
+def end_replace(original, to_be_replaced, replacement):
+    for i in range(len(original) - len(to_be_replaced)):
+        if original[-i - len(to_be_replaced):-i] == to_be_replaced:
+            str = original
+            str[-i - len(to_be_replaced):-i] = replacement
+            return str
+    return original
 
 def get_namespaces(filepath):
     g = rdflib.Graph()

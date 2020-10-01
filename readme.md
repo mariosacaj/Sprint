@@ -19,3 +19,5 @@
     * `usgi` should point to `Sprint/wsgi.py`.
     * `nginx` should be set to serve on its own the static files (which will be located in `/staticfiles` after instruction #4) and call `usgi` for every other request
     *  `Apache` with `mod_wsgi` can also be used
+
+Please be ware that, when in DEBUG mode, only a small portion of the Google model is loaded (50K words).

@@ -128,7 +128,7 @@ MODEL_NAME = 'model.bin' if not DEBUG else 'model_debug.bin'
 
 model_org_name = 'GoogleNews-vectors-negative300.bin'
 
-URI_TOOL_PATH = os.path.join(TOOLS_DIR, 'URIConverterTool.jar')
+ANNOTATOR_TOOL_PATH = os.path.join(TOOLS_DIR, 'AnnotatorTool.jar')
 
 OWL_TOOL_PATH = os.path.join(TOOLS_DIR, 'owl2vowl.jar')
 

@@ -24,7 +24,7 @@ class AnnotatorHelperConfig(AppConfig):
         t.start()
 
         scheduler = BackgroundScheduler()
-        scheduler.add_job(delete_tmp_folders, trigger='interval', args=(Session, PATH_FILES), minutes=2)
+        scheduler.add_job(delete_tmp_folders, trigger='interval', args=(Session, PATH_FILES), minutes=30)
         scheduler.start()
 
 

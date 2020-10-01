@@ -26,6 +26,7 @@ write_pathVecOrgThr = 'SumVecOrgThr.csv'
 writepathCompound = 'Sumst_MatchCount.csv'
 
 
+
 def check_standard(standard_path):
     try:
         xp.parse(standard_path)
@@ -78,9 +79,9 @@ def xsd2str(std_path):
     return x2s(std_path)
 
 
-def standard_init(tmp_folder, xsd_file, uri_tool, ont_tool):
+def standard_init(tmp_folder, xsd_file, annotator_tool, ont_tool):
     # check if code model can be created
-    startJVM(uri_tool, ont_tool)
+    startJVM(annotator_tool, ont_tool)
 
     generate_code_model(tmp_folder, xsd_file)
 
@@ -99,7 +100,8 @@ def generate_code_model(tmp_folder, xsd_file):
     # Generate Java Code Model
     try:
         java_man.generateFromSchema(xsd_file)
-    except BaseException:
+    except BaseException as e:
+        sys.stderr.write(str(e))
         raise StandardError(
             'Cannot create Java Code: most probably dependencies are missing. Please upload the whole standard zip')
     return java_man
