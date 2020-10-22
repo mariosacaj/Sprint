@@ -104,7 +104,7 @@ def standard_select(request):
                 return HttpResponseBadRequest()
             except BaseException as r:
                 # Redirect to Home page
-                return redirect_wait(request, "ERROR: " + str(r), "index")
+                return redirect_wait(request, "ERROR: " + str(r), "standard_select")
         else:
             # Folder which contains the extracted .zip file
             std_dir_abs = os.path.join(request.session['tmp'], standard_dir)
@@ -144,7 +144,7 @@ def upload_reference(request):
         except ReferenceError as e:
             return redirect_wait(request, e, "reference")
         except BaseException as r:
-            return redirect_wait(request, "ERROR: " + str(r), "index")
+            return redirect_wait(request, "ERROR: " + str(r), "reference")
     else:
         return render(request, 'annotator/upload.html', {'var': 'reference'})
     return HttpResponseRedirect('/reference_select/')
@@ -166,7 +166,7 @@ def reference_select(request):
             except KeyError:
                 return HttpResponseBadRequest()
             except BaseException as r:
-                return redirect_wait(request, "ERROR: " + str(r), "index")
+                return redirect_wait(request, "ERROR: " + str(r), "reference_select")
         else:
             ref_dir_abs = os.path.join(request.session['tmp'], reference_dir)
             tree_structure = path_to_dict(ref_dir_abs)
@@ -305,6 +305,8 @@ def return_reference_type(request):
 
 
 def get_associations(request):
+    if request.session['candidates_dict'] is not None:
+        return JsonResponse(request.session['candidates_dict'], safe=False)
     try:
         candidates_dict = get_candidates(request.session['tmp'], request.session['std'],
                                          request.session['ref'], request.session['standard_dict'],
@@ -383,7 +385,11 @@ def file_writedown(f, flag, request, temp_dir):
 
 def redirect_wait(request, msg, view_name):
     # Renders Redirect page with error message
-    request.session["msg_r"] = str(msg)
+    ms = str(msg)
+    if "ERROR" in str(msg):
+        ms = "Generic Error. See log."
+        sys.stderr.write(msg)
+    request.session["msg_r"] = ms
     request.session["url_r"] = reverse(view_name)
     return HttpResponseRedirect('/redirect/')
 

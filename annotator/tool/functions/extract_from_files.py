@@ -66,7 +66,7 @@ def readXmlFile(xml_path, xml_name):
 def owl_fix_namespaces_inconsistencies(clist, ns_bindings):
     strlist = []
     for c in clist:
-        base_iri = c.iri[-len(c.name):]
+        base_iri = c.iri[:-len(c.name)]
         try:
             prefix = ns_bindings[base_iri]
         except KeyError:
@@ -92,9 +92,13 @@ def end_replace(original, to_be_replaced, replacement):
             return str
     return original
 
-def get_namespaces(filepath):
+
+def get_namespaces(filepath, ext=""):
     g = rdflib.Graph()
-    g.parse(filepath)
+    if ext == 'ttl':
+        g.parse(filepath, format="ttl")
+    else:
+        g.parse(filepath)
     ns_bindings = {}
     for i in list(g.namespaces()):
         # Ex: ns_bindings['http://www.it2rail.eu/ontology/shopping#'] = 'shopping'

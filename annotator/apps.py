@@ -6,6 +6,7 @@ class AnnotatorHelperConfig(AppConfig):
     def ready(self):
         from django.contrib.sessions.models import Session
         from threading import Thread
+        import datetime
         from apscheduler.schedulers.background import BackgroundScheduler
         import os
         from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, model_org_name, DEBUG
@@ -24,23 +25,25 @@ class AnnotatorHelperConfig(AppConfig):
         t.start()
 
         scheduler = BackgroundScheduler()
-        scheduler.add_job(delete_tmp_folders, trigger='interval', args=(Session, PATH_FILES), minutes=30)
+        scheduler.add_job(delete_tmp_folders, trigger='interval', args=(Session, PATH_FILES), minutes=30, id='delete',
+                          replace_existing=True, next_run_time=datetime.datetime.now())
         scheduler.start()
 
 
 
 def delete_tmp_folders(Session, path):
+    import os, shutil, sys
     from importlib import import_module
     from django.conf import settings
-    import os, shutil
-
-    sessions = Session.objects.all()
 
     engine = import_module(settings.SESSION_ENGINE)
     try:
         engine.SessionStore.clear_expired()
-    except:
-        pass
+    except NotImplementedError:
+        sys.stderr.write("Session engine '%s' doesn't support clearing "
+                         "expired sessions.\n" % settings.SESSION_ENGINE)
+
+    sessions = Session.objects.all()
 
     tmp_dirs = []
     for session in sessions:
@@ -54,6 +57,7 @@ def delete_tmp_folders(Session, path):
 
     for dir in dirList:
         if dir not in tmp_dirs:
+            sys.stdout.write("deleting dir: " + dir + "\n")
             shutil.rmtree(dir)
 
     return

@@ -50,7 +50,7 @@ def standard_concept_type(standard_path):
 
 
 def reference_concept_type(reference_path, ext):
-    ns = get_namespaces(reference_path)
+    ns = get_namespaces(reference_path, ext)
     if ext == 'owl':
         return qualified_concept_type_owl(reference_path, ns), ns
     else:
