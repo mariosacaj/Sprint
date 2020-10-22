@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  app:
+    build: .
+    container_name: django-gunicorn
+    restart: always
+    env_file:
+      - django.env
+    ports:
+      - "8000:8000"
+    command:
+      "gunicorn --workers=2 --bind=0.0.0.0:8000 Sprint.wsgi:application"
+
+  nginx:
+    build: nginx
+    container_name: ngx
+    ports:
+      - "80:80"
+    depends_on:
+      - app

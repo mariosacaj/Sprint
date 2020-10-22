@@ -4,3 +4,4 @@
 /.idea/
 /Sprint/__pycache__/
 __pycache__/
+/nginx/staticfiles

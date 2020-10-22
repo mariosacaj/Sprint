@@ -1,0 +1,21 @@
+FROM tiangolo/uwsgi-nginx:python3.7
+
+RUN pip install -r requirements.txt
+
+RUN apt-get update --fix-missing && apt-get upgrade -y &&\
+    apt-get install -y openjdk-11-jdk && \
+    apt-get clean
+
+# nginx
+COPY app_nginx.conf /etc/nginx/sites-available/
+RUN ln -s /etc/nginx/sites-available/app_nginx.conf /etc/nginx/sites-enabled/app_nginx.conf &&\
+    rm /etc/nginx/sites-enabled/default
+
+WORKDIR /app
+COPY . /app
+
+ENV UWSGI_CHEAPER 1
+ENV UWSGI_PROCESSES 8
+ENV NGINX_MAX_UPLOAD 50m
+
+

@@ -1,16 +1,12 @@
-FROM mskx4/sprint:stable
-
+FROM python:3.7
 
 WORKDIR /app
+
 COPY . /app
 
+RUN pip install -r requirements.txt
 
+RUN apt-get update --fix-missing && apt-get upgrade -y &&\
+    apt-get install -y openjdk-11-jdk && \
+    apt-get clean
 
-# Make RUN commands use the new environment:
-SHELL ["conda", "run", "-n", "Sprint", "/bin/bash", "-c"]
-RUN python manage.py collectstatic --no-input
-RUN ["chmod", "+x", "commands.sh"]
-
-EXPOSE 80
-EXPOSE 8000
-EXPOSE 8080
