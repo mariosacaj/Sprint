@@ -12,7 +12,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpRe
 from django.views.decorators.csrf import csrf_exempt
 
 
-from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, ANNOTATOR_TOOL_PATH, OWL_TOOL_PATH, ONT_TOOL_PATH
+from Sprint.settings import PATH_FILES
 from annotator.api import standard_init, reference_init, annotate_dict_and_build, owl2json, standard_dir, \
     reference_dir, java_dir, check_standard, check_reference, xsd2str, get_candidates
 from annotator.exceptions import *
@@ -123,7 +123,7 @@ def process_standard(request, std_file):
         raise StandardError("File not well formatted")
     # Check if Java classes can be generated with JAXB libraries, produce a dictionary
     # that binds standard concepts with their type ("C" for classes, "P" for properties)
-    standard_dict = standard_init(request.session['tmp'], std_file, ANNOTATOR_TOOL_PATH, ONT_TOOL_PATH)
+    standard_dict = standard_init(request.session['tmp'], std_file)
     # Path to file
     request.session['std'] = std_file
     request.session['standard_dict'] = standard_dict
@@ -310,7 +310,7 @@ def get_associations(request):
     try:
         candidates_dict = get_candidates(request.session['tmp'], request.session['std'],
                                          request.session['ref'], request.session['standard_dict'],
-                                         MODEL_DIR + MODEL_NAME, request.session['reference_dict'],
+                                         request.session['reference_dict'],
                                          request.session['ext'], request.session['namespaces'])
         request.session['candidates_dict'] = candidates_dict
     except:
@@ -323,7 +323,7 @@ def get_ontology(request):
     if not request.session['ref_sel']:
         return HttpResponseBadRequest()
     try:
-        json_response = owl2json(request.session['ref'], OWL_TOOL_PATH, request.session['ext'],
+        json_response = owl2json(request.session['ref'], request.session['ext'],
                                  request.session['namespaces'])
     except ReferenceError:
         return HttpResponseBadRequest()

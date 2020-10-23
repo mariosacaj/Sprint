@@ -6,9 +6,11 @@ import contextlib
 
 import jpype
 
-from annotator.exceptions import *
+from Sprint.settings import MODEL_DIR, MODEL_NAME, OWL_TOOL_PATH
 
-from .tool.java_helper import instantiate_java_code_manipulator, instantiate_ont_converter, startJVM
+from annotator.exceptions import *
+from annotator.java_helper import instantiate_java_code_manipulator, instantiate_ont_converter, startJVM
+
 from .tool.functions.preprocessing import standard_concept_type, reference_concept_type
 from .tool.functions.extract_from_files import xsd2str as x2s, get_ontology, rdflib, xp
 from .tool.routines import produce_final_candidates, prune_mismatch_type
@@ -48,7 +50,7 @@ def check_reference(reference_path):
             return ''
 
 
-def owl2json(ref_path, owl_tool, ext, ns):
+def owl2json(ref_path, ext, ns):
     ont_file = ref_path
 
     # Translate to OWL if possible
@@ -60,7 +62,7 @@ def owl2json(ref_path, owl_tool, ext, ns):
         except jpype.JException as e:
             sys.stderr.write("TTL->OWL conversion error: " + str(e))
 
-    process = subprocess.run(['java', '-jar', owl_tool, '-echo', '-file', ont_file], stdout=subprocess.PIPE,
+    process = subprocess.run(['java', '-jar', OWL_TOOL_PATH, '-echo', '-file', ont_file], stdout=subprocess.PIPE,
                              universal_newlines=True)
 
     if process.returncode is not 0:
@@ -79,9 +81,9 @@ def xsd2str(std_path):
     return x2s(std_path)
 
 
-def standard_init(tmp_folder, xsd_file, annotator_tool, ont_tool):
+def standard_init(tmp_folder, xsd_file):
     # check if code model can be created
-    startJVM(annotator_tool, ont_tool)
+    startJVM()
 
     generate_code_model(tmp_folder, xsd_file)
 
@@ -112,10 +114,10 @@ def reference_init(ont_file, ext):
     return reference_dict, ns
 
 
-def get_candidates(tmp_folder, xsd_file, ont_file, standard_dict, model_path, reference_dict, ext, ns):
+def get_candidates(tmp_folder, xsd_file, ont_file, standard_dict, reference_dict, ext, ns):
     from gensim.models import KeyedVectors
     # user specific
-    model = KeyedVectors.load(model_path, mmap='r')
+    model = KeyedVectors.load(MODEL_DIR + MODEL_NAME, mmap='r')
     model.syn0norm = model.syn0  # prevent recalc of normed vectors
     # … plus whatever else you wanted to do with the model
     vocab_list = list(model.vocab.keys())
