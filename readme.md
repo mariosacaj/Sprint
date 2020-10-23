@@ -16,9 +16,15 @@
 4. `python manage.py collectstatic`
 5. Install static server (like `nginx`) and wsgi or asgi server (like `usgi`) and configure them
     * `usgi` should point to `Sprint/wsgi.py`.
-    * `nginx` should be set to serve on its own the static files (which will be located in `nginx/staticfiles` after instruction #4) and call `usgi` for every other request
+    * `nginx` should be set to serve on its own the static files (which will be located in `nginx/staticfiles` after instruction #5) and call `usgi` for every other request
     *  `Apache` with `mod_wsgi` can also be used
 
-Please be ware that, when in DEBUG mode, only a small portion of the Google model is loaded (50K words).
+Please be aware that, when in DEBUG mode, only a small portion of the Google model is loaded (50K words).
+When DEBUG is set to False the loading of the whole model eats up to 12 GB of RAM. Be sure to deploy in a
+appropriate setting.
 
 # Easy Deployment (with Docker)
+Requires: docker-compose
+
+1. Edit `django.env` to your preference
+2. Run `./deployment.sh`

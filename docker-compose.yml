@@ -7,6 +7,12 @@ services:
     restart: always
     env_file:
       - django.env
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+        reservations:
+          memory: 6G
     ports:
       - "8000:8000"
     command:
