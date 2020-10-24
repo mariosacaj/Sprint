@@ -1,20 +1,29 @@
-# Requirements
+# Development
+#### Requirements
 1. Install all the requirements: `pip install -r requirements.txt`.
 2. Place the [google model](https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit) in `model/`.
 3. Install JDK 11 or higher.
     * If you have multiple JDKs installed, you must set your `$JAVA_HOME` environment variable to a JDK >= 11.
 
-# Development
+
+Run server:
 1. Run `python manage.py runserver`
 2. Go to `http://127.0.0.1:8000`
 
 # Production
+#### Requirements
+1. Install all the requirements: `pip install -r requirements.txt`.
+2. Place the [google model](https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit) in `model/`.
+3. Install JDK 11 or higher.
+    * If you have multiple JDKs installed, you must set your `$JAVA_HOME` environment variable to a JDK >= 11.
+
+Go to production:
 1. Set `DEBUG = False` in `Sprint/settings.py`
 2. Change `SECRET KEY` in `Sprint/settings.py`
-2. `python manage.py makemigrations`
-3. `python manage.py migrate`
-4. `python manage.py collectstatic`
-5. Install a static files server (like `nginx`) and a wsgi or asgi server (like `gunicorn`) and configure them:
+3. `python manage.py makemigrations`
+4. `python manage.py migrate`
+5. `python manage.py collectstatic`
+6. Install a static files server (like `nginx`) and a wsgi or asgi server (like `gunicorn`) and configure them:
     * `gunicorn` should point to the `Sprint/wsgi.py` or `Sprint/asgi.py` module and must import the `application` variable.
     * `nginx` should be set to serve on its own the static files (which will be located in `nginx/staticfiles` after instruction #5) and call `usgi` for every other request
     * `Apache` with `mod_wsgi` can also be used
