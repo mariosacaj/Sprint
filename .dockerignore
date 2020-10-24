@@ -1,2 +1,11 @@
 .git
+model/model.bin
+model/model.bin.vectors.npy
+model/model_debug.bin
+model/model_debug.bin.vectors.npy
+nginx
+session_files
+django.env
+docker-compose.yml
+
 

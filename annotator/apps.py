@@ -5,30 +5,27 @@ class AnnotatorHelperConfig(AppConfig):
 
     def ready(self):
         from django.contrib.sessions.models import Session
-        from threading import Thread
         import datetime
         from apscheduler.schedulers.background import BackgroundScheduler
         import os
-        from Sprint.settings import PATH_FILES, MODEL_DIR, MODEL_NAME, model_org_name, DEBUG
+        from Sprint.settings import PATH_FILES
 
         if not os.path.isdir(PATH_FILES):
             os.mkdir(PATH_FILES)
+        import sys, socket
 
-        if not os.path.isdir(MODEL_DIR):
-            os.mkdir(MODEL_DIR)
-
-        model_path = MODEL_DIR + MODEL_NAME
-        model_org = MODEL_DIR + model_org_name
-
-        t = Thread(target=load_model, args=(model_org, model_path, DEBUG))
-        t.daemon = True  # This thread dies when main thread (only non-daemon thread) exits.
-        t.start()
-
-        scheduler = BackgroundScheduler()
-        scheduler.add_job(delete_tmp_folders, trigger='interval', args=(Session, PATH_FILES), minutes=30, id='delete',
-                          replace_existing=True, next_run_time=datetime.datetime.now())
-        scheduler.start()
-
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.bind(("127.0.0.1", 47200))
+        except socket.error:
+            sys.stderr.write("[DELETE SESSION FILES SCHEDULER]: Scheduler already started, DO NOTHING\n")
+        else:
+            scheduler = BackgroundScheduler()
+            scheduler.add_job(delete_tmp_folders, trigger='interval', args=(Session, PATH_FILES), minutes=30,
+                              id='delete',
+                              replace_existing=True, next_run_time=datetime.datetime.now())
+            scheduler.start()
+            sys.stderr.write("[DELETE SESSION FILES SCHEDULER]: Scheduler started\n")
 
 
 def delete_tmp_folders(Session, path):
@@ -57,30 +54,38 @@ def delete_tmp_folders(Session, path):
 
     for dir in dirList:
         if dir not in tmp_dirs:
-            sys.stdout.write("deleting dir: " + dir + "\n")
+            sys.stdout.write("[DELETE SESSION FILES SCHEDULER]: deleting dir " + dir + "\n")
             shutil.rmtree(dir)
 
     return
 
-
-def load_model(model_org, model_path, debug):
-    import gensim
-    from gensim.models import KeyedVectors
-    from threading import Semaphore
-    try:
-        model = KeyedVectors.load(model_path, mmap='r')
-    except:
-        if debug:
-            model = gensim.models.KeyedVectors.load_word2vec_format(model_org, binary=True, limit=50000)
-        else:
-            model = gensim.models.KeyedVectors.load_word2vec_format(model_org, binary=True)
-
-        model.init_sims(replace=True)
-        model.save(model_path)
-
-        model = KeyedVectors.load(model_path, mmap='r')
-
-    model.syn0norm = model.syn0  # prevent recalc of normed vectors
-    model.most_similar('stuff')  # any word will do: just to page all in
-
-    Semaphore(0).acquire()  # just hang until process killed
+# def load_model(model_org, model_path, debug):
+#     import sys
+#     import gensim
+#     from gensim.models import KeyedVectors
+#     from threading import Semaphore
+#     try:
+#         sys.stdout.write("Model loading...")
+#         model = KeyedVectors.load(model_path, mmap='r')
+#         sys.stdout.write("Model loaded!")
+#     except:
+#         sys.stdout.write("Model loading...")
+#         if debug:
+#             model = gensim.models.KeyedVectors.load_word2vec_format(model_org, binary=True, limit=50000)
+#         else:
+#             model = gensim.models.KeyedVectors.load_word2vec_format(model_org, binary=True)
+#
+#         sys.stdout.write("Save RAM friendly format of the model...")
+#         model.init_sims(replace=True)
+#         model.save(model_path)
+#         sys.stdout.write("Saved! Finish loading...")
+#
+#         model = KeyedVectors.load(model_path, mmap='r')
+#         sys.stdout.write("Model loaded!")
+#
+#     model.syn0norm = model.syn0  # prevent recalc of normed vectors
+#     model.most_similar('stuff')  # any word will do: just to page all in
+#
+#     sys.stdout.write("Model paged in memory. Finished model instantiation.")
+#
+#     Semaphore(0).acquire()  # just hang until process killed

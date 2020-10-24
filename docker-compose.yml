@@ -9,14 +9,12 @@ services:
       - django.env
     deploy:
       resources:
-        limits:
-          memory: 16G
         reservations:
           memory: 6G
     ports:
       - "8000:8000"
     command:
-      "gunicorn --workers=2 --bind=0.0.0.0:8000 Sprint.wsgi:application"
+      "gunicorn -c prestart.py --workers=2 --threads 3 -t 30 --bind=0.0.0.0:8000 Sprint.wsgi:application --preload"
 
   nginx:
     build: nginx

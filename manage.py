@@ -15,6 +15,10 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
 
+    if 'runserver' in sys.argv:
+        from prestart import on_starting
+        on_starting()
+
     execute_from_command_line(sys.argv)
 
 
