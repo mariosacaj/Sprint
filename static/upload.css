@@ -15,7 +15,7 @@ display: inline-block;
 bottom: 0;
 right: 0;
 left: 0;
-height: 180px;
+height: 220px;
 margin: auto;
 }
 
@@ -117,4 +117,15 @@ label.uploadButton input[type="file"] {
         font-style: normal;
     }
 
+    .selectedFileDiv {
+        background-color: rgba(10, 150, 0, 0.5);
+        padding: 10px;
+        border: 1px solid rgb(10, 150, 0);
+        border-radius: 5px;
+        margin-top: 10px;
+        position: absolute;
+        width: 40%;
+        left: 30%;
+        display: none;
+    }
     
