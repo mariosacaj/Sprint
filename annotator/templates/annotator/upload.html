@@ -21,6 +21,21 @@
         <button type="submit" name="submit"><i class="fas fa-upload"></i></button>
 
     </form>
+    <div class="selectedFileDiv">
+        <span class="selectedFile"></span>
+    </div>
 </div>
 </body>
+
+<script>
+
+    document.getElementsByName('file')[0].onchange = function () {
+        let selectedFile = this.value.split("\\")[this.value.split("\\").length - 1];
+        document.getElementsByClassName("selectedFile")[0].innerHTML = "You have selected " + selectedFile;
+        document.getElementsByClassName("selectedFileDiv")[0].style.display = "block";
+
+    };
+
+</script>
+
 </html>
