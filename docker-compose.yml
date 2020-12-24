@@ -14,7 +14,7 @@ services:
     ports:
       - "8000:8000"
     command:
-      "gunicorn -c prestart.py --workers=2 --threads 3 -t 30 --bind=0.0.0.0:8000 Sprint.wsgi:application --preload"
+      "gunicorn -c prestart.py --workers=2 --threads 3 -t 600 --bind=0.0.0.0:8000 Sprint.wsgi:application --preload"
 
   nginx:
     build: nginx

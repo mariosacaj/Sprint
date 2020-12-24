@@ -18,8 +18,7 @@
 5. `python manage.py collectstatic`
 6. Install a static files server (like `nginx`) and a wsgi or asgi server (like `gunicorn`) and configure them:
     * `gunicorn` should point to the `Sprint/wsgi.py` or `Sprint/asgi.py` module and must import the `application` variable.
-    * `nginx` should be set to serve on its own the static files (which will be located in `nginx/staticfiles` after instruction #5) and call `usgi` for every other request
-    * `Apache` with `mod_wsgi` can also be used
+    * `nginx` should be set to serve on its own the static files (which will be located in `nginx/staticfiles` after instruction #5) and call `gunicorn` for every other request
     *  the `on_starting()` routine in `prestart.py` must be invoked by 
     `gunicorn` (or by the process handling the wsgi/asgi server) before the instantiation of the workers.
 
