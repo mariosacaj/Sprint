@@ -37,7 +37,7 @@
 
 ## Pre-built images
 If you don't want to build the docker images by yourself, 
-you can use pre-built images. There's no need to download the Google model in this case.
+you can use pre-built images. There's no need to download the Google model in this case!
 
 1. `docker pull mskx4/sprint_nginx`
 2. `docker pull mskx4/sprint`
