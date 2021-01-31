@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", retrieveData, false);
 document.addEventListener("DOMContentLoaded", attachAssociationListener, false);
 document.addEventListener("DOMContentLoaded", attachRightClicks, false);
 
+
 function rightClick(ev) {
 	ev.preventDefault();
 }
@@ -36,12 +37,17 @@ function attachRightClicksXSD() {
 	
 	setTimeout(function() {
 		if(doc!=undefined && doc!=null) {
+
+			doc.getElementById("compress").addEventListener("click", attachRightClicks, false);
+			doc.getElementById("compress").style.display = "block";
+
 			let allTS = doc.querySelectorAll("tspan");
 			setTimeout(function() {
 				if(allTS.length > 0) {
 					for(let i=0; i<allTS.length; ++i) {
-				allTS[i].addEventListener("contextmenu", xsdRC, false);	
-			}
+						allTS[i].addEventListener("contextmenu", xsdRC, false);	
+						allTS[i].addEventListener("click", attachRightClicks, false);
+					}
 				}
 				else {
 					attachRightClicksXSD();

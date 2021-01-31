@@ -1,6 +1,6 @@
 # Development & Production
 #### Requirements
-1. Install all the requirements: `pip install -r requirements.txt`.
+1. Install all the requirements: `pip install -r requirements.txt` and make sure the Python 3 version in use is 3.8.3 or lower
 2. Place the [Google model](https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit) in `model/`.
 3. Install JDK 11 or higher.
     * If you have multiple JDKs installed, you must set your `$JAVA_HOME` environment variable to a JDK >= 11.
