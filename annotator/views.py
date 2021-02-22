@@ -178,13 +178,16 @@ def reference_select(request):
 
 def process_reference(request, ref_file):
     ext = check_reference(ref_file)
+    # Ext is actual format not filename extension
     if ext == '':
         raise ReferenceError("File not well formatted")
-    # check reference
-    # then produce a dictionary that binds each reference concept with its type
-    # ("C" for classes and "P" for properties)
+
+    # Produce a dictionary that binds each reference concept with its type
+    # ("C" for classes, "P" for properties, "" for unknown)
+    # Also produce a dict that binds every namespace to the corresponding prefix
+    # e.g. namespaces['http://www.it2rail.eu/ontology/shopping#'] = 'shopping'
     reference_dict, namespaces = reference_init(ref_file, ext)
-    # Ext is actual format not filename extension
+
     request.session['ext'] = ext
     request.session['ref_sel'] = True
     request.session['reference_dict'] = reference_dict
@@ -210,34 +213,40 @@ def compare(request):
     return render(request, 'annotator/compare.html')
 
 
-# Post the associations and build the annotated JAVA classes
-# Then zip them and send them to client
-@csrf_exempt
-def download(request):
-    if request.method == 'POST':
-        if not request.session['std_sel']:
-            return HttpResponseRedirect('/compare/')
-        file_dir = os.path.join(request.session['tmp'], java_dir)
-        try:
-            dict_confirmed = json.loads(request.body)['associations']
-            validation(request, dict_confirmed)
-            annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'],
-                                    request.session['namespaces'])
-        except BaseException as e:
-            sys.stderr.write(str(e))
-            return HttpResponseBadRequest()
-        return send_zip(file_dir, request)
-    else:
+def get_xsd(request):
+    if not request.session['std_sel']:
         return HttpResponseBadRequest()
+    try:
+        y = xsd2str(request.session['std'])
+    except StandardError:
+        return HttpResponseBadRequest()
+    return HttpResponse(y, content_type="application/xml")
 
 
-# From now on, helper functions only
-def send_zip(file_dir, request):
-    fpath = shutil.make_archive(file_dir, 'zip', file_dir)
-    with open(fpath, 'rb') as fh:
-        response = HttpResponse(fh.read(), content_type="application/zip")
-        response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(fpath)
-        return response
+# Convert OWL ontology in proper format so that it can be visualized
+def get_ontology(request):
+    if not request.session['ref_sel']:
+        return HttpResponseBadRequest()
+    try:
+        json_response = owl2json(request.session['ref'], request.session['ext'],
+                                 request.session['namespaces'])
+    except ReferenceError:
+        return HttpResponseBadRequest()
+    return JsonResponse(json_response)
+
+
+def get_associations(request):
+    if request.session['candidates_dict'] is not None:
+        return JsonResponse(request.session['candidates_dict'], safe=False)
+    try:
+        candidates_dict = get_candidates(request.session['tmp'], request.session['std'],
+                                         request.session['ref'], request.session['standard_dict'],
+                                         request.session['reference_dict'],
+                                         request.session['ext'], request.session['namespaces'])
+        request.session['candidates_dict'] = candidates_dict
+    except:
+        return HttpResponseBadRequest()
+    return JsonResponse(candidates_dict, safe=False)
 
 
 def validation(request, dict_confirmed):
@@ -304,40 +313,34 @@ def return_reference_type(request):
         return HttpResponseBadRequest()
 
 
-def get_associations(request):
-    if request.session['candidates_dict'] is not None:
-        return JsonResponse(request.session['candidates_dict'], safe=False)
-    try:
-        candidates_dict = get_candidates(request.session['tmp'], request.session['std'],
-                                         request.session['ref'], request.session['standard_dict'],
-                                         request.session['reference_dict'],
-                                         request.session['ext'], request.session['namespaces'])
-        request.session['candidates_dict'] = candidates_dict
-    except:
+# Post the associations and build the annotated JAVA classes
+# Then zip them and send them to client
+@csrf_exempt
+def download(request):
+    if request.method == 'POST':
+        if not request.session['std_sel']:
+            return HttpResponseRedirect('/compare/')
+        file_dir = os.path.join(request.session['tmp'], java_dir)
+        try:
+            dict_confirmed = json.loads(request.body)['associations']
+            validation(request, dict_confirmed)
+            annotate_dict_and_build(dict_confirmed, request.session['tmp'], request.session['std'],
+                                    request.session['namespaces'])
+        except BaseException as e:
+            sys.stderr.write(str(e))
+            return HttpResponseBadRequest()
+        return send_zip(file_dir, request)
+    else:
         return HttpResponseBadRequest()
-    return JsonResponse(candidates_dict, safe=False)
 
 
-# Convert OWL ontology in proper format so that it can be visualized
-def get_ontology(request):
-    if not request.session['ref_sel']:
-        return HttpResponseBadRequest()
-    try:
-        json_response = owl2json(request.session['ref'], request.session['ext'],
-                                 request.session['namespaces'])
-    except ReferenceError:
-        return HttpResponseBadRequest()
-    return JsonResponse(json_response)
-
-
-def get_xsd(request):
-    if not request.session['std_sel']:
-        return HttpResponseBadRequest()
-    try:
-        y = xsd2str(request.session['std'])
-    except StandardError:
-        return HttpResponseBadRequest()
-    return HttpResponse(y, content_type="application/xml")
+# From now on, helper functions only
+def send_zip(file_dir, request):
+    fpath = shutil.make_archive(file_dir, 'zip', file_dir)
+    with open(fpath, 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/zip")
+        response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(fpath)
+        return response
 
 
 def handle_file(request, flag: str):

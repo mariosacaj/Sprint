@@ -11,8 +11,8 @@ from Sprint.settings import MODEL_DIR, MODEL_NAME, OWL_TOOL_PATH
 from annotator.exceptions import *
 from annotator.java_helper import instantiate_java_code_manipulator, instantiate_ont_converter, startJVM
 
-from .tool.functions.preprocessing import standard_concept_type, reference_concept_type
-from .tool.functions.extract_from_files import xsd2str as x2s, get_ontology, rdflib, xp
+from .tool.functions.extract_from_files import xsd2str as x2s, get_ontology, rdflib, xp, standard_concept_type, \
+    reference_concept_type
 from .tool.routines import produce_final_candidates, prune_mismatch_type
 
 # Directories
@@ -69,9 +69,13 @@ def owl2json(ref_path, ext, ns):
         raise ReferenceError('Could Not Convert')
 
     st = process.stdout
-
     st = st[st.find("{"):st.rfind("}") + 1]
     response = json.loads(st)
+
+    # During the OWL->VOWL conversion the
+    # "namespace->prefix" bindings get messed up.
+    # We insert back into the graph the correct
+    # bindings.
     ns_b = {y: x for x, y in ns.items()}
     response['header']['prefixList'] = ns_b
     return response
@@ -87,7 +91,7 @@ def standard_init(tmp_folder, xsd_file):
 
     generate_code_model(tmp_folder, xsd_file)
 
-    # create dicts for standard like this: dict[name] = 'C'/'P'/'' (as for 'Class', 'Property' and unknown)
+    # create dict for standard like this: dict[term] = 'C'/'P'/'' (as for 'Class', 'Property' and unknown)
     standard_dict = standard_concept_type(xsd_file)
 
     return standard_dict
@@ -105,21 +109,26 @@ def generate_code_model(tmp_folder, xsd_file):
     except BaseException as e:
         sys.stderr.write(str(e))
         raise StandardError(
-            'Cannot create Java Code: most probably dependencies are missing. Please upload the whole standard zip')
+            'Cannot create Java Code: most probably XML dependencies are missing. Please upload the whole standard zip')
     return java_man
 
 
 def reference_init(ont_file, ext):
-    reference_dict, ns = reference_concept_type(ont_file, ext)
-    return reference_dict, ns
+    # create dict for ontology like this: dict[term] = 'C'/'P'/'' (as for 'Class', 'Property' and unknown)
+    # create dict for ns like this: namespaces['http://www.it2rail.eu/ontology/shopping#'] = 'shopping'
+    reference_dict, namespaces = reference_concept_type(ont_file, ext)
+    return reference_dict, namespaces
 
 
 def get_candidates(tmp_folder, xsd_file, ont_file, standard_dict, reference_dict, ext, ns):
+    ####### WE ARE ABLE TO ACCESS THE GOOGLE MODEL WITH LITTLE LATENCY
+    ####### BECAUSE THERE IS A BACKGROUND PROCESS THAT KEEPS IT IN MEMORY
     from gensim.models import KeyedVectors
     # user specific
     model = KeyedVectors.load(MODEL_DIR + MODEL_NAME, mmap='r')
     model.syn0norm = model.syn0  # prevent recalc of normed vectors
-    # … plus whatever else you wanted to do with the model
+    #######
+
     vocab_list = list(model.vocab.keys())
 
     output_path = os.path.join(tmp_folder, output_dir)
@@ -158,6 +167,7 @@ def annotate_dict_and_build(dict_confirmed: dict, tmp_folder: str, xsd_file: str
     java_man.build()
 
 
+# Unused Code
 def annotate_dict(java_man, dict_confirmed):
     ## ANNOTATION -- NOT INTERACTIVE
     for key, value in dict_confirmed.items():
@@ -170,41 +180,3 @@ def annotate(java_man, std_concept_str, ref_concept_str):
 
 def build(java_man):
     java_man.build()
-
-# def file_writedown_mng(f, flag, request, temp_dir):
-#     if flag == 'standard':
-#         input = standard_dir
-#         path = 'std'
-#         sel = 'std_sel'
-#         fun = check_standard
-#     else:
-#         input = reference_dir
-#         path = 'ref'
-#         sel = 'ref_sel'
-#         fun = check_reference
-#     input = os.path.join(temp_dir, input)
-#     if os.path.exists(input):
-#         shutil.rmtree(input)
-#     os.makedirs(input)
-#     # IS ZIP
-#     if zipfile.is_zipfile(f):
-#         with zipfile.ZipFile(f, 'r') as zipObj:
-#             # Extract all the contents of zip file in different directory
-#             zipObj.extractall(input)
-#         request.session[sel] = False
-#         request.session[path] = input
-#         os.remove(f)
-#         return True
-#     # IS SINGLE FILE
-#     elif fun(f):
-#         file_name = os.path.basename(f)
-#         file_path = os.path.join(input, file_name)
-#
-#         shutil.copy(f, file_path)
-#         request.session[sel] = True
-#         request.session[path] = file_path
-#         os.remove(f)
-#         return True
-#     else:
-#         os.remove(f)
-#         return False

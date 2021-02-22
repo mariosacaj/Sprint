@@ -1,9 +1,7 @@
-####`urls.py` imports `views.py`
-In `urls.py` every possible url is mapped to a view function in `views.py`.
+#### `urls.py` imports `views.py`
 
-####`views.py` imports `models.py`
-Databases schema are accessed directly in `views.py`. To convert classes in models.py into actual schemas do the following:
+In `urls.py` every possible _URL_ is mapped to a view function in `views.py`.
 
-`$ python manage.py makemigrations`
+#### `views.py` imports `api.py`
 
-`$ python manage.py migrate`
+Here the rendering routines use the application logic functions and answer the client with the result

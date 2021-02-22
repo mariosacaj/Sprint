@@ -1,3 +1,4 @@
+
 import numpy as np
 import csv
 import xml.dom.minidom as xp
@@ -63,6 +64,10 @@ def readXmlFile(xml_path, xml_name):
     return finaList
 
 
+# owlready2 performs an optimization on the namespaces
+# that we have to manually revert, because we want to keep
+# on the final JAVA code the same namespace-prefix bindings of the
+# original ontology file
 def owl_fix_namespaces_inconsistencies(clist, ns_bindings):
     strlist = []
     for c in clist:
@@ -362,3 +367,61 @@ def readXsdFile(standard_path):
     listofElements = list(filter(lambda x: x != '', getElement1))
     finallist = list(dict.fromkeys(listofElements))
     return finallist
+
+
+def get_xml_raw_vocab_list(xml_path, xml_name):
+    xml_file = xml_path + xml_name
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    elem_list = [elem.tag for elem in root.iter()]
+    return elem_list
+
+
+def getFileExtension(filename):
+    owl = 'owl'
+    xsd = 'xsd'
+    xml = 'xml'
+    ttl = 'ttl'
+    ext = filename.split(".")[1]
+    if (ext == owl):
+        return owl
+    elif (ext == xsd):
+        return xsd
+    elif (ext == xml):
+        return xml
+    elif (ext == ttl):
+        return ttl
+
+
+def standard_concept_type(standard_path):
+    dict_standard_type = {}
+    iterator = [(readXsdFile(standard_path), ''), (readXsdFilecomplextype(standard_path), 'C'),
+                (readXsdFileElementAttribute(standard_path), 'P')]
+    for it in iterator:
+        for concept in it[0]:
+            dict_standard_type[concept] = it[1]
+    return dict_standard_type
+
+
+def reference_concept_type(reference_path, ext):
+    ns = get_namespaces(reference_path, ext)
+    if ext == 'owl':
+        return qualified_concept_type_owl(reference_path, ns), ns
+    else:
+        return qualified_concept_type_ttl(reference_path, ns), ns
+
+
+def qualified_concept_type_ttl(reference_path, ns):
+    dict_reference_type = {}
+    for concept in readQualifiedTurtle(reference_path, ns):
+        dict_reference_type[concept] = ''
+    return dict_reference_type
+
+
+def qualified_concept_type_owl(reference_path, ns):
+    dict_reference_type = {}
+    for concept in readQualifiedOWLClass(reference_path, ns):
+        dict_reference_type[concept] = 'C'
+    for concept in readQualifiedOWLProperty(reference_path, ns):
+        dict_reference_type[concept] = 'P'
+    return dict_reference_type

@@ -31,6 +31,7 @@
 
 
 #### Deployment
+1. `cd` into project folder
 2. Edit `django.env` to your preference
 3. Run `./deployment.sh`
 
@@ -40,8 +41,9 @@ you can use pre-built images. There's no need to download the Google model in th
 
 1. `docker pull mskx4/sprint_nginx`
 2. `docker pull mskx4/sprint`
-3.  Edit `django.env` to your preference
-4. `docker-compose up -d`
+3. `cd` into project folder
+4. Edit `django.env` to your preference
+5. `docker-compose up -d`
 
 # Warning
 Please be aware that, when in `DEBUG` mode, only a small portion of the Google model is loaded (50K words).
