@@ -38,8 +38,9 @@ function attachRightClicksXSD() {
 	setTimeout(function() {
 		if(doc!=undefined && doc!=null) {
 
-			doc.getElementById("compress").addEventListener("click", attachRightClicks, false);
+			/*doc.getElementById("compress").addEventListener("click", attachRightClicks, false);
 			doc.getElementById("compress").style.display = "block";
+			*/
 
 			let allTS = doc.querySelectorAll("tspan");
 			setTimeout(function() {
@@ -179,6 +180,9 @@ function createRMenu(ev, currentString, startingType) {
 	//listElems = addItemToMenu(listElems, '<span class="associatedTo">Associated to</span><br/><span>' + findAssociation(currentString, startingType) + '</span>', newDiv);
 
 	
+	console.log(ontoString);
+console.log(xsdString);
+console.log("==========");
 
     if (ontoString == "-" || xsdString == "-") {
         validCombination = true;
@@ -220,7 +224,7 @@ function createRMenu(ev, currentString, startingType) {
 
                 }
                 else {
-                    listElems = addItemToMenu(listElems, "Remove association", newDiv, removeAssociation.bind(ev, currentString, startingType));
+
 
                     listElems = addCloseToMenu(listElems, "Close menu", newDiv);
                 }
@@ -289,7 +293,7 @@ function chooseStd(value, tr) {
     if (tr != null) {
         let ontSel = tr.childNodes[0].firstChild;
         ontSel.parentNode.innerHTML = "<span>" + value + "</span>";
-        document.querySelector(".right-menu").style.backgroundColor = "rgba(59, 115, 0, 0.5)";
+        document.querySelector(".right-menu").style.backgroundColor = "rgba(0, 153, 51, 0.9)";
     }
     else {
         document.querySelector(".right-menu").style.backgroundColor = "rgba(174, 29, 63, 0.5)";
@@ -301,7 +305,7 @@ function chooseOntology(value, tr) {
     if (tr != null) {
         let ontSel = tr.childNodes[1].firstChild;
         ontSel.parentNode.innerHTML = "<span>" + value + "</span>";
-        document.querySelector(".right-menu").style.backgroundColor = "rgba(59, 115, 0, 0.5)";
+        document.querySelector(".right-menu").style.backgroundColor = "rgba(0, 153, 51, 0.9)";
     }
     else {
         document.querySelector(".right-menu").style.backgroundColor = "rgba(174, 29, 63, 0.5)";
@@ -510,12 +514,12 @@ function sendData() {
 		let stdCell = stdCells[i].childNodes[0].firstChild;
 		let stdCellValue = getSelection(stdCell);
 
-		if(stdValues.includes(stdCellValue)) {
-            stdCell.parentNode.style.backgroundColor = "rgb(255, 153, 153)";
+		if(stdValues.includes(stdCellValue) || stdCellValue == "-") {
+            stdCell.parentNode.className = "invalidRow";
             valid = false;
 		}
 		else {
-			stdCell.parentNode.style.backgroundColor = "rgb(153, 255, 51)";
+			stdCell.parentNode.className = "validRow";
 		}
 		stdValues.push(stdCellValue);
 	}
@@ -524,12 +528,12 @@ function sendData() {
 		let ontCell = ontCells[i].childNodes[1].firstChild;
 		let ontCellValue = getSelection(ontCell);
 
-		if(ontValues.includes(ontCellValue)) {
-            ontCell.parentNode.style.backgroundColor = "rgb(255, 153, 153)";
+		if(ontValues.includes(ontCellValue) || ontCellValue == "-") {
+            ontCell.parentNode.className = "invalidRow";
             valid = false;
 		}
 		else {
-			ontCell.parentNode.style.backgroundColor = "rgb(153, 255, 51)";
+			ontCell.parentNode.className = "validRow";
 		}
 		ontValues.push(ontCellValue);
     }
@@ -575,6 +579,8 @@ function sendData() {
 		var data = {
 			"associations": data_to_send
 		};
+
+		console.log(data);
 
 		xmlhttp.send(JSON.stringify(data));
 
