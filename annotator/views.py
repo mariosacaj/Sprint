@@ -262,7 +262,9 @@ def is_valid_view(request):
         return HttpResponseBadRequest()
     try:
         pair = json.loads(request.body)['pair']
-        return HttpResponse(str(is_valid(pair[0], pair[1])), content_type="text/plain")
+        std_type = request.session['standard_dict'][pair[0]]
+        ref_type = request.session['reference_dict'][pair[1]]
+        return HttpResponse(str(is_valid(std_type, ref_type)), content_type="text/plain")
     except KeyError:
         return HttpResponseBadRequest()
 
