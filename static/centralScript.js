@@ -176,7 +176,7 @@ function createRMenu(ev, currentString, startingType) {
 
 	listElems = addTitleToMenu(listElems, "Options", newDiv);
 	listElems = addItemToMenu(listElems, '<span class="origin">Term</span><br/><span>' + currentString + '</span>');
-	listElems = addItemToMenu(listElems, '<span class="associatedTo">Associated to</span><br/><span>' + findAssociation(currentString, startingType) + '</span>', newDiv);
+	//listElems = addItemToMenu(listElems, '<span class="associatedTo">Associated to</span><br/><span>' + findAssociation(currentString, startingType) + '</span>', newDiv);
 
 	
 
